@@ -25,6 +25,13 @@ namespace Gartenausgaben
             dateTimePicker1.Format = DateTimePickerFormat.Custom;
             dateTimePicker1.CustomFormat = "ddMMMM yyyy"; //MMMM dd, yyyy";
         }
+        public void Rechnen()
+        {
+            var s = 9;
+            int x;
+
+            x = s * 9;
+        }
         
     }
 }
