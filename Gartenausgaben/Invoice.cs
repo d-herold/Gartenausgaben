@@ -12,25 +12,19 @@ using System.Windows.Forms;
 
 namespace Gartenausgaben
 {
-    public partial class Gartenausgaben : Form
+    public partial class Invoice : Form
     {
-        public Gartenausgaben()
+        public Invoice()
         {
             InitializeComponent();
             SetMyCustomFormat();
+
         }
         public void SetMyCustomFormat()
         {
             // Set the Format type and the CustomFormat string.
             dateTimePicker1.Format = DateTimePickerFormat.Custom;
             dateTimePicker1.CustomFormat = "ddMMMM yyyy"; //MMMM dd, yyyy";
-        }
-        public void Rechnen()
-        {
-            var s = 9;
-            int x;
-
-            x = s * 9;
         }
         
     }
