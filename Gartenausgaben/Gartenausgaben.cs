@@ -12,9 +12,9 @@ using System.Windows.Forms;
 
 namespace Gartenausgaben
 {
-    public partial class Form1 : Form
+    public partial class Gartenausgaben : Form
     {
-        public Form1()
+        public Gartenausgaben()
         {
             InitializeComponent();
             SetMyCustomFormat();
