@@ -30,10 +30,8 @@
         {
             this.tb_GesamtBetrag = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.lb_Haendler = new System.Windows.Forms.ListBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.lb_Projekt = new System.Windows.Forms.ListBox();
             this.label4 = new System.Windows.Forms.Label();
             this.tb_Menge = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -44,6 +42,8 @@
             this.cmd_Speichern = new System.Windows.Forms.Button();
             this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
             this.cmd_Close = new System.Windows.Forms.Button();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // tb_GesamtBetrag
@@ -53,6 +53,8 @@
             this.tb_GesamtBetrag.Name = "tb_GesamtBetrag";
             this.tb_GesamtBetrag.Size = new System.Drawing.Size(123, 22);
             this.tb_GesamtBetrag.TabIndex = 0;
+            this.tb_GesamtBetrag.Validating += new System.ComponentModel.CancelEventHandler(this.tb_GesamtBetrag_Validating);
+            this.tb_GesamtBetrag.Validated += new System.EventHandler(this.tb_GesamtBetrag_Validated);
             // 
             // label1
             // 
@@ -63,20 +65,10 @@
             this.label1.TabIndex = 1;
             this.label1.Text = "Betrag in €";
             // 
-            // lb_Haendler
-            // 
-            this.lb_Haendler.FormattingEnabled = true;
-            this.lb_Haendler.ItemHeight = 16;
-            this.lb_Haendler.Location = new System.Drawing.Point(227, 426);
-            this.lb_Haendler.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.lb_Haendler.Name = "lb_Haendler";
-            this.lb_Haendler.Size = new System.Drawing.Size(120, 84);
-            this.lb_Haendler.TabIndex = 2;
-            // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(224, 395);
+            this.label2.Location = new System.Drawing.Point(253, 395);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(58, 17);
             this.label2.TabIndex = 3;
@@ -90,16 +82,6 @@
             this.label3.Size = new System.Drawing.Size(76, 17);
             this.label3.TabIndex = 5;
             this.label3.Text = "Kaufdatum";
-            // 
-            // lb_Projekt
-            // 
-            this.lb_Projekt.FormattingEnabled = true;
-            this.lb_Projekt.ItemHeight = 16;
-            this.lb_Projekt.Location = new System.Drawing.Point(59, 426);
-            this.lb_Projekt.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.lb_Projekt.Name = "lb_Projekt";
-            this.lb_Projekt.Size = new System.Drawing.Size(120, 84);
-            this.lb_Projekt.TabIndex = 7;
             // 
             // label4
             // 
@@ -192,11 +174,29 @@
             this.cmd_Close.UseVisualStyleBackColor = true;
             this.cmd_Close.Click += new System.EventHandler(this.cmd_Close_Click);
             // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(55, 426);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(121, 24);
+            this.comboBox1.TabIndex = 19;
+            // 
+            // comboBox2
+            // 
+            this.comboBox2.FormattingEnabled = true;
+            this.comboBox2.Location = new System.Drawing.Point(256, 426);
+            this.comboBox2.Name = "comboBox2";
+            this.comboBox2.Size = new System.Drawing.Size(121, 24);
+            this.comboBox2.TabIndex = 20;
+            // 
             // Invoice
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(740, 843);
+            this.Controls.Add(this.comboBox2);
+            this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.cmd_Close);
             this.Controls.Add(this.dateTimePicker1);
             this.Controls.Add(this.cmd_Speichern);
@@ -207,10 +207,8 @@
             this.Controls.Add(this.label5);
             this.Controls.Add(this.tb_Menge);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.lb_Projekt);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.lb_Haendler);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.tb_GesamtBetrag);
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -225,10 +223,8 @@
 
         private System.Windows.Forms.TextBox tb_GesamtBetrag;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ListBox lb_Haendler;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ListBox lb_Projekt;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox tb_Menge;
         private System.Windows.Forms.Label label5;
@@ -239,6 +235,8 @@
         private System.Windows.Forms.Button cmd_Speichern;
         private System.Windows.Forms.DateTimePicker dateTimePicker1;
         private System.Windows.Forms.Button cmd_Close;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox comboBox2;
     }
 }
 
