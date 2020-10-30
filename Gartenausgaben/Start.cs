@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.SqlClient;
 using System.Drawing;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,28 +10,40 @@ using System.Windows.Forms;
 
 namespace Gartenausgaben
 {
-    public partial class Gartenausgaben : Form
+    public partial class Start : Form
     {
-        public Gartenausgaben()
+        Invoice invoice = new Invoice();
+        
+        public Start()
         {
             InitializeComponent();
-            SetMyCustomFormat();
         }
-        public void SetMyCustomFormat()
+
+        private void CmdLoadNewInvoice_Click(object sender, EventArgs e)
         {
-            // Set the Format type and the CustomFormat string.
-            dateTimePicker1.Format = DateTimePickerFormat.Custom;
-            dateTimePicker1.CustomFormat = "ddMMMM yyyy"; //MMMM dd, yyyy";
-        }        
+            if ((invoice.IsDisposed) || (null == invoice))
+                invoice = new Invoice();
+            invoice.Show();
+            this.Close();
+        }
+
+        private void CmdEvaluation_Click(object sender, EventArgs e)
+        {
+            var evaluation = new Evaluation();
+            evaluation.Show();
+        }
+
     }
 }
+
 /*
 public class MyWindow : Form
 {
    //-------------------------------------------------------------
    static int iId    = 1;
-   if(!SW_MAINWINDOW)
+   #if !SW_MAINWINDOW
       static int iCount = 0;
+   #endif
 
    //=============================================================
    public MyWindow ()
@@ -42,8 +52,9 @@ public class MyWindow : Form
 
 
       //----------------------------------------------------------
-      if(!SW_MAINWINDOW)
+      #if !SW_MAINWINDOW
          ++iCount;
+      #endif
       Text = "Window " + iId++;
       Size = new Size (220 + Size.Width - ClientSize.Width,
                         70 + Size.Height - ClientSize.Height);
@@ -57,11 +68,10 @@ public class MyWindow : Form
       Controls.Add (ctrlCurr);
 
       //----------------------------------------------------------
-      if(!SW_MAINWINDOW)
-      {
+      #if !SW_MAINWINDOW
          Disposed += new EventHandler (MyWindowDisposed);
          Show ();
-      }
+      #endif
    }
 
    //=============================================================
@@ -71,16 +81,14 @@ public class MyWindow : Form
    }
 
    //=============================================================
-      if(!SW_MAINWINDOW)
+   #if !SW_MAINWINDOW
+      protected void MyWindowDisposed (Object sender, EventArgs e)
       {
-        protected void MyWindowDisposed (Object sender, EventArgs e)
-        {
-             if (--iCount <= 0)
-             {
-                Application.Exit ();
-             }
-        }
+         if (--iCount <= 0) {
+            Application.Exit ();
+         }
       }
+   #endif
 }
 
 //****************************************************************
@@ -89,13 +97,12 @@ abstract class App
    //=============================================================
    public static int Main (string [] astrArg)
    {
-      if(!SW_MAINWINDOW)
-      {
+      #if !SW_MAINWINDOW
          new MyWindow ();
          Application.Run ();
-      }
-      else
+      #else
          Application.Run (new MyWindow ());
+      #endif
 
       return 0;
    }

@@ -1,6 +1,6 @@
 ﻿namespace Gartenausgaben
 {
-    partial class Gartenausgaben
+    partial class Invoice
     {
         /// <summary>
         /// Erforderliche Designervariable.
