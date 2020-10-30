@@ -42,8 +42,8 @@ namespace Gartenausgaben
             }
             set 
             {
-                this.einzelpreis = Convert.ToDouble(tb_Einzelpreis);
-                value = einzelpreis; 
+                this.einzelpreis = Convert.ToDouble(tb_Einzelpreis.Text);
+                einzelpreis = value; 
             }
         }
 
@@ -55,8 +55,7 @@ namespace Gartenausgaben
             }
             set
             {
-                this.menge = Convert.ToDouble(tb_Menge);
-                value = menge;
+                menge = Convert.ToDouble(tb_Menge.Text);
             }
         }
 
@@ -68,30 +67,65 @@ namespace Gartenausgaben
             }
             set
             {
-                this.gesamtBetrag = Convert.ToDouble(tb_GesamtBetrag);
-                value = gesamtBetrag;
+                this.gesamtBetrag = Convert.ToDouble(tb_GesamtBetrag.Text);
+                gesamtBetrag = value;
             }
         }
 
-        private double CalculateAmount()
+        private void CalculateQuantity()
         {
-            gesamtBetrag = einzelpreis * menge;
-            tb_GesamtBetrag.Text = gesamtBetrag.ToString();
-
-            return gesamtBetrag;
+            if (tb_GesamtBetrag.Text != "")
+            {
+                try
+                {
+                    menge = Double.Parse(tb_GesamtBetrag.Text) / Double.Parse(tb_Einzelpreis.Text);
+                    tb_Menge.Text = menge.ToString();
+                }
+                catch
+                {
+                    if (tb_GesamtBetrag.Text == "")
+                        tb_Menge.Text = "";
+                    else
+                    {
+                        tb_Menge.Text = "";
+                        MessageBox.Show("Bitte geben sie eine Zahl ein!");
+                    }
+                }
+            }
         }
 
-        private void tb_GesamtBetrag_Validated(object sender, EventArgs e)
+        private void CalculateAmount()
         {
+            if(tb_Menge.Text != "")
+            try
+            {
+                gesamtBetrag = Double.Parse(tb_Menge.Text) * Double.Parse(tb_Einzelpreis.Text);
+                tb_GesamtBetrag.Text = gesamtBetrag.ToString("0.00");
+            }
+            catch
+            {
+                if (tb_Einzelpreis.Text == "")
+                    tb_GesamtBetrag.Text = "";
+                else
+                {
+                    tb_GesamtBetrag.Text = "";
+                    MessageBox.Show("Bitte geben sie eine Zahl ein!");
+                }  
+            }
             
         }
 
-        private void tb_GesamtBetrag_Validating(object sender, CancelEventArgs e)
+        private void tb_Einzelpreis_TextChanged(object sender, EventArgs e)
         {
-            if (tb_Einzelpreis != null && tb_Menge.Text != "")
+            if (tb_Menge != null)
             {
                 CalculateAmount();
             }
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

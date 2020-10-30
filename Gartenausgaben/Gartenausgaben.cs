@@ -34,7 +34,7 @@ namespace Gartenausgaben
         }
         void oldForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            MessageBox.Show("Wollen Sie das Fenster wirklich schließen");
+            //MessageBox.Show("Wollen Sie das Fenster wirklich schließen");
             Show();
         }
     }
