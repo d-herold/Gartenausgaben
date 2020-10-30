@@ -6,8 +6,10 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.SqlServer.Server;
 using System.Windows.Forms;
 
 namespace Gartenausgaben
@@ -72,27 +74,27 @@ namespace Gartenausgaben
             }
         }
 
-        private void CalculateQuantity()
-        {
-            if (tb_GesamtBetrag.Text != "")
-            {
-                try
-                {
-                    menge = Double.Parse(tb_GesamtBetrag.Text) / Double.Parse(tb_Einzelpreis.Text);
-                    tb_Menge.Text = menge.ToString();
-                }
-                catch
-                {
-                    if (tb_GesamtBetrag.Text == "")
-                        tb_Menge.Text = "";
-                    else
-                    {
-                        tb_Menge.Text = "";
-                        MessageBox.Show("Bitte geben sie eine Zahl ein!");
-                    }
-                }
-            }
-        }
+        //private void CalculateQuantity()
+        //{
+        //    if (tb_GesamtBetrag.Text != "")
+        //    {
+        //        try
+        //        {
+        //            menge = Double.Parse(tb_GesamtBetrag.Text) / Double.Parse(tb_Einzelpreis.Text);
+        //            tb_Menge.Text = menge.ToString();
+        //        }
+        //        catch
+        //        {
+        //            if (tb_GesamtBetrag.Text == "")
+        //                tb_Menge.Text = "";
+        //            else
+        //            {
+        //                tb_Menge.Text = "";
+        //                MessageBox.Show("Bitte geben sie eine Zahl ein!");
+        //            }
+        //        }
+        //    }
+        //}
 
         private void CalculateAmount()
         {
@@ -121,11 +123,6 @@ namespace Gartenausgaben
             {
                 CalculateAmount();
             }
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

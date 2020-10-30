@@ -32,7 +32,7 @@ namespace Gartenausgaben
             Hide();
             evaluation.Show();
         }
-        void oldForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void oldForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             //MessageBox.Show("Wollen Sie das Fenster wirklich schließen");
             Show();
