@@ -1,6 +1,6 @@
 ﻿namespace Gartenausgaben
 {
-    partial class Start
+    partial class Gartenausgaben
     {
         /// <summary>
         /// Required designer variable.
