@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Globalization;
@@ -22,18 +23,15 @@ namespace Gartenausgaben
         {
             InitializeComponent();
             SetMyCustomFormat();
-
+            
         }
+
+        
         public void SetMyCustomFormat()
         {
             // Set the Format type and the CustomFormat string.
             dateTimePicker1.Format = DateTimePickerFormat.Custom;
             dateTimePicker1.CustomFormat = "ddMMMM yyyy"; //MMMM dd, yyyy";
-        }
-
-        private void cmd_Close_Click(object sender, EventArgs e)
-        {
-            Close();
         }
 
         public double GetEinzelPreis
@@ -123,6 +121,122 @@ namespace Gartenausgaben
             {
                 CalculateAmount();
             }
+        }
+
+        //Sortierung nach Name ASC Default
+        public void LadeHaendler()
+        {
+            // Connection String aus der App.config 
+            string conn = Properties.Settings.Default.GartenProjekteConnectionString;
+
+            //Erstellt eine neue Verbindund zur übergebenen Datenbank
+            SqlConnection sql_con = new SqlConnection(conn);
+
+            //Abfrage-String für alle Namen aus der Händler Tabelle
+            string querySql = "SELECT Name FROM Haendler ORDER BY Name ASC";
+
+            //Erstellt einen Adapter um die Daten aus der DB-Tabelle in eine Tabelle zu laden
+            SqlDataAdapter sql_adapt = new SqlDataAdapter(querySql, sql_con);
+
+            //Erstellt eine neue Tabelle im Arbeitsspeicher
+            DataTable tblData = new DataTable();
+            //Befüllt die DataTable
+            sql_adapt.Fill(tblData);
+
+            //Anzeige in der ComboBox alle Namen der vorhanden Ids
+            cb_Haendler.DisplayMember = "Name";
+            cb_Haendler.ValueMember = "[Haendler_Id]";
+
+            //Zuweisen der Datentabelle zur Datenquelle
+            cb_Haendler.DataSource = tblData;
+        }
+
+        //Sortierung nach ID Absteigend
+        public void LadeHaendler(string sort)
+        {
+            // Connection String aus der App.config 
+            string conn = Properties.Settings.Default.GartenProjekteConnectionString;
+
+            //Erstellt eine neue Verbindund zur übergebenen Datenbank
+            SqlConnection sql_con = new SqlConnection(conn);
+
+            //Abfrage-String für alle Namen aus der Händler Tabelle
+            string querySql = "SELECT Name FROM Haendler ORDER BY " + sort + " DESC";
+
+            //Erstellt einen Adapter um die Daten aus der DB-Tabelle in eine Tabelle zu laden
+            SqlDataAdapter sql_adapt = new SqlDataAdapter(querySql, sql_con);
+
+            //Erstellt eine neue Tabelle im Arbeitsspeicher
+            DataTable tblData = new DataTable();
+            //Befüllt die DataTable
+            sql_adapt.Fill(tblData);
+
+            //Anzeige in der ComboBox alle Namen der vorhanden Ids
+            cb_Haendler.DisplayMember = "Name";
+            cb_Haendler.ValueMember = "[Haendler_Id]";
+
+            //Zuweisen der Datentabelle zur Datenquelle
+            cb_Haendler.DataSource = tblData;
+        }
+
+        private DataTable Db_Get_Table(string sqlInsert)
+        {
+            //Anzeigen von DAten
+            //< init >
+            //via app-Setting
+            string conn = Properties.Settings.Default.GartenProjekteConnectionString;
+            //</ init >
+
+            SqlConnection sql_conn = new SqlConnection(conn);
+            if (sql_conn.State != ConnectionState.Open)
+                sql_conn.Open();
+            SqlDataAdapter sql_adapt = new SqlDataAdapter(sqlInsert, sql_conn);
+
+            DataTable tblData = new DataTable();
+            sql_adapt.Fill(tblData);
+            sql_conn.Close();
+
+            return tblData;
+        }
+
+        private int Db_execute(string sql_Insert)
+        {
+            string conn = Properties.Settings.Default.GartenProjekteConnectionString;
+
+            SqlConnection sql_conn = new SqlConnection(conn);
+            if (sql_conn.State != ConnectionState.Open) sql_conn.Open();
+            SqlCommand sql_com = new SqlCommand(sql_Insert, sql_conn);
+
+            int nResult = sql_com.ExecuteNonQuery();
+            sql_conn.Close();
+            return nResult;
+        }
+
+        private void Invoice_Load(object sender, EventArgs e)
+        {
+            LadeHaendler();
+        }
+
+        private void BtnSave_Click(object sender, EventArgs e)
+        {
+            NeuenHaendlerHinzufügen();
+        }
+
+        private void BtnClose_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void btnNeuerHaendler_Click(object sender, EventArgs e)
+        {
+            var neuerHaendler = new NeuerHaendlerPlus();
+            neuerHaendler.FormClosed += new FormClosedEventHandler(f2_FormClosed);
+            neuerHaendler.Show();
+        }
+
+        void f2_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            this.LadeHaendler("Haendler_Id");
         }
     }
 }
