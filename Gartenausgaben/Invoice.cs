@@ -219,7 +219,7 @@ namespace Gartenausgaben
 
         private void BtnSave_Click(object sender, EventArgs e)
         {
-            NeuenHaendlerHinzufügen();
+            //NeuenHaendlerHinzufügen();
         }
 
         private void BtnClose_Click(object sender, EventArgs e)
