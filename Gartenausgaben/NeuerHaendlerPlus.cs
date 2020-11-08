@@ -48,7 +48,7 @@ namespace Gartenausgaben
             string sql_Insert = "INSERT INTO Haendler (Name , Anschrift , PLZ , Ort , Telefon ) " +
                 "VALUES ('" + name + "' , '" + strasse + "' , '" + plz + "' , '" + ort + "' , '" + telefon + "') ";
 
-            Db_execute(sql_Insert);
+            DbConnect.Db_execute(sql_Insert);
         }
 
         private void btnNeuerHaendlerAbbrechen_Click(object sender, EventArgs e)

@@ -149,6 +149,7 @@ namespace Gartenausgaben
 
             //Zuweisen der Datentabelle zur Datenquelle
             cb_Haendler.DataSource = tblData;
+
         }
 
         //Sortierung nach ID Absteigend
@@ -237,6 +238,21 @@ namespace Gartenausgaben
         void f2_FormClosed(object sender, FormClosedEventArgs e)
         {
             this.LadeHaendler("Haendler_Id");
+        }
+
+        private void SetNeuerEinkauf()
+        {
+            string artikel = tb_Artikel.Text;
+            string haendler = cb_Haendler.Text;
+            string einzelpreis = tb_Einzelpreis.Text;
+            string menge = tb_Menge.Text;
+            string gesamtpreis = tb_GesamtBetrag.Text;
+
+            //Abfrage-String um einen neuen Händler aus der TextBox zur Händler Tabelle hinzuzufügen
+            //string sql_Insert = "INSERT INTO Haendler (Name , Anschrift , PLZ , Ort , Telefon ) " +
+            //    "VALUES ('" + name + "' , '" + strasse + "' , '" + plz + "' , '" + ort + "' , '" + telefon + "') ";
+
+            // Insert Into EINKAUF
         }
     }
 }
