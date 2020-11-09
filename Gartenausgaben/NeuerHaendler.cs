@@ -12,9 +12,9 @@ using System.Windows.Forms;
 
 namespace Gartenausgaben
 {
-    public partial class NeuerHaendlerPlus : Form
+    public partial class NeuerHaendler : Form
     {
-        public NeuerHaendlerPlus()
+        public NeuerHaendler()
         {
             InitializeComponent();
         }

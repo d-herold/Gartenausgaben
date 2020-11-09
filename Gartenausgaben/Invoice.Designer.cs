@@ -40,13 +40,17 @@
             this.label7 = new System.Windows.Forms.Label();
             this.tb_Artikel = new System.Windows.Forms.TextBox();
             this.BtnSave = new System.Windows.Forms.Button();
-            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
+            this.dateTimePickerDatum = new System.Windows.Forms.DateTimePicker();
             this.BtnClose = new System.Windows.Forms.Button();
             this.cb_Projekt = new System.Windows.Forms.ComboBox();
             this.cb_Haendler = new System.Windows.Forms.ComboBox();
             this.txbNeuerHaendler = new System.Windows.Forms.TextBox();
             this.lblNeuerHaendler = new System.Windows.Forms.Label();
             this.btnNeuerHaendler = new System.Windows.Forms.Button();
+            this.lbListe = new System.Windows.Forms.ListBox();
+            this.btnEintragen = new System.Windows.Forms.Button();
+            this.listView1 = new System.Windows.Forms.ListView();
+            this.btnListView = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // tb_GesamtBetrag
@@ -154,7 +158,7 @@
             // 
             // BtnSave
             // 
-            this.BtnSave.Location = new System.Drawing.Point(41, 457);
+            this.BtnSave.Location = new System.Drawing.Point(41, 503);
             this.BtnSave.Margin = new System.Windows.Forms.Padding(2);
             this.BtnSave.Name = "BtnSave";
             this.BtnSave.Size = new System.Drawing.Size(143, 41);
@@ -163,19 +167,19 @@
             this.BtnSave.UseVisualStyleBackColor = true;
             this.BtnSave.Click += new System.EventHandler(this.BtnSave_Click);
             // 
-            // dateTimePicker1
+            // dateTimePickerDatum
             // 
-            this.dateTimePicker1.Location = new System.Drawing.Point(41, 266);
-            this.dateTimePicker1.Margin = new System.Windows.Forms.Padding(2);
-            this.dateTimePicker1.MinDate = new System.DateTime(2000, 1, 1, 0, 0, 0, 0);
-            this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.Size = new System.Drawing.Size(193, 20);
-            this.dateTimePicker1.TabIndex = 5;
-            this.dateTimePicker1.Value = new System.DateTime(2020, 7, 29, 14, 50, 59, 0);
+            this.dateTimePickerDatum.Location = new System.Drawing.Point(41, 266);
+            this.dateTimePickerDatum.Margin = new System.Windows.Forms.Padding(2);
+            this.dateTimePickerDatum.MinDate = new System.DateTime(2000, 1, 1, 0, 0, 0, 0);
+            this.dateTimePickerDatum.Name = "dateTimePickerDatum";
+            this.dateTimePickerDatum.Size = new System.Drawing.Size(193, 20);
+            this.dateTimePickerDatum.TabIndex = 5;
+            this.dateTimePickerDatum.Value = new System.DateTime(2020, 11, 9, 0, 0, 0, 0);
             // 
             // BtnClose
             // 
-            this.BtnClose.Location = new System.Drawing.Point(232, 457);
+            this.BtnClose.Location = new System.Drawing.Point(233, 503);
             this.BtnClose.Margin = new System.Windows.Forms.Padding(2);
             this.BtnClose.Name = "BtnClose";
             this.BtnClose.Size = new System.Drawing.Size(143, 41);
@@ -222,7 +226,7 @@
             // 
             // btnNeuerHaendler
             // 
-            this.btnNeuerHaendler.Location = new System.Drawing.Point(433, 457);
+            this.btnNeuerHaendler.Location = new System.Drawing.Point(433, 503);
             this.btnNeuerHaendler.Margin = new System.Windows.Forms.Padding(2);
             this.btnNeuerHaendler.Name = "btnNeuerHaendler";
             this.btnNeuerHaendler.Size = new System.Drawing.Size(143, 41);
@@ -231,18 +235,59 @@
             this.btnNeuerHaendler.UseVisualStyleBackColor = true;
             this.btnNeuerHaendler.Click += new System.EventHandler(this.btnNeuerHaendler_Click);
             // 
+            // lbListe
+            // 
+            this.lbListe.FormattingEnabled = true;
+            this.lbListe.Location = new System.Drawing.Point(432, 61);
+            this.lbListe.Name = "lbListe";
+            this.lbListe.Size = new System.Drawing.Size(238, 251);
+            this.lbListe.TabIndex = 111;
+            // 
+            // btnEintragen
+            // 
+            this.btnEintragen.Location = new System.Drawing.Point(41, 397);
+            this.btnEintragen.Name = "btnEintragen";
+            this.btnEintragen.Size = new System.Drawing.Size(144, 23);
+            this.btnEintragen.TabIndex = 112;
+            this.btnEintragen.Text = "Übernehmen";
+            this.btnEintragen.UseVisualStyleBackColor = true;
+            this.btnEintragen.Click += new System.EventHandler(this.btnEintragen_Click);
+            // 
+            // listView1
+            // 
+            this.listView1.HideSelection = false;
+            this.listView1.Location = new System.Drawing.Point(764, 61);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(226, 251);
+            this.listView1.TabIndex = 113;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            // 
+            // btnListView
+            // 
+            this.btnListView.Location = new System.Drawing.Point(432, 397);
+            this.btnListView.Name = "btnListView";
+            this.btnListView.Size = new System.Drawing.Size(144, 23);
+            this.btnListView.TabIndex = 114;
+            this.btnListView.Text = "Eintragen";
+            this.btnListView.UseVisualStyleBackColor = true;
+            this.btnListView.Click += new System.EventHandler(this.btnListView_Click);
+            // 
             // Invoice
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(682, 516);
+            this.ClientSize = new System.Drawing.Size(1143, 584);
+            this.Controls.Add(this.btnListView);
+            this.Controls.Add(this.listView1);
+            this.Controls.Add(this.btnEintragen);
+            this.Controls.Add(this.lbListe);
             this.Controls.Add(this.btnNeuerHaendler);
             this.Controls.Add(this.lblNeuerHaendler);
             this.Controls.Add(this.txbNeuerHaendler);
             this.Controls.Add(this.cb_Haendler);
             this.Controls.Add(this.cb_Projekt);
             this.Controls.Add(this.BtnClose);
-            this.Controls.Add(this.dateTimePicker1);
+            this.Controls.Add(this.dateTimePickerDatum);
             this.Controls.Add(this.BtnSave);
             this.Controls.Add(this.tb_Artikel);
             this.Controls.Add(this.label7);
@@ -278,13 +323,17 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox tb_Artikel;
         private System.Windows.Forms.Button BtnSave;
-        private System.Windows.Forms.DateTimePicker dateTimePicker1;
+        private System.Windows.Forms.DateTimePicker dateTimePickerDatum;
         private System.Windows.Forms.Button BtnClose;
         private System.Windows.Forms.ComboBox cb_Projekt;
         private System.Windows.Forms.ComboBox cb_Haendler;
         private System.Windows.Forms.TextBox txbNeuerHaendler;
         private System.Windows.Forms.Label lblNeuerHaendler;
         private System.Windows.Forms.Button btnNeuerHaendler;
+        private System.Windows.Forms.ListBox lbListe;
+        private System.Windows.Forms.Button btnEintragen;
+        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.Button btnListView;
     }
 }
 

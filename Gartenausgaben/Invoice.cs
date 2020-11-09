@@ -12,54 +12,67 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.Server;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace Gartenausgaben
 {
     public partial class Invoice : Form
     {
-        double gesamtBetrag = 0.00; double menge; double einzelpreis;
+        List<string> artikel = new List<string>();
+        List<string> projekt = new List<string>();
+        List<string> haendler = new List<string>();
+        List<int> menge = new List<int>();
+        List<decimal> einzelpreis = new List<decimal>();
+        List<decimal> gesamtpreis = new List<decimal>();
+        List<DateTime> datum = new List<DateTime>();
+        decimal einzelPreis;
+        decimal artikelMenge;
+        decimal gesamtBetrag;
+        int position;
 
         public Invoice()
         {
             InitializeComponent();
             SetMyCustomFormat();
+            position = 1;
             
         }
-
         
         public void SetMyCustomFormat()
         {
             // Set the Format type and the CustomFormat string.
-            dateTimePicker1.Format = DateTimePickerFormat.Custom;
-            dateTimePicker1.CustomFormat = "ddMMMM yyyy"; //MMMM dd, yyyy";
+            dateTimePickerDatum.Value = DateTime.Now;
+            dateTimePickerDatum.Format = DateTimePickerFormat.Custom;
+            dateTimePickerDatum.CustomFormat = "ddMMMM yyyy"; //MMMM dd, yyyy";
         }
 
-        public double GetEinzelPreis
+        public decimal GetEinzelPreis
         {
             get 
             { 
-                return einzelpreis; 
+                return einzelPreis; 
             }
             set 
             {
-                this.einzelpreis = Convert.ToDouble(tb_Einzelpreis.Text);
-                einzelpreis = value; 
+                this.einzelPreis = Convert.ToDecimal(tb_Einzelpreis.Text);
+                einzelPreis = value; 
             }
         }
 
-        public double GetMenge
+        public decimal GetMenge
         {
             get
             {
-                return menge;
+                return artikelMenge;
             }
             set
             {
-                menge = Convert.ToDouble(tb_Menge.Text);
+                artikelMenge = Convert.ToDecimal(tb_Menge.Text);
+
             }
         }
 
-        public double GetGesamtBetrag
+        public decimal GetGesamtBetrag
         {
             get
             {
@@ -67,7 +80,7 @@ namespace Gartenausgaben
             }
             set
             {
-                this.gesamtBetrag = Convert.ToDouble(tb_GesamtBetrag.Text);
+                this.gesamtBetrag = Convert.ToDecimal(tb_GesamtBetrag.Text);
                 gesamtBetrag = value;
             }
         }
@@ -99,7 +112,7 @@ namespace Gartenausgaben
             if(tb_Menge.Text != "")
             try
             {
-                gesamtBetrag = Double.Parse(tb_Menge.Text) * Double.Parse(tb_Einzelpreis.Text);
+                gesamtBetrag = Decimal.Parse(tb_Menge.Text) * Decimal.Parse(tb_Einzelpreis.Text);
                 tb_GesamtBetrag.Text = gesamtBetrag.ToString("0.00");
             }
             catch
@@ -180,6 +193,33 @@ namespace Gartenausgaben
             cb_Haendler.DataSource = tblData;
         }
 
+        //public void LadeArtikel(string sort)
+        //{
+        //    // Connection String aus der App.config 
+        //    string conn = Properties.Settings.Default.GartenProjekteConnectionString;
+
+        //    //Erstellt eine neue Verbindund zur übergebenen Datenbank
+        //    SqlConnection sql_con = new SqlConnection(conn);
+
+        //    //Abfrage-String für alle Namen aus der Händler Tabelle
+        //    string querySql = "SELECT Name FROM Haendler ORDER BY " + sort + " DESC";
+
+        //    //Erstellt einen Adapter um die Daten aus der DB-Tabelle in eine Tabelle zu laden
+        //    SqlDataAdapter sql_adapt = new SqlDataAdapter(querySql, sql_con);
+
+        //    //Erstellt eine neue Tabelle im Arbeitsspeicher
+        //    DataTable tblData = new DataTable();
+        //    //Befüllt die DataTable
+        //    sql_adapt.Fill(tblData);
+
+        //    //Anzeige in der ComboBox alle Namen der vorhanden Ids
+        //    cb_Haendler.DisplayMember = "Name";
+        //    cb_Haendler.ValueMember = "[Haendler_Id]";
+
+        //    //Zuweisen der Datentabelle zur Datenquelle
+        //    cb_Haendler.DataSource = tblData;
+        //}
+
         private DataTable Db_Get_Table(string sqlInsert)
         {
             //Anzeigen von DAten
@@ -220,7 +260,8 @@ namespace Gartenausgaben
 
         private void BtnSave_Click(object sender, EventArgs e)
         {
-            //NeuenHaendlerHinzufügen();
+            position = 0;
+            Close();
         }
 
         private void BtnClose_Click(object sender, EventArgs e)
@@ -230,7 +271,7 @@ namespace Gartenausgaben
 
         private void btnNeuerHaendler_Click(object sender, EventArgs e)
         {
-            var neuerHaendler = new NeuerHaendlerPlus();
+            var neuerHaendler = new NeuerHaendler();
             neuerHaendler.FormClosed += new FormClosedEventHandler(f2_FormClosed);
             neuerHaendler.Show();
         }
@@ -253,6 +294,40 @@ namespace Gartenausgaben
             //    "VALUES ('" + name + "' , '" + strasse + "' , '" + plz + "' , '" + ort + "' , '" + telefon + "') ";
 
             // Insert Into EINKAUF
+        }
+
+        private void btnEintragen_Click(object sender, EventArgs e)
+        {
+            List<string[]> liste = new List<string[]>();
+
+            menge.Add(Convert.ToInt32(tb_Menge.Text));
+            artikel.Add(tb_Artikel.Text);
+            einzelpreis.Add(Convert.ToDecimal(tb_Einzelpreis.Text));
+            gesamtpreis.Add(Convert.ToDecimal(tb_GesamtBetrag.Text));
+            datum.Add(dateTimePickerDatum.Value);
+
+            lbListe.Items.Add(tb_Artikel.Text + " " + tb_Menge.Text + " " + tb_GesamtBetrag.Text);
+
+            if (!DbConnect.EqualsArtikel(tb_Artikel.Text))
+                DbConnect.SetNeuerArtikel(tb_Artikel.Text);
+
+            position++;
+
+            tb_Artikel.Clear();
+            tb_Einzelpreis.Clear();
+            tb_GesamtBetrag.Clear();
+            tb_Menge.Clear();
+
+
+        }
+
+        private void btnListView_Click(object sender, EventArgs e)
+        {
+            foreach (var item in artikel)
+            {
+                listView1.Items.Add(item);
+            }
+            listView1.Items.Add(position.ToString());
         }
     }
 }

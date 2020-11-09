@@ -23,6 +23,41 @@ namespace Gartenausgaben
             sql_conn.Close();
             return nResult;
         }
+        internal static bool EqualsArtikel(string artikel)
+        {
+            // Connection String aus der App.config 
+            string conn = Properties.Settings.Default.GartenProjekteConnectionString;
 
+            //Erstellt eine neue Verbindund zur übergebenen Datenbank
+            SqlConnection sql_con = new SqlConnection(conn);
+
+            //Abfrage-String für alle Namen aus der Händler Tabelle
+            string querySql = "SELECT Artikel_Id FROM Artikel Where ([Artikelbezeichnung] = @Artikelbezeichnung)";                 // '" + artikel + "'";
+
+            SqlCommand command = new SqlCommand(querySql, sql_con);
+
+            command.Parameters.AddWithValue("@Artikelbezeichnung", artikel);
+
+            SqlDataReader reader = command.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                reader.Close();
+                return true;
+            }
+                
+            else
+            {
+                reader.Close();
+                return false;
+            }
+        }
+        internal static void SetNeuerArtikel(string artikel)
+        {
+            //Abfrage-String um einen neuen Händler aus der TextBox zur Händler Tabelle hinzuzufügen
+            string sql_Insert = "INSERT INTO Artikel (Artikelbezeichnung) VALUES ('" + artikel + "') ";
+
+            Db_execute(sql_Insert);
+        }
     }
 }

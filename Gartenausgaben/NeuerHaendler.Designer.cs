@@ -1,6 +1,6 @@
 ﻿namespace Gartenausgaben
 {
-    partial class NeuerHaendlerPlus
+    partial class NeuerHaendler
     {
         /// <summary>
         /// Required designer variable.
