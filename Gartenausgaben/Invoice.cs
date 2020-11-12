@@ -29,12 +29,14 @@ namespace Gartenausgaben
         decimal artikelMenge;
         decimal gesamtBetrag;
         int position;
+        string conn = Properties.Settings.Default.GartenProjekteConnectionString; // Connection String aus der App.config 
 
         public Invoice()
         {
             InitializeComponent();
             SetMyCustomFormat();
             position = 1;
+            LadeStartDaten();
             
         }
         
@@ -136,8 +138,10 @@ namespace Gartenausgaben
             }
         }
 
-        //Sortierung nach Name ASC Default
-        public void LadeHaendler()
+        /// <summary>
+        /// Lädt beim Start alle verfügbaren Händler und Artikel. Sortierung ASC
+        /// </summary>
+        public void LadeStartDaten()
         {
             // Connection String aus der App.config 
             string conn = Properties.Settings.Default.GartenProjekteConnectionString;
@@ -146,7 +150,47 @@ namespace Gartenausgaben
             SqlConnection sql_con = new SqlConnection(conn);
 
             //Abfrage-String für alle Namen aus der Händler Tabelle
-            string querySql = "SELECT Name FROM Haendler ORDER BY Name ASC";
+            string querySql_Haendler = "SELECT Name FROM Haendler ORDER BY Name ASC";
+            string querySql_Artikel = "SELECT Artikelbezeichnung FROM Artikel ORDER BY Artikelbezeichnung ASC";
+
+            //Erstellt einen Adapter um die Daten aus der DB-Tabelle in eine Tabelle zu laden
+            SqlDataAdapter sql_adapt_Haendler = new SqlDataAdapter(querySql_Haendler, sql_con);
+            SqlDataAdapter sql_adapt_Artikel = new SqlDataAdapter(querySql_Artikel, sql_con);
+
+
+            //Erstellt eine neue Tabelle im Arbeitsspeicher
+            DataTable tblData_Haendler = new DataTable();
+            //Befüllt die DataTable
+            sql_adapt_Haendler.Fill(tblData_Haendler);
+
+            //Anzeige in der ComboBox alle Namen der vorhanden Ids
+            cb_Haendler.DisplayMember = "Name";
+            cb_Haendler.ValueMember = "[Haendler_Id]";
+
+            //Zuweisen der Datentabelle zur Datenquelle
+            cb_Haendler.DataSource = tblData_Haendler;
+
+
+            DataTable tblData_Artikel = new DataTable();
+            sql_adapt_Artikel.Fill(tblData_Artikel);
+
+            cb_Artikel.DisplayMember = "Artikelbezeichnung";
+            cb_Artikel.ValueMember = "[Artikel_Id]";
+            cb_Artikel.DataSource = tblData_Artikel;
+
+        }
+
+        /// <summary>
+        /// Lädt nach einem Update die neue Händlerliste. Hinzugefügter Händler steht oben
+        /// </summary>
+        /// <param name="sort"></param>
+        public void LadeHaendler(string sortierung)
+        {
+            //Erstellt eine neue Verbindund zur übergebenen Datenbank
+            SqlConnection sql_con = new SqlConnection(this.conn);
+
+            //Abfrage-String für alle Namen aus der Händler Tabelle
+            string querySql = "SELECT Name FROM Haendler ORDER BY " + sortierung + " DESC";
 
             //Erstellt einen Adapter um die Daten aus der DB-Tabelle in eine Tabelle zu laden
             SqlDataAdapter sql_adapt = new SqlDataAdapter(querySql, sql_con);
@@ -162,11 +206,10 @@ namespace Gartenausgaben
 
             //Zuweisen der Datentabelle zur Datenquelle
             cb_Haendler.DataSource = tblData;
-
         }
 
         //Sortierung nach ID Absteigend
-        public void LadeHaendler(string sort)
+        public void LadeArtikelNeu(string sort)
         {
             // Connection String aus der App.config 
             string conn = Properties.Settings.Default.GartenProjekteConnectionString;
@@ -175,87 +218,55 @@ namespace Gartenausgaben
             SqlConnection sql_con = new SqlConnection(conn);
 
             //Abfrage-String für alle Namen aus der Händler Tabelle
-            string querySql = "SELECT Name FROM Haendler ORDER BY " + sort + " DESC";
+            string querySql_Artikel = "SELECT Artikelbezeichnung FROM Artikel ORDER BY " + sort + " DESC";
 
             //Erstellt einen Adapter um die Daten aus der DB-Tabelle in eine Tabelle zu laden
-            SqlDataAdapter sql_adapt = new SqlDataAdapter(querySql, sql_con);
+            SqlDataAdapter sql_adapt_Artikel = new SqlDataAdapter(querySql_Artikel, sql_con);
 
-            //Erstellt eine neue Tabelle im Arbeitsspeicher
-            DataTable tblData = new DataTable();
-            //Befüllt die DataTable
-            sql_adapt.Fill(tblData);
+            DataTable tblData_Artikel = new DataTable();
+            sql_adapt_Artikel.Fill(tblData_Artikel);
 
-            //Anzeige in der ComboBox alle Namen der vorhanden Ids
-            cb_Haendler.DisplayMember = "Name";
-            cb_Haendler.ValueMember = "[Haendler_Id]";
-
-            //Zuweisen der Datentabelle zur Datenquelle
-            cb_Haendler.DataSource = tblData;
+            cb_Artikel.DisplayMember = "Artikelbezeichnung";
+            cb_Artikel.ValueMember = "[Artikel_Id]";
+            cb_Artikel.DataSource = tblData_Artikel;
         }
 
-        //public void LadeArtikel(string sort)
+        //private DataTable Db_Get_Table(string sqlInsert)
         //{
-        //    // Connection String aus der App.config 
+        //    //Anzeigen von DAten
+        //    //< init >
+        //    //via app-Setting
         //    string conn = Properties.Settings.Default.GartenProjekteConnectionString;
+        //    //</ init >
 
-        //    //Erstellt eine neue Verbindund zur übergebenen Datenbank
-        //    SqlConnection sql_con = new SqlConnection(conn);
+        //    SqlConnection sql_conn = new SqlConnection(conn);
+        //    if (sql_conn.State != ConnectionState.Open)
+        //        sql_conn.Open();
+        //    SqlDataAdapter sql_adapt = new SqlDataAdapter(sqlInsert, sql_conn);
 
-        //    //Abfrage-String für alle Namen aus der Händler Tabelle
-        //    string querySql = "SELECT Name FROM Haendler ORDER BY " + sort + " DESC";
-
-        //    //Erstellt einen Adapter um die Daten aus der DB-Tabelle in eine Tabelle zu laden
-        //    SqlDataAdapter sql_adapt = new SqlDataAdapter(querySql, sql_con);
-
-        //    //Erstellt eine neue Tabelle im Arbeitsspeicher
         //    DataTable tblData = new DataTable();
-        //    //Befüllt die DataTable
         //    sql_adapt.Fill(tblData);
+        //    sql_conn.Close();
 
-        //    //Anzeige in der ComboBox alle Namen der vorhanden Ids
-        //    cb_Haendler.DisplayMember = "Name";
-        //    cb_Haendler.ValueMember = "[Haendler_Id]";
-
-        //    //Zuweisen der Datentabelle zur Datenquelle
-        //    cb_Haendler.DataSource = tblData;
+        //    return tblData;
         //}
 
-        private DataTable Db_Get_Table(string sqlInsert)
-        {
-            //Anzeigen von DAten
-            //< init >
-            //via app-Setting
-            string conn = Properties.Settings.Default.GartenProjekteConnectionString;
-            //</ init >
+        //private int Db_execute(string sql_Insert)
+        //{
+        //    string conn = Properties.Settings.Default.GartenProjekteConnectionString;
 
-            SqlConnection sql_conn = new SqlConnection(conn);
-            if (sql_conn.State != ConnectionState.Open)
-                sql_conn.Open();
-            SqlDataAdapter sql_adapt = new SqlDataAdapter(sqlInsert, sql_conn);
+        //    SqlConnection sql_conn = new SqlConnection(conn);
+        //    if (sql_conn.State != ConnectionState.Open) sql_conn.Open();
+        //    SqlCommand sql_com = new SqlCommand(sql_Insert, sql_conn);
 
-            DataTable tblData = new DataTable();
-            sql_adapt.Fill(tblData);
-            sql_conn.Close();
-
-            return tblData;
-        }
-
-        private int Db_execute(string sql_Insert)
-        {
-            string conn = Properties.Settings.Default.GartenProjekteConnectionString;
-
-            SqlConnection sql_conn = new SqlConnection(conn);
-            if (sql_conn.State != ConnectionState.Open) sql_conn.Open();
-            SqlCommand sql_com = new SqlCommand(sql_Insert, sql_conn);
-
-            int nResult = sql_com.ExecuteNonQuery();
-            sql_conn.Close();
-            return nResult;
-        }
+        //    int nResult = sql_com.ExecuteNonQuery();
+        //    sql_conn.Close();
+        //    return nResult;
+        //}
 
         private void Invoice_Load(object sender, EventArgs e)
         {
-            LadeHaendler();
+            LadeStartDaten();
         }
 
         private void BtnSave_Click(object sender, EventArgs e)
@@ -283,7 +294,7 @@ namespace Gartenausgaben
 
         private void SetNeuerEinkauf()
         {
-            string artikel = tb_Artikel.Text;
+            string artikel = cb_Artikel.Text;
             string haendler = cb_Haendler.Text;
             string einzelpreis = tb_Einzelpreis.Text;
             string menge = tb_Menge.Text;
@@ -301,33 +312,28 @@ namespace Gartenausgaben
             List<string[]> liste = new List<string[]>();
 
             menge.Add(Convert.ToInt32(tb_Menge.Text));
-            artikel.Add(tb_Artikel.Text);
+            artikel.Add(cb_Artikel.Text);
             einzelpreis.Add(Convert.ToDecimal(tb_Einzelpreis.Text));
             gesamtpreis.Add(Convert.ToDecimal(tb_GesamtBetrag.Text));
             datum.Add(dateTimePickerDatum.Value);
 
-            lbListe.Items.Add(tb_Artikel.Text + " " + tb_Menge.Text + " " + tb_GesamtBetrag.Text);
-
-            if (!DbConnect.EqualsArtikel(tb_Artikel.Text))
-                DbConnect.SetNeuerArtikel(tb_Artikel.Text);
+            lbListe.Items.Add(cb_Artikel.Text + " " + tb_Menge.Text + " " + tb_GesamtBetrag.Text);
 
             position++;
 
-            tb_Artikel.Clear();
+            cb_Artikel.Text = "";
             tb_Einzelpreis.Clear();
             tb_GesamtBetrag.Clear();
             tb_Menge.Clear();
 
-
         }
 
-        private void btnListView_Click(object sender, EventArgs e)
+        private void btnNeuerArtikel_Click(object sender, EventArgs e)
         {
-            foreach (var item in artikel)
-            {
-                listView1.Items.Add(item);
-            }
-            listView1.Items.Add(position.ToString());
+            if (!DbConnect.EqualsArtikel(tb_NeuerArtikel.Text))
+                DbConnect.AddNeuerArtikel(tb_NeuerArtikel.Text, conn);
+            LadeArtikelNeu("Artikel_Id");
+            tb_NeuerArtikel.Clear();
         }
     }
 }

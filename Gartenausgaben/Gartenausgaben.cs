@@ -12,6 +12,7 @@ namespace Gartenausgaben
 {
     public partial class Gartenausgaben : Form
     {
+        
         public Gartenausgaben()
         {
             InitializeComponent();
@@ -20,7 +21,7 @@ namespace Gartenausgaben
         private void CmdLoadNewInvoice_Click(object sender, EventArgs e)
         {
             var invoice = new Invoice();
-            invoice.FormClosing += oldForm_FormClosing;
+            invoice.FormClosing += OldForm_FormClosing;
             Hide();
             invoice.Show(this);
         }
@@ -28,11 +29,11 @@ namespace Gartenausgaben
         private void CmdEvaluation_Click(object sender, EventArgs e)
         {
             var evaluation = new Evaluation();
-            evaluation.FormClosing += oldForm_FormClosing;
+            evaluation.FormClosing += OldForm_FormClosing;
             Hide();
             evaluation.Show();
         }
-        private void oldForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void OldForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             //MessageBox.Show("Wollen Sie das Fenster wirklich schließen");
             Show();

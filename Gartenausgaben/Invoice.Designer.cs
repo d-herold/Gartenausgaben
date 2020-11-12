@@ -38,7 +38,6 @@
             this.tb_Einzelpreis = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.tb_Artikel = new System.Windows.Forms.TextBox();
             this.BtnSave = new System.Windows.Forms.Button();
             this.dateTimePickerDatum = new System.Windows.Forms.DateTimePicker();
             this.BtnClose = new System.Windows.Forms.Button();
@@ -49,8 +48,11 @@
             this.btnNeuerHaendler = new System.Windows.Forms.Button();
             this.lbListe = new System.Windows.Forms.ListBox();
             this.btnEintragen = new System.Windows.Forms.Button();
-            this.listView1 = new System.Windows.Forms.ListView();
-            this.btnListView = new System.Windows.Forms.Button();
+            this.lbArtikel = new System.Windows.Forms.ListBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.tb_NeuerArtikel = new System.Windows.Forms.TextBox();
+            this.BtnNeuerArtikel = new System.Windows.Forms.Button();
+            this.cb_Artikel = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // tb_GesamtBetrag
@@ -148,14 +150,6 @@
             this.label7.TabIndex = 100;
             this.label7.Text = "Artikel";
             // 
-            // tb_Artikel
-            // 
-            this.tb_Artikel.Location = new System.Drawing.Point(41, 61);
-            this.tb_Artikel.Margin = new System.Windows.Forms.Padding(2);
-            this.tb_Artikel.Name = "tb_Artikel";
-            this.tb_Artikel.Size = new System.Drawing.Size(336, 20);
-            this.tb_Artikel.TabIndex = 1;
-            // 
             // BtnSave
             // 
             this.BtnSave.Location = new System.Drawing.Point(41, 503);
@@ -238,7 +232,7 @@
             // lbListe
             // 
             this.lbListe.FormattingEnabled = true;
-            this.lbListe.Location = new System.Drawing.Point(432, 61);
+            this.lbListe.Location = new System.Drawing.Point(862, 61);
             this.lbListe.Name = "lbListe";
             this.lbListe.Size = new System.Drawing.Size(238, 251);
             this.lbListe.TabIndex = 111;
@@ -253,32 +247,61 @@
             this.btnEintragen.UseVisualStyleBackColor = true;
             this.btnEintragen.Click += new System.EventHandler(this.btnEintragen_Click);
             // 
-            // listView1
+            // lbArtikel
             // 
-            this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(764, 61);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(226, 251);
-            this.listView1.TabIndex = 113;
-            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.lbArtikel.FormattingEnabled = true;
+            this.lbArtikel.Location = new System.Drawing.Point(1119, 61);
+            this.lbArtikel.Name = "lbArtikel";
+            this.lbArtikel.Size = new System.Drawing.Size(164, 251);
+            this.lbArtikel.TabIndex = 113;
             // 
-            // btnListView
+            // label8
             // 
-            this.btnListView.Location = new System.Drawing.Point(432, 397);
-            this.btnListView.Name = "btnListView";
-            this.btnListView.Size = new System.Drawing.Size(144, 23);
-            this.btnListView.TabIndex = 114;
-            this.btnListView.Text = "Eintragen";
-            this.btnListView.UseVisualStyleBackColor = true;
-            this.btnListView.Click += new System.EventHandler(this.btnListView_Click);
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(430, 45);
+            this.label8.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(68, 13);
+            this.label8.TabIndex = 115;
+            this.label8.Text = "Neuer Artikel";
+            // 
+            // tb_NeuerArtikel
+            // 
+            this.tb_NeuerArtikel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.tb_NeuerArtikel.Location = new System.Drawing.Point(433, 61);
+            this.tb_NeuerArtikel.Margin = new System.Windows.Forms.Padding(2);
+            this.tb_NeuerArtikel.Name = "tb_NeuerArtikel";
+            this.tb_NeuerArtikel.Size = new System.Drawing.Size(334, 20);
+            this.tb_NeuerArtikel.TabIndex = 117;
+            // 
+            // BtnNeuerArtikel
+            // 
+            this.BtnNeuerArtikel.Location = new System.Drawing.Point(772, 58);
+            this.BtnNeuerArtikel.Name = "BtnNeuerArtikel";
+            this.BtnNeuerArtikel.Size = new System.Drawing.Size(75, 23);
+            this.BtnNeuerArtikel.TabIndex = 118;
+            this.BtnNeuerArtikel.Text = "übernehmen";
+            this.BtnNeuerArtikel.UseVisualStyleBackColor = true;
+            this.BtnNeuerArtikel.Click += new System.EventHandler(this.btnNeuerArtikel_Click);
+            // 
+            // cb_Artikel
+            // 
+            this.cb_Artikel.FormattingEnabled = true;
+            this.cb_Artikel.Location = new System.Drawing.Point(41, 61);
+            this.cb_Artikel.Name = "cb_Artikel";
+            this.cb_Artikel.Size = new System.Drawing.Size(334, 21);
+            this.cb_Artikel.TabIndex = 119;
             // 
             // Invoice
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1143, 584);
-            this.Controls.Add(this.btnListView);
-            this.Controls.Add(this.listView1);
+            this.ClientSize = new System.Drawing.Size(1360, 671);
+            this.Controls.Add(this.cb_Artikel);
+            this.Controls.Add(this.BtnNeuerArtikel);
+            this.Controls.Add(this.tb_NeuerArtikel);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.lbArtikel);
             this.Controls.Add(this.btnEintragen);
             this.Controls.Add(this.lbListe);
             this.Controls.Add(this.btnNeuerHaendler);
@@ -289,7 +312,6 @@
             this.Controls.Add(this.BtnClose);
             this.Controls.Add(this.dateTimePickerDatum);
             this.Controls.Add(this.BtnSave);
-            this.Controls.Add(this.tb_Artikel);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.tb_Einzelpreis);
@@ -303,7 +325,6 @@
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Invoice";
             this.Text = "Gartenausgaben";
-            this.Load += new System.EventHandler(this.Invoice_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -321,7 +342,6 @@
         private System.Windows.Forms.TextBox tb_Einzelpreis;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox tb_Artikel;
         private System.Windows.Forms.Button BtnSave;
         private System.Windows.Forms.DateTimePicker dateTimePickerDatum;
         private System.Windows.Forms.Button BtnClose;
@@ -332,8 +352,11 @@
         private System.Windows.Forms.Button btnNeuerHaendler;
         private System.Windows.Forms.ListBox lbListe;
         private System.Windows.Forms.Button btnEintragen;
-        private System.Windows.Forms.ListView listView1;
-        private System.Windows.Forms.Button btnListView;
+        private System.Windows.Forms.ListBox lbArtikel;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox tb_NeuerArtikel;
+        private System.Windows.Forms.Button BtnNeuerArtikel;
+        private System.Windows.Forms.ComboBox cb_Artikel;
     }
 }
 

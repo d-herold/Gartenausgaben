@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,12 +30,13 @@ namespace Gartenausgaben
             string conn = Properties.Settings.Default.GartenProjekteConnectionString;
 
             //Erstellt eine neue Verbindund zur übergebenen Datenbank
-            SqlConnection sql_con = new SqlConnection(conn);
+            SqlConnection sql_conn = new SqlConnection(conn);
+            if (sql_conn.State != ConnectionState.Open) sql_conn.Open();
 
             //Abfrage-String für alle Namen aus der Händler Tabelle
             string querySql = "SELECT Artikel_Id FROM Artikel Where ([Artikelbezeichnung] = @Artikelbezeichnung)";                 // '" + artikel + "'";
 
-            SqlCommand command = new SqlCommand(querySql, sql_con);
+            SqlCommand command = new SqlCommand(querySql, sql_conn);
 
             command.Parameters.AddWithValue("@Artikelbezeichnung", artikel);
 
@@ -52,12 +54,30 @@ namespace Gartenausgaben
                 return false;
             }
         }
-        internal static void SetNeuerArtikel(string artikel)
+        internal static int AddNeuerArtikel(string newName, string connString)
         {
-            //Abfrage-String um einen neuen Händler aus der TextBox zur Händler Tabelle hinzuzufügen
-            string sql_Insert = "INSERT INTO Artikel (Artikelbezeichnung) VALUES ('" + artikel + "') ";
+            
+            int newArtikelID = 0;
+            string sql =
+                "INSERT INTO Artikel (Artikelbezeichnung) VALUES (@Artikelbezeichnung); "
+                + "SELECT CAST(scope_identity() AS int)";
 
-            Db_execute(sql_Insert);
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.Add("@Artikelbezeichnung", SqlDbType.VarChar);
+                cmd.Parameters["@Artikelbezeichnung"].Value = newName;
+                try
+                {
+                    conn.Open();
+                    newArtikelID = (int)cmd.ExecuteScalar();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            return newArtikelID;
         }
     }
 }
