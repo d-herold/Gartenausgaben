@@ -130,7 +130,7 @@ namespace Gartenausgaben
             
         }
 
-        private string tb_Einzelpreis_TextChanged(object sender, EventArgs e)
+        private void tb_Einzelpreis_TextChanged(object sender, EventArgs e)
         {
             if (cb_Haendler.Text != "" && cb_Artikel.Text != "")
             {
@@ -191,7 +191,6 @@ namespace Gartenausgaben
             {
                 CalculateAmount();
             }
-            return "";
         }
 
         /// <summary>
