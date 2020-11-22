@@ -132,6 +132,14 @@ namespace Gartenausgaben
 
         private void tb_Einzelpreis_TextChanged(object sender, EventArgs e)
         {
+            if (cb_Haendler.Text != "" && cb_Artikel.Text != "")
+            {
+                //--------------------------------------------------------------------------------------------------------------------------------
+            }
+
+
+
+
             if (tb_Menge != null)
             {
                 CalculateAmount();
@@ -152,12 +160,14 @@ namespace Gartenausgaben
             //Abfrage-String für alle Namen aus der Händler Tabelle
             string querySql_Haendler = "SELECT Name FROM Haendler ORDER BY Name ASC";
             string querySql_Artikel = "SELECT Artikelbezeichnung FROM Artikel ORDER BY Artikelbezeichnung ASC";
+            string querySql_Projekt = "SELECT Projektname FROM Projekt ORDER BY Projektname ASC";
 
             //Erstellt einen Adapter um die Daten aus der DB-Tabelle in eine Tabelle zu laden
             SqlDataAdapter sql_adapt_Haendler = new SqlDataAdapter(querySql_Haendler, sql_con);
             SqlDataAdapter sql_adapt_Artikel = new SqlDataAdapter(querySql_Artikel, sql_con);
+            SqlDataAdapter sql_adapt_Projekt = new SqlDataAdapter(querySql_Projekt, sql_con);
 
-
+            //Händlerliste laden
             //Erstellt eine neue Tabelle im Arbeitsspeicher
             DataTable tblData_Haendler = new DataTable();
             //Befüllt die DataTable
@@ -170,13 +180,21 @@ namespace Gartenausgaben
             //Zuweisen der Datentabelle zur Datenquelle
             cb_Haendler.DataSource = tblData_Haendler;
 
-
+            //Artikelliste laden
             DataTable tblData_Artikel = new DataTable();
             sql_adapt_Artikel.Fill(tblData_Artikel);
 
             cb_Artikel.DisplayMember = "Artikelbezeichnung";
             cb_Artikel.ValueMember = "[Artikel_Id]";
             cb_Artikel.DataSource = tblData_Artikel;
+
+            //Projektdaten laden
+            DataTable tblData_Projekt = new DataTable();
+            sql_adapt_Projekt.Fill(tblData_Projekt);
+
+            cb_Projekt.DisplayMember = "Projektname";
+            cb_Projekt.ValueMember = "[Projekt_Id]";
+            cb_Projekt.DataSource = tblData_Projekt;
 
         }
 
