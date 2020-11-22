@@ -130,11 +130,58 @@ namespace Gartenausgaben
             
         }
 
-        private void tb_Einzelpreis_TextChanged(object sender, EventArgs e)
+        private string tb_Einzelpreis_TextChanged(object sender, EventArgs e)
         {
             if (cb_Haendler.Text != "" && cb_Artikel.Text != "")
             {
-                //--------------------------------------------------------------------------------------------------------------------------------
+                //using (SqlConnection connection = new SqlConnection(ConnectionSting))
+                //{
+                //    connection.Open();
+
+                //    StringBuilder sb = new StringBuilder();
+                //    sb.AppendLine("INSERT INTO [Employees] ([LastName], [FirstName], [Sallary], [Birthday])"); "SELECT AP.ArtikelPreis FROM [Artikel_Preis] AS AP "
+                //    sb.AppendLine("OUTPUT INSERTED.ID");
+                //    sb.AppendLine("VALUES (@LastName, @FirstName, @Sallary, @Birthday)");
+
+                //    using (SqlCommand cmd = new SqlCommand(sb.ToString(), connection))
+                //    {
+                //        cmd.Parameters.AddWithValue("LastName", lastName);
+                //        cmd.Parameters.AddWithValue("FirstName", firstName ?? Convert.DBNull);
+                //        cmd.Parameters.AddWithValue("Sallary", sallary);
+                //        cmd.Parameters.AddWithValue("Birthday", birthday);
+
+                //        return cmd.ExecuteNonQuery();
+                //    }
+                //}
+
+
+
+
+
+
+                string conn = Properties.Settings.Default.GartenProjekteConnectionString;
+
+
+                using (SqlConnection sql_conn = new SqlConnection(conn))
+                {
+                    sql_conn.Open();
+
+                    string artikelPreis = "SELECT AP.ArtikelPreis FROM Artikel_Preis AS AP " +
+                        "INNER JOIN(SELECT B.ArtikelPreis, Max(B.Datum) As[MaxDat] FROM Artikel_Preis AS B GROUP BY B.ArtikelPreis) AS C ON AP.ArtikelPreis = C.ArtikelPreis AND AP.Datum = C.[MaxDat] " +
+                        "INNER JOIN Artikel A ON A.Artikel_Id = AP.Artikel_Id " +
+                        "INNER JOIN Haendler H ON H.Haendler_Id = AP.Haendler_Id" +
+                        "WHERE ";
+
+                    SqlCommand sql_command = new SqlCommand(artikelPreis, sql_conn);
+
+                    tb_Einzelpreis.Text = sql_command.CommandText;
+                    sql_conn.Close();
+
+
+                    //SqlDataAdapter sql_adapt_Haendler = new SqlDataAdapter(artikelPreis, sql_conn);
+                    //DataTable tblData_Einzelpreis = new DataTable();
+                    //sql_adapt_Haendler.Fill(tblData_Einzelpreis);
+                }
             }
 
 
@@ -144,6 +191,7 @@ namespace Gartenausgaben
             {
                 CalculateAmount();
             }
+            return "";
         }
 
         /// <summary>
@@ -195,6 +243,8 @@ namespace Gartenausgaben
             cb_Projekt.DisplayMember = "Projektname";
             cb_Projekt.ValueMember = "[Projekt_Id]";
             cb_Projekt.DataSource = tblData_Projekt;
+
+            sql_con.Close();
 
         }
 
