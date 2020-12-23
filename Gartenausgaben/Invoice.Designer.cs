@@ -110,6 +110,7 @@
             this.tb_Menge.Name = "tb_Menge";
             this.tb_Menge.Size = new System.Drawing.Size(144, 20);
             this.tb_Menge.TabIndex = 2;
+            this.tb_Menge.TextChanged += new System.EventHandler(this.tb_Menge_TextChanged);
             // 
             // label5
             // 
@@ -167,7 +168,7 @@
             this.dateTimePickerDatum.Margin = new System.Windows.Forms.Padding(2);
             this.dateTimePickerDatum.MinDate = new System.DateTime(2000, 1, 1, 0, 0, 0, 0);
             this.dateTimePickerDatum.Name = "dateTimePickerDatum";
-            this.dateTimePickerDatum.Size = new System.Drawing.Size(193, 20);
+            this.dateTimePickerDatum.Size = new System.Drawing.Size(223, 20);
             this.dateTimePickerDatum.TabIndex = 5;
             this.dateTimePickerDatum.Value = new System.DateTime(2020, 11, 9, 0, 0, 0, 0);
             // 
@@ -291,6 +292,7 @@
             this.cb_Artikel.Name = "cb_Artikel";
             this.cb_Artikel.Size = new System.Drawing.Size(334, 21);
             this.cb_Artikel.TabIndex = 119;
+            this.cb_Artikel.SelectedIndexChanged += new System.EventHandler(this.cb_Artikel_SelectedIndexChanged);
             // 
             // Invoice
             // 

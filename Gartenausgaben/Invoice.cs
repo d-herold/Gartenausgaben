@@ -45,7 +45,7 @@ namespace Gartenausgaben
             // Set the Format type and the CustomFormat string.
             dateTimePickerDatum.Value = DateTime.Now;
             dateTimePickerDatum.Format = DateTimePickerFormat.Custom;
-            dateTimePickerDatum.CustomFormat = "ddMMMM yyyy"; //MMMM dd, yyyy";
+            dateTimePickerDatum.CustomFormat = "dd. MMMM yyyy"; //MMMM dd, yyyy";
         }
 
         public decimal GetEinzelPreis
@@ -126,76 +126,6 @@ namespace Gartenausgaben
                     tb_GesamtBetrag.Text = "";
                     MessageBox.Show("Bitte geben sie eine Zahl ein!");
                 }  
-            }
-            
-        }
-
-        private void tb_Einzelpreis_TextChanged(object sender, EventArgs e)
-        {
-            var haendler = cb_Haendler.Text;
-            var artikel = cb_Artikel.Text;
-
-            if (cb_Haendler.Text != "" && cb_Artikel.Text != "")
-            {
-
-                tb_Einzelpreis.Text = "Hallo";
-                //using (SqlConnection connection = new SqlConnection(ConnectionSting))
-                //{
-                //    connection.Open();
-
-                //    StringBuilder sb = new StringBuilder();
-                //    sb.AppendLine("INSERT INTO [Employees] ([LastName], [FirstName], [Sallary], [Birthday])"); "SELECT AP.ArtikelPreis FROM [Artikel_Preis] AS AP "
-                //    sb.AppendLine("OUTPUT INSERTED.ID");
-                //    sb.AppendLine("VALUES (@LastName, @FirstName, @Sallary, @Birthday)");
-
-                //    using (SqlCommand cmd = new SqlCommand(sb.ToString(), connection))
-                //    {
-                //        cmd.Parameters.AddWithValue("LastName", lastName);
-                //        cmd.Parameters.AddWithValue("FirstName", firstName ?? Convert.DBNull);
-                //        cmd.Parameters.AddWithValue("Sallary", sallary);
-                //        cmd.Parameters.AddWithValue("Birthday", birthday);
-
-                //        return cmd.ExecuteNonQuery();
-                //    }
-                //}
-
-
-
-                //string conn = Properties.Settings.Default.GartenProjekteConnectionString;
-
-
-                //using (SqlConnection sql_conn = new SqlConnection(conn))
-                //{
-                //    sql_conn.Open();
-
-                //    string artikelPreis = "SELECT Artikelpreis FROM Artikel_Preis AP" +
-                //        "JOIN Artikel_Haendler AS AH ON AH.ArtikelHaendler_Id = AP.ArtikelHaendler_Id" +
-                //        "JOIN Artikel A ON A.Artikel_Id = AH.Artikel_Id" +
-                //        "JOIN Haendler H ON H.Haendler_Id = AH.Haendler_Id" +
-                //        "WHERE H.Haendler_Name = " + haendler + " AND A.Artikelbezeichnung = " + artikel + "";
-
-
-                //        //"SELECT AP.ArtikelPreis FROM Artikel_Preis AS AP " +
-                //        //"INNER JOIN(SELECT B.ArtikelPreis, Max(B.Datum) As[MaxDat] FROM Artikel_Preis AS B GROUP BY B.ArtikelPreis) AS C ON AP.ArtikelPreis = C.ArtikelPreis AND AP.Datum = C.[MaxDat] " +
-                //        //"INNER JOIN Artikel A ON A.Artikel_Id = AP.Artikel_Id " +
-                //        //"INNER JOIN Haendler H ON H.Haendler_Id = AP.Haendler_Id" +
-                //        //"WHERE ";
-
-                //    SqlCommand sql_command = new SqlCommand(artikelPreis, sql_conn);
-
-                //    tb_Einzelpreis.Text = sql_command.CommandText;
-                //    sql_conn.Close(); 
-
-
-                //SqlDataAdapter sql_adapt_Haendler = new SqlDataAdapter(artikelPreis, sql_conn);
-                //DataTable tblData_Einzelpreis = new DataTable();
-                //sql_adapt_Haendler.Fill(tblData_Einzelpreis);
-                //}
-            }
-
-            if (tb_Menge != null)
-            {
-                CalculateAmount();
             }
         }
 
@@ -407,6 +337,59 @@ namespace Gartenausgaben
                 DbConnect.AddNeuerArtikel(tb_NeuerArtikel.Text, conn);
             LadeArtikelNeu("Artikel_Id");
             tb_NeuerArtikel.Clear();
+        }
+        private void LadeEinzelpreis()
+        {
+            var haendler = cb_Haendler.Text;
+            var artikel = cb_Artikel.Text;
+
+            if (cb_Haendler.Text != "" && cb_Artikel.Text != "")
+            {
+                string conn = Properties.Settings.Default.GartenProjekteConnectionString;
+
+                using (SqlConnection sql_conn = new SqlConnection(conn))
+                {
+                    string artikelPreis = "SELECT Artikelpreis FROM Artikel_Preis " +
+                            "JOIN Artikel_Haendler ON Artikel_Haendler.ArtikelHaendler_Id = Artikel_Preis.ArtikelHaendler_Id " +
+                            "JOIN Artikel ON Artikel.Artikel_Id = Artikel_Haendler.Artikel_Id " +
+                            "JOIN Haendler ON Haendler.Haendler_Id = Artikel_Haendler.Haendler_Id " +
+                            "WHERE Haendler.Name = @Name AND Artikel.Artikelbezeichnung = @Artikelbezeichnung";
+
+
+                    SqlCommand sql_command = new SqlCommand(artikelPreis, sql_conn);
+                    // Setzten der Paramter für WHERE
+                    sql_command.Parameters.Add("@Name", SqlDbType.VarChar).Value = haendler;
+                    sql_command.Parameters.Add("@Artikelbezeichnung", SqlDbType.VarChar).Value = artikel;
+
+                    sql_conn.Open();
+                    
+                    if(sql_command.ExecuteScalar() != null)
+                        tb_Einzelpreis.Text = sql_command.ExecuteScalar().ToString();
+                    else
+                        tb_Einzelpreis.Text = "";
+                    
+                    sql_conn.Close();
+                }
+            }
+            if (tb_Menge != null)
+            {
+                CalculateAmount();
+            }
+        }
+
+        private void cb_Artikel_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LadeEinzelpreis();
+        }
+
+        private void tb_Einzelpreis_TextChanged(object sender, EventArgs e)
+        {
+            CalculateAmount();
+        }
+
+        private void tb_Menge_TextChanged(object sender, EventArgs e)
+        {
+            CalculateAmount();
         }
     }
 }
