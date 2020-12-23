@@ -132,8 +132,13 @@ namespace Gartenausgaben
 
         private void tb_Einzelpreis_TextChanged(object sender, EventArgs e)
         {
+            var haendler = cb_Haendler.Text;
+            var artikel = cb_Artikel.Text;
+
             if (cb_Haendler.Text != "" && cb_Artikel.Text != "")
             {
+
+                tb_Einzelpreis.Text = "Hallo";
                 //using (SqlConnection connection = new SqlConnection(ConnectionSting))
                 //{
                 //    connection.Open();
@@ -156,36 +161,37 @@ namespace Gartenausgaben
 
 
 
+                //string conn = Properties.Settings.Default.GartenProjekteConnectionString;
 
 
+                //using (SqlConnection sql_conn = new SqlConnection(conn))
+                //{
+                //    sql_conn.Open();
 
-                string conn = Properties.Settings.Default.GartenProjekteConnectionString;
-
-
-                using (SqlConnection sql_conn = new SqlConnection(conn))
-                {
-                    sql_conn.Open();
-
-                    string artikelPreis = "SELECT AP.ArtikelPreis FROM Artikel_Preis AS AP " +
-                        "INNER JOIN(SELECT B.ArtikelPreis, Max(B.Datum) As[MaxDat] FROM Artikel_Preis AS B GROUP BY B.ArtikelPreis) AS C ON AP.ArtikelPreis = C.ArtikelPreis AND AP.Datum = C.[MaxDat] " +
-                        "INNER JOIN Artikel A ON A.Artikel_Id = AP.Artikel_Id " +
-                        "INNER JOIN Haendler H ON H.Haendler_Id = AP.Haendler_Id" +
-                        "WHERE ";
-
-                    SqlCommand sql_command = new SqlCommand(artikelPreis, sql_conn);
-
-                    tb_Einzelpreis.Text = sql_command.CommandText;
-                    sql_conn.Close();
+                //    string artikelPreis = "SELECT Artikelpreis FROM Artikel_Preis AP" +
+                //        "JOIN Artikel_Haendler AS AH ON AH.ArtikelHaendler_Id = AP.ArtikelHaendler_Id" +
+                //        "JOIN Artikel A ON A.Artikel_Id = AH.Artikel_Id" +
+                //        "JOIN Haendler H ON H.Haendler_Id = AH.Haendler_Id" +
+                //        "WHERE H.Haendler_Name = " + haendler + " AND A.Artikelbezeichnung = " + artikel + "";
 
 
-                    //SqlDataAdapter sql_adapt_Haendler = new SqlDataAdapter(artikelPreis, sql_conn);
-                    //DataTable tblData_Einzelpreis = new DataTable();
-                    //sql_adapt_Haendler.Fill(tblData_Einzelpreis);
-                }
+                //        //"SELECT AP.ArtikelPreis FROM Artikel_Preis AS AP " +
+                //        //"INNER JOIN(SELECT B.ArtikelPreis, Max(B.Datum) As[MaxDat] FROM Artikel_Preis AS B GROUP BY B.ArtikelPreis) AS C ON AP.ArtikelPreis = C.ArtikelPreis AND AP.Datum = C.[MaxDat] " +
+                //        //"INNER JOIN Artikel A ON A.Artikel_Id = AP.Artikel_Id " +
+                //        //"INNER JOIN Haendler H ON H.Haendler_Id = AP.Haendler_Id" +
+                //        //"WHERE ";
+
+                //    SqlCommand sql_command = new SqlCommand(artikelPreis, sql_conn);
+
+                //    tb_Einzelpreis.Text = sql_command.CommandText;
+                //    sql_conn.Close(); 
+
+
+                //SqlDataAdapter sql_adapt_Haendler = new SqlDataAdapter(artikelPreis, sql_conn);
+                //DataTable tblData_Einzelpreis = new DataTable();
+                //sql_adapt_Haendler.Fill(tblData_Einzelpreis);
+                //}
             }
-
-
-
 
             if (tb_Menge != null)
             {
