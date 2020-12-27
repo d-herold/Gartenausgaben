@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="Baumarkt.cs" />
     <Compile Include="DbConnect.cs" />
+    <Compile Include="Einkauf.cs" />
     <Compile Include="Evaluation.cs">
       <SubType>Form</SubType>
     </Compile>

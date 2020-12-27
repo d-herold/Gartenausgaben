@@ -34,7 +34,7 @@ namespace Gartenausgaben
             if (sql_conn.State != ConnectionState.Open) sql_conn.Open();
 
             //Abfrage-String für alle Namen aus der Händler Tabelle
-            string querySql = "SELECT Artikel_Id FROM Artikel Where ([Artikelbezeichnung] = @Artikelbezeichnung)";                 // '" + artikel + "'";
+            string querySql = "SELECT Artikel_ID FROM Artikel Where ([Artikelbezeichnung] = @Artikelbezeichnung)";                 // '" + artikel + "'";
 
             SqlCommand command = new SqlCommand(querySql, sql_conn);
 
