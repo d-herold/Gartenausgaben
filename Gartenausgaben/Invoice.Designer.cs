@@ -33,9 +33,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.tb_Menge = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.tb_Einzelpreis = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.BtnSave = new System.Windows.Forms.Button();
@@ -43,16 +41,22 @@
             this.BtnClose = new System.Windows.Forms.Button();
             this.cb_Projekt = new System.Windows.Forms.ComboBox();
             this.cb_Haendler = new System.Windows.Forms.ComboBox();
-            this.txbNeuerHaendler = new System.Windows.Forms.TextBox();
-            this.lblNeuerHaendler = new System.Windows.Forms.Label();
             this.btnNeuerHaendler = new System.Windows.Forms.Button();
-            this.lbListe = new System.Windows.Forms.ListBox();
             this.btnEintragen = new System.Windows.Forms.Button();
-            this.lbArtikel = new System.Windows.Forms.ListBox();
             this.label8 = new System.Windows.Forms.Label();
             this.tb_NeuerArtikel = new System.Windows.Forms.TextBox();
             this.BtnNeuerArtikel = new System.Windows.Forms.Button();
             this.cb_Artikel = new System.Windows.Forms.ComboBox();
+            this.dataGridView_Einkauf = new System.Windows.Forms.DataGridView();
+            this.label9 = new System.Windows.Forms.Label();
+            this.lbl_Datum = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.lbl_Haendler = new System.Windows.Forms.Label();
+            this.numericUpDown_Menge = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDown_Einzelpreis = new System.Windows.Forms.NumericUpDown();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView_Einkauf)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Menge)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Einzelpreis)).BeginInit();
             this.SuspendLayout();
             // 
             // tb_GesamtBetrag
@@ -60,6 +64,7 @@
             this.tb_GesamtBetrag.Location = new System.Drawing.Point(40, 390);
             this.tb_GesamtBetrag.Margin = new System.Windows.Forms.Padding(2);
             this.tb_GesamtBetrag.Name = "tb_GesamtBetrag";
+            this.tb_GesamtBetrag.ReadOnly = true;
             this.tb_GesamtBetrag.Size = new System.Drawing.Size(144, 20);
             this.tb_GesamtBetrag.TabIndex = 4;
             // 
@@ -103,15 +108,6 @@
             this.label4.TabIndex = 105;
             this.label4.Text = "Projekt";
             // 
-            // tb_Menge
-            // 
-            this.tb_Menge.Location = new System.Drawing.Point(40, 330);
-            this.tb_Menge.Margin = new System.Windows.Forms.Padding(2);
-            this.tb_Menge.Name = "tb_Menge";
-            this.tb_Menge.Size = new System.Drawing.Size(144, 20);
-            this.tb_Menge.TabIndex = 2;
-            this.tb_Menge.TextChanged += new System.EventHandler(this.tb_Menge_TextChanged);
-            // 
             // label5
             // 
             this.label5.AutoSize = true;
@@ -121,15 +117,6 @@
             this.label5.Size = new System.Drawing.Size(57, 13);
             this.label5.TabIndex = 102;
             this.label5.Text = "Einzelpreis";
-            // 
-            // tb_Einzelpreis
-            // 
-            this.tb_Einzelpreis.Location = new System.Drawing.Point(230, 330);
-            this.tb_Einzelpreis.Margin = new System.Windows.Forms.Padding(2);
-            this.tb_Einzelpreis.Name = "tb_Einzelpreis";
-            this.tb_Einzelpreis.Size = new System.Drawing.Size(144, 20);
-            this.tb_Einzelpreis.TabIndex = 3;
-            this.tb_Einzelpreis.TextChanged += new System.EventHandler(this.tb_Einzelpreis_TextChanged);
             // 
             // label6
             // 
@@ -200,24 +187,7 @@
             this.cb_Haendler.Name = "cb_Haendler";
             this.cb_Haendler.Size = new System.Drawing.Size(144, 21);
             this.cb_Haendler.TabIndex = 7;
-            // 
-            // txbNeuerHaendler
-            // 
-            this.txbNeuerHaendler.Location = new System.Drawing.Point(406, 167);
-            this.txbNeuerHaendler.Margin = new System.Windows.Forms.Padding(2);
-            this.txbNeuerHaendler.Name = "txbNeuerHaendler";
-            this.txbNeuerHaendler.Size = new System.Drawing.Size(144, 20);
-            this.txbNeuerHaendler.TabIndex = 107;
-            // 
-            // lblNeuerHaendler
-            // 
-            this.lblNeuerHaendler.AutoSize = true;
-            this.lblNeuerHaendler.Location = new System.Drawing.Point(403, 151);
-            this.lblNeuerHaendler.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblNeuerHaendler.Name = "lblNeuerHaendler";
-            this.lblNeuerHaendler.Size = new System.Drawing.Size(76, 13);
-            this.lblNeuerHaendler.TabIndex = 108;
-            this.lblNeuerHaendler.Text = "Neuer Händler";
+            this.cb_Haendler.SelectedIndexChanged += new System.EventHandler(this.cb_Haendler_SelectedIndexChanged);
             // 
             // btnNeuerHaendler
             // 
@@ -230,14 +200,6 @@
             this.btnNeuerHaendler.UseVisualStyleBackColor = true;
             this.btnNeuerHaendler.Click += new System.EventHandler(this.btnNeuerHaendler_Click);
             // 
-            // lbListe
-            // 
-            this.lbListe.FormattingEnabled = true;
-            this.lbListe.Location = new System.Drawing.Point(862, 61);
-            this.lbListe.Name = "lbListe";
-            this.lbListe.Size = new System.Drawing.Size(238, 251);
-            this.lbListe.TabIndex = 111;
-            // 
             // btnEintragen
             // 
             this.btnEintragen.Location = new System.Drawing.Point(40, 475);
@@ -248,18 +210,10 @@
             this.btnEintragen.UseVisualStyleBackColor = true;
             this.btnEintragen.Click += new System.EventHandler(this.btnEintragen_Click);
             // 
-            // lbArtikel
-            // 
-            this.lbArtikel.FormattingEnabled = true;
-            this.lbArtikel.Location = new System.Drawing.Point(1119, 61);
-            this.lbArtikel.Name = "lbArtikel";
-            this.lbArtikel.Size = new System.Drawing.Size(164, 251);
-            this.lbArtikel.TabIndex = 113;
-            // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(403, 261);
+            this.label8.Location = new System.Drawing.Point(38, 94);
             this.label8.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(68, 13);
@@ -269,7 +223,7 @@
             // tb_NeuerArtikel
             // 
             this.tb_NeuerArtikel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.tb_NeuerArtikel.Location = new System.Drawing.Point(406, 278);
+            this.tb_NeuerArtikel.Location = new System.Drawing.Point(40, 109);
             this.tb_NeuerArtikel.Margin = new System.Windows.Forms.Padding(2);
             this.tb_NeuerArtikel.Name = "tb_NeuerArtikel";
             this.tb_NeuerArtikel.Size = new System.Drawing.Size(334, 20);
@@ -277,7 +231,7 @@
             // 
             // BtnNeuerArtikel
             // 
-            this.BtnNeuerArtikel.Location = new System.Drawing.Point(781, 61);
+            this.BtnNeuerArtikel.Location = new System.Drawing.Point(301, 81);
             this.BtnNeuerArtikel.Name = "BtnNeuerArtikel";
             this.BtnNeuerArtikel.Size = new System.Drawing.Size(75, 23);
             this.BtnNeuerArtikel.TabIndex = 118;
@@ -294,21 +248,95 @@
             this.cb_Artikel.TabIndex = 119;
             this.cb_Artikel.SelectedIndexChanged += new System.EventHandler(this.cb_Artikel_SelectedIndexChanged);
             // 
+            // dataGridView_Einkauf
+            // 
+            this.dataGridView_Einkauf.AllowUserToAddRows = false;
+            this.dataGridView_Einkauf.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView_Einkauf.Location = new System.Drawing.Point(458, 106);
+            this.dataGridView_Einkauf.Name = "dataGridView_Einkauf";
+            this.dataGridView_Einkauf.Size = new System.Drawing.Size(666, 150);
+            this.dataGridView_Einkauf.TabIndex = 120;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(455, 79);
+            this.label9.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(130, 24);
+            this.label9.TabIndex = 123;
+            this.label9.Text = "Einkauf vom:";
+            // 
+            // lbl_Datum
+            // 
+            this.lbl_Datum.AutoSize = true;
+            this.lbl_Datum.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_Datum.Location = new System.Drawing.Point(589, 78);
+            this.lbl_Datum.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lbl_Datum.Name = "lbl_Datum";
+            this.lbl_Datum.Size = new System.Drawing.Size(24, 24);
+            this.lbl_Datum.TabIndex = 124;
+            this.lbl_Datum.Text = "N";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.Location = new System.Drawing.Point(858, 78);
+            this.label11.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(146, 24);
+            this.label11.TabIndex = 125;
+            this.label11.Text = "Markt/Händler:";
+            // 
+            // lbl_Haendler
+            // 
+            this.lbl_Haendler.AutoSize = true;
+            this.lbl_Haendler.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_Haendler.Location = new System.Drawing.Point(1020, 78);
+            this.lbl_Haendler.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lbl_Haendler.Name = "lbl_Haendler";
+            this.lbl_Haendler.Size = new System.Drawing.Size(24, 24);
+            this.lbl_Haendler.TabIndex = 126;
+            this.lbl_Haendler.Text = "N";
+            // 
+            // numericUpDown_Menge
+            // 
+            this.numericUpDown_Menge.Location = new System.Drawing.Point(41, 331);
+            this.numericUpDown_Menge.Name = "numericUpDown_Menge";
+            this.numericUpDown_Menge.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDown_Menge.TabIndex = 127;
+            this.numericUpDown_Menge.ValueChanged += new System.EventHandler(this.numericUpDown_Menge_ValueChanged);
+            // 
+            // numericUpDown_Einzelpreis
+            // 
+            this.numericUpDown_Einzelpreis.DecimalPlaces = 2;
+            this.numericUpDown_Einzelpreis.Location = new System.Drawing.Point(230, 331);
+            this.numericUpDown_Einzelpreis.Name = "numericUpDown_Einzelpreis";
+            this.numericUpDown_Einzelpreis.Size = new System.Drawing.Size(109, 20);
+            this.numericUpDown_Einzelpreis.TabIndex = 128;
+            this.numericUpDown_Einzelpreis.ValueChanged += new System.EventHandler(this.numericUpDown_Einzelpreis_ValueChanged);
+            // 
             // Invoice
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1360, 671);
+            this.AutoSize = true;
+            this.ClientSize = new System.Drawing.Size(1169, 671);
+            this.Controls.Add(this.numericUpDown_Einzelpreis);
+            this.Controls.Add(this.numericUpDown_Menge);
+            this.Controls.Add(this.lbl_Haendler);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.lbl_Datum);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.dataGridView_Einkauf);
             this.Controls.Add(this.cb_Artikel);
             this.Controls.Add(this.BtnNeuerArtikel);
             this.Controls.Add(this.tb_NeuerArtikel);
             this.Controls.Add(this.label8);
-            this.Controls.Add(this.lbArtikel);
             this.Controls.Add(this.btnEintragen);
-            this.Controls.Add(this.lbListe);
             this.Controls.Add(this.btnNeuerHaendler);
-            this.Controls.Add(this.lblNeuerHaendler);
-            this.Controls.Add(this.txbNeuerHaendler);
             this.Controls.Add(this.cb_Haendler);
             this.Controls.Add(this.cb_Projekt);
             this.Controls.Add(this.BtnClose);
@@ -316,17 +344,19 @@
             this.Controls.Add(this.BtnSave);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.tb_Einzelpreis);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.tb_Menge);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.tb_GesamtBetrag);
             this.Margin = new System.Windows.Forms.Padding(2);
+            this.MaximizeBox = false;
             this.Name = "Invoice";
             this.Text = "Gartenausgaben";
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView_Einkauf)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Menge)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Einzelpreis)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -339,9 +369,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox tb_Menge;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox tb_Einzelpreis;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button BtnSave;
@@ -349,16 +377,19 @@
         private System.Windows.Forms.Button BtnClose;
         private System.Windows.Forms.ComboBox cb_Projekt;
         private System.Windows.Forms.ComboBox cb_Haendler;
-        private System.Windows.Forms.TextBox txbNeuerHaendler;
-        private System.Windows.Forms.Label lblNeuerHaendler;
         private System.Windows.Forms.Button btnNeuerHaendler;
-        private System.Windows.Forms.ListBox lbListe;
         private System.Windows.Forms.Button btnEintragen;
-        private System.Windows.Forms.ListBox lbArtikel;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox tb_NeuerArtikel;
         private System.Windows.Forms.Button BtnNeuerArtikel;
         private System.Windows.Forms.ComboBox cb_Artikel;
+        private System.Windows.Forms.DataGridView dataGridView_Einkauf;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label lbl_Datum;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label lbl_Haendler;
+        private System.Windows.Forms.NumericUpDown numericUpDown_Menge;
+        private System.Windows.Forms.NumericUpDown numericUpDown_Einzelpreis;
     }
 }
 

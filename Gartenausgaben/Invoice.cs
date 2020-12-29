@@ -13,19 +13,12 @@ using System.Threading.Tasks;
 using Microsoft.SqlServer.Server;
 using System.Windows.Forms;
 using System.Threading;
+using System.Text.RegularExpressions;
 
 namespace Gartenausgaben
 {
     public partial class Invoice : Form
     {
-        
-        //List<string> artikel = new List<string>();
-        //List<string> projekt = new List<string>();
-        //List<string> haendler = new List<string>();
-        //List<int> menge = new List<int>();
-        //List<decimal> einzelpreis = new List<decimal>();
-        //List<decimal> gesamtpreis = new List<decimal>();
-        ////List<DateTime> datum = new List<DateTime>();
         decimal einzelPreis;
         decimal artikelMenge;
         decimal gesamtBetrag;
@@ -33,7 +26,9 @@ namespace Gartenausgaben
         DataTable einkauf;
         DataColumn column;
         DataRow row;
-        
+        int positionDataGridView = 1;
+        decimal x = 0.00m;
+
 
         public Invoice()
         {
@@ -41,6 +36,7 @@ namespace Gartenausgaben
             SetMyCustomFormat();
             LadeStartDaten();
             ErstelleDataTable();
+            SetDataGrid_Tabelle();
         }
         
         public void ErstelleDataTable()
@@ -79,7 +75,7 @@ namespace Gartenausgaben
 
             var dataset = new DataSet();
             dataset.Tables.Add(einkauf);
-        }
+        }        
 
         public void SetMyCustomFormat()
         {
@@ -97,11 +93,11 @@ namespace Gartenausgaben
             }
             set 
             {
-                this.einzelPreis = Convert.ToDecimal(tb_Einzelpreis.Text);
+                this.einzelPreis = numericUpDown_Einzelpreis.Value;
                 einzelPreis = value; 
             }
         }
-
+                                                                                                                
         public decimal GetMenge
         {
             get
@@ -110,7 +106,7 @@ namespace Gartenausgaben
             }
             set
             {
-                artikelMenge = Convert.ToDecimal(tb_Menge.Text);
+                artikelMenge = numericUpDown_Menge.Value;
 
             }
         }
@@ -128,49 +124,12 @@ namespace Gartenausgaben
             }
         }
 
-        //private void CalculateQuantity()
-        //{
-        //    if (tb_GesamtBetrag.Text != "")
-        //    {
-        //        try
-        //        {
-        //            menge = Double.Parse(tb_GesamtBetrag.Text) / Double.Parse(tb_Einzelpreis.Text);
-        //            tb_Menge.Text = menge.ToString();
-        //        }
-        //        catch
-        //        {
-        //            if (tb_GesamtBetrag.Text == "")
-        //                tb_Menge.Text = "";
-        //            else
-        //            {
-        //                tb_Menge.Text = "";
-        //                MessageBox.Show("Bitte geben sie eine Zahl ein!");
-        //            }
-        //        }
-        //    }
-        //}
-
         private void CalculateAmount()
         {
-            if (tb_Menge.Text != "")
-                try
-                {
-                    gesamtBetrag = Decimal.Parse(tb_Menge.Text) * Decimal.Parse(tb_Einzelpreis.Text);
-                    tb_GesamtBetrag.Text = gesamtBetrag.ToString("0.00");
-                }
-                catch
-                {
-                    if (tb_Einzelpreis.Text == "")
-                        tb_GesamtBetrag.Text = "";
-                    else
-                    {
-                        tb_GesamtBetrag.Text = "";
-                        MessageBox.Show("Bitte geben sie eine Zahl ein!");
+            gesamtBetrag = numericUpDown_Einzelpreis.Value * numericUpDown_Menge.Value;
 
-                    }
-                }
-            else
-                tb_GesamtBetrag.Text = "";
+            tb_GesamtBetrag.Text = gesamtBetrag.ToString("0.00");
+
         }
 
         /// <summary>
@@ -225,7 +184,6 @@ namespace Gartenausgaben
             cb_Projekt.DataSource = tblData_Projekt;
 
             sql_con.Close();
-
         }
 
         /// <summary>
@@ -256,7 +214,10 @@ namespace Gartenausgaben
             cb_Haendler.DataSource = tblData;
         }
 
-        //Sortierung nach ID Absteigend
+        /// <summary>
+        /// Sortierung nach ID Absteigend
+        /// </summary>
+        /// <param name="sort"></param>
         public void LadeArtikelNeu(string sort)
         {
             // Connection String aus der App.config 
@@ -319,9 +280,35 @@ namespace Gartenausgaben
 
         private void BtnSave_Click(object sender, EventArgs e)
         {
-            new Invoice();
-            lbListe.Items.Clear();
-            LadeStartDaten();
+            //Erstelle DataTable
+            var einkauf2 = new DataTable();
+
+            //Hinzufügen der Spalten
+            foreach (DataGridViewColumn column in dataGridView_Einkauf.Columns)
+            {
+                einkauf2.Columns.Add(column.HeaderText, column.ValueType);
+            }
+
+            //Löschen der Summenzeile
+            var s = dataGridView_Einkauf.Rows.Count;
+            if (s > 1)
+            {
+                dataGridView_Einkauf.Rows.Remove(dataGridView_Einkauf.Rows[s - 1]);
+            }
+
+            //Hinzufügen der Zeilen
+            foreach (DataGridViewRow row in dataGridView_Einkauf.Rows)
+            {
+                einkauf2.Rows.Add();
+                foreach (DataGridViewCell cell in row.Cells)
+                {
+                    einkauf2.Rows[einkauf2.Rows.Count - 1][cell.ColumnIndex] = cell.Value.ToString();
+                }
+            }
+
+
+            //new Invoice();
+            //LadeStartDaten();
         }
 
         private void BtnClose_Click(object sender, EventArgs e)
@@ -341,49 +328,114 @@ namespace Gartenausgaben
             this.LadeHaendler("Haendler_Id");
         }
 
-        private void SetNeuerEinkauf()
-        {
-            string artikel = cb_Artikel.Text;
-            string haendler = cb_Haendler.Text;
-            string einzelpreis = tb_Einzelpreis.Text;
-            string menge = tb_Menge.Text;
-            string gesamtpreis = tb_GesamtBetrag.Text;
-
-            //Abfrage-String um einen neuen Händler aus der TextBox zur Händler Tabelle hinzuzufügen
-            //string sql_Insert = "INSERT INTO Haendler (Name , Anschrift , PLZ , Ort , Telefon ) " +
-            //    "VALUES ('" + name + "' , '" + strasse + "' , '" + plz + "' , '" + ort + "' , '" + telefon + "') ";
-
-            // Insert Into EINKAUF
-        }
-
         private void btnEintragen_Click(object sender, EventArgs e)
         {
+            if(numericUpDown_Einzelpreis.Value != 0 && numericUpDown_Menge.Value != 0 && cb_Artikel.Text != "")
+            {
+                //row = einkauf.NewRow();
+                //row["Haendler"] = cb_Haendler.Text;
+                //row["Datum"] = dateTimePickerDatum.Value;
+                //row["Artikel"] = cb_Artikel.Text;
+                //row["Menge"] = numericUpDown_Menge.Value;
+                //row["Einzelpreis"] = Convert.ToDecimal(tb_Einzelpreis.Text);
+                //row["Projekt"] = cb_Projekt.Text;
 
-            //List<string[]> liste = new List<string[]>();
+                lbl_Datum.Text = dateTimePickerDatum.Value.ToString("dd. MMMM yyyy");
+                lbl_Haendler.Text = cb_Haendler.Text;
 
-            //menge.Add(Convert.ToInt32(tb_Menge.Text));
-            //artikel.Add(cb_Artikel.Text);
-            //einzelpreis.Add(Convert.ToDecimal(tb_Einzelpreis.Text));
-            //gesamtpreis.Add(Convert.ToDecimal(tb_GesamtBetrag.Text));
-            //datum.Add(dateTimePickerDatum.Value);
+                var s = dataGridView_Einkauf.Rows.Count;
+                if (s > 1)
+                {
+                    dataGridView_Einkauf.Rows.Remove(dataGridView_Einkauf.Rows[s - 1]);
+                }
 
-            row = einkauf.NewRow();
-            row["Haendler"] = cb_Haendler.Text;
-            row["Datum"] = dateTimePickerDatum.Value;
-            row["Artikel"] = cb_Artikel.Text;
-            row["Menge"] = Convert.ToInt32(tb_Menge.Text);
-            row["Einzelpreis"] = Convert.ToDecimal(tb_Einzelpreis.Text);
-            row["Projekt"] = cb_Projekt.Text;
-            einkauf.Rows.Add(row);
+                dataGridView_Einkauf.Rows.Add(positionDataGridView, numericUpDown_Menge.Value + "x", cb_Artikel.Text, numericUpDown_Einzelpreis.Value + " €", tb_GesamtBetrag.Text + " €", cb_Projekt.Text);
+
+                //Summe aller Gesamtpreise - Zur Kontrolle des Kassenbons
+                if (s > 1)
+                {
+                    x = 0;
+
+                    for (int i = 0; i < s; i++)
+                    {
+                        try
+                        {
+                            x += Convert.ToDecimal(dataGridView_Einkauf.Rows[i].Cells["Gesamtpreis"].Value.ToString().
+                                Remove(dataGridView_Einkauf.Rows[i].Cells["Gesamtpreis"].Value.ToString().Length - 2));
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Bitte überprüfen Sie Ihre Eingaben. Die Felder Menge und Einzelpreis müssen ausgefüllt sein", "Achtung", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                }
+                else
+                    x = Convert.ToDecimal(tb_GesamtBetrag.Text);
+
+                dataGridView_Einkauf.Rows.Add("Summe", "", "", "", x + " €");
+
+                //letzte Zeile Fett darstellen
+                s = dataGridView_Einkauf.Rows.Count;
+                if (s < 2)
+                    dataGridView_Einkauf.Rows[s - 1].DefaultCellStyle.Font = new Font(DataGridView.DefaultFont, FontStyle.Bold);
+                else
+                    dataGridView_Einkauf.Rows[s - 1].DefaultCellStyle.Font = new Font(DataGridView.DefaultFont, FontStyle.Bold);
+
+                //Hochzählen der Positionen
+                positionDataGridView++;
+
+                cb_Artikel.Text = "";
+                numericUpDown_Einzelpreis.Value = 0;
+                tb_GesamtBetrag.Clear();
+                numericUpDown_Menge.Value = 0;
+            }
+            else
+            {
+                MessageBox.Show("Bitte überprüfen Sie Ihre Eingaben. Die Felder Menge, Einzelpreis und Artikel müssen ausgefüllt sein", "Achtung", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private void SetDataGrid_Tabelle()
+        {
+            dataGridView_Einkauf.ColumnCount = 6;
+
+            dataGridView_Einkauf.ColumnHeadersDefaultCellStyle.BackColor = Color.Navy;
+            dataGridView_Einkauf.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dataGridView_Einkauf.ColumnHeadersDefaultCellStyle.Font =
+                new Font(dataGridView_Einkauf.Font, FontStyle.Bold);
+
+            dataGridView_Einkauf.Name = "dataGridView_Einkauf";
+            dataGridView_Einkauf.AutoSizeRowsMode =
+                DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
+            dataGridView_Einkauf.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            dataGridView_Einkauf.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridView_Einkauf.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            dataGridView_Einkauf.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridView_Einkauf.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            dataGridView_Einkauf.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            dataGridView_Einkauf.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            dataGridView_Einkauf.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            dataGridView_Einkauf.Columns[2].Width = 200;
+            dataGridView_Einkauf.Columns[5].Width = 120;
 
 
+            dataGridView_Einkauf.ColumnHeadersBorderStyle =
+                DataGridViewHeaderBorderStyle.Single;
+            dataGridView_Einkauf.CellBorderStyle = DataGridViewCellBorderStyle.Single;
+            dataGridView_Einkauf.GridColor = Color.Black;
+            dataGridView_Einkauf.RowHeadersVisible = false;
 
-            lbListe.Items.Add(cb_Artikel.Text + " " + tb_Menge.Text + " " + tb_GesamtBetrag.Text);
-
-            cb_Artikel.Text = "";
-            tb_Einzelpreis.Clear();
-            tb_GesamtBetrag.Clear();
-            tb_Menge.Clear();
+            dataGridView_Einkauf.Columns[0].Name = "Position";
+            dataGridView_Einkauf.Columns[0].ValueType = typeof(int);
+            dataGridView_Einkauf.Columns[2].Name = "Artikel";
+            dataGridView_Einkauf.Columns[2].ValueType = typeof(string);
+            dataGridView_Einkauf.Columns[1].Name = "Menge";
+            dataGridView_Einkauf.Columns[1].ValueType = typeof(string);
+            dataGridView_Einkauf.Columns[3].Name = "Einzelpreis";
+            dataGridView_Einkauf.Columns[3].ValueType = typeof(string);
+            dataGridView_Einkauf.Columns[4].Name = "Gesamtpreis";
+            dataGridView_Einkauf.Columns[4].ValueType = typeof(string);
+            dataGridView_Einkauf.Columns[5].Name = "Projekt";
+            dataGridView_Einkauf.Columns[5].ValueType = typeof(string);
         }
 
         private void btnNeuerArtikel_Click(object sender, EventArgs e)
@@ -419,14 +471,14 @@ namespace Gartenausgaben
                     sql_conn.Open();
                     
                     if(sql_command.ExecuteScalar() != null)
-                        tb_Einzelpreis.Text = sql_command.ExecuteScalar().ToString();
+                        numericUpDown_Einzelpreis.Value = Convert.ToDecimal(sql_command.ExecuteScalar());
                     else
-                        tb_Einzelpreis.Text = "";
+                        numericUpDown_Einzelpreis.Value = 0;
                     
                     sql_conn.Close();
                 }
             }
-            if (tb_Menge != null)
+            if (numericUpDown_Menge.Value > 0)
             {
                 CalculateAmount();
             }
@@ -437,12 +489,17 @@ namespace Gartenausgaben
             LadeEinzelpreis();
         }
 
-        private void tb_Einzelpreis_TextChanged(object sender, EventArgs e)
+        private void cb_Haendler_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LadeEinzelpreis();
+        }
+
+        private void numericUpDown_Menge_ValueChanged(object sender, EventArgs e)
         {
             CalculateAmount();
         }
 
-        private void tb_Menge_TextChanged(object sender, EventArgs e)
+        private void numericUpDown_Einzelpreis_ValueChanged(object sender, EventArgs e)
         {
             CalculateAmount();
         }

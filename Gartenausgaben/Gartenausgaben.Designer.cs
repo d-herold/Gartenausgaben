@@ -53,14 +53,15 @@
             this.CmdEvaluation.UseVisualStyleBackColor = true;
             this.CmdEvaluation.Click += new System.EventHandler(this.CmdEvaluation_Click);
             // 
-            // Start
+            // Gartenausgaben
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(574, 188);
             this.Controls.Add(this.CmdEvaluation);
             this.Controls.Add(this.CmdLoadNewInvoice);
-            this.Name = "Start";
+            this.MaximizeBox = false;
+            this.Name = "Gartenausgaben";
             this.Text = "Start";
             this.ResumeLayout(false);
 
