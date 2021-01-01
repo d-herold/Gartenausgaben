@@ -264,15 +264,15 @@
             this.label9.Location = new System.Drawing.Point(455, 79);
             this.label9.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(130, 24);
+            this.label9.Size = new System.Drawing.Size(177, 24);
             this.label9.TabIndex = 123;
-            this.label9.Text = "Einkauf vom:";
+            this.label9.Text = "Einkaufsliste vom:";
             // 
             // lbl_Datum
             // 
             this.lbl_Datum.AutoSize = true;
             this.lbl_Datum.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_Datum.Location = new System.Drawing.Point(589, 78);
+            this.lbl_Datum.Location = new System.Drawing.Point(636, 78);
             this.lbl_Datum.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbl_Datum.Name = "lbl_Datum";
             this.lbl_Datum.Size = new System.Drawing.Size(24, 24);

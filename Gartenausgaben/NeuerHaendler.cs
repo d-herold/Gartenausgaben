@@ -38,17 +38,48 @@ namespace Gartenausgaben
         }
         private void SetNeuerHaendler()
         {
+            string conn = Properties.Settings.Default.GartenProjekteConnectionString;
+
             string name = txbNeuerHaendlerName.Text;
             string strasse = txbNeuerHaendlerStrasse.Text;
             string plz = txbNeuerHaendlerPlz.Text;
             string ort = txbNeuerHaendlerOrt.Text;
             string telefon = txbNeuerHaendlerTelefon.Text;
 
-            //Abfrage-String um einen neuen Händler aus der TextBox zur Händler Tabelle hinzuzufügen
-            string sql_Insert = "INSERT INTO Haendler (Name , Anschrift , PLZ , Ort , Telefon ) " +
-                "VALUES ('" + name + "' , '" + strasse + "' , '" + plz + "' , '" + ort + "' , '" + telefon + "') ";
+            using (SqlConnection sql_conn = new SqlConnection(conn))
+            {
+                string sql_Select = "SELECT Name, Ort FROM Haendler WHERE Name = @Name AND Ort = @Ort ";
+                string sql_Insert = "INSERT INTO Haendler (Name , Anschrift , PLZ , Ort , Telefon ) " +
+                    "VALUES (@Name, @Anschrift, @PLZ, @Ort, @Telefon) ";
 
-            DbConnect.Db_execute(sql_Insert);
+                SqlCommand sql_command = new SqlCommand(sql_Select, sql_conn);
+                // Setzten der Paramter für WHERE
+                sql_command.Parameters.Add("@Name", SqlDbType.VarChar).Value = name;
+                sql_command.Parameters.Add("@Ort", SqlDbType.VarChar).Value = ort;
+
+                sql_conn.Open();
+
+                if (sql_command.ExecuteScalar() == null)
+                {
+                    SqlCommand sql_command2 = new SqlCommand(sql_Insert, sql_conn);
+
+                    sql_command2.Parameters.Add("@Name", SqlDbType.VarChar).Value = name;
+                    sql_command2.Parameters.Add("@Anschrift", SqlDbType.VarChar).Value = strasse;
+                    sql_command2.Parameters.Add("@PLZ", SqlDbType.VarChar).Value = plz;
+                    sql_command2.Parameters.Add("@Ort", SqlDbType.VarChar).Value = ort;
+                    sql_command2.Parameters.Add("@Telefon", SqlDbType.VarChar).Value = telefon;
+
+                    sql_command2.ExecuteNonQuery();
+                }
+                else
+                {
+                    MessageBox.Show("Der Händler ist schon vorhanden", "Achtung", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+                sql_conn.Close();
+            }
+
+            //DbConnect.Db_execute(sql_Insert);
         }
 
         private void btnNeuerHaendlerAbbrechen_Click(object sender, EventArgs e)

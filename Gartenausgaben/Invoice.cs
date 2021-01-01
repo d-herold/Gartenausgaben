@@ -25,7 +25,7 @@ namespace Gartenausgaben
         string conn = Properties.Settings.Default.GartenProjekteConnectionString; // Connection String aus der App.config
         DataTable einkauf;
         DataColumn column;
-        DataRow row;
+        //DataRow row;
         int positionDataGridView = 1;
         decimal x = 0.00m;
 
@@ -138,13 +138,13 @@ namespace Gartenausgaben
         public void LadeStartDaten()
         {
             // Connection String aus der App.config 
-            string conn = Properties.Settings.Default.GartenProjekteConnectionString;
+            //string conn = Properties.Settings.Default.GartenProjekteConnectionString;
 
             //Erstellt eine neue Verbindund zur übergebenen Datenbank
             SqlConnection sql_con = new SqlConnection(conn);
 
             //Abfrage-String für alle Namen aus der Händler Tabelle
-            string querySql_Haendler = "SELECT Name FROM Haendler ORDER BY Name ASC";
+            string querySql_Haendler = "SELECT Name, Ort FROM Haendler ORDER BY Name ASC";
             string querySql_Artikel = "SELECT Artikelbezeichnung FROM Artikel ORDER BY Artikelbezeichnung ASC";
             string querySql_Projekt = "SELECT Projektname FROM Projekt ORDER BY Projektname ASC";
 
@@ -160,7 +160,9 @@ namespace Gartenausgaben
             sql_adapt_Haendler.Fill(tblData_Haendler);
 
             //Anzeige in der ComboBox alle Namen der vorhanden Ids
-            cb_Haendler.DisplayMember = "Name";
+            tblData_Haendler.Columns.Add("NameOrt", typeof(string), "Name + ', ' + Ort");
+
+            cb_Haendler.DisplayMember = "NameOrt";
             cb_Haendler.ValueMember = "[Haendler_ID]";
 
             //Zuweisen der Datentabelle zur Datenquelle
@@ -184,6 +186,8 @@ namespace Gartenausgaben
             cb_Projekt.DataSource = tblData_Projekt;
 
             sql_con.Close();
+            lbl_Haendler.Text = cb_Haendler.Text;
+            lbl_Datum.Text = dateTimePickerDatum.Value.ToString("dd. MMMM yyyy");
         }
 
         /// <summary>
@@ -221,7 +225,7 @@ namespace Gartenausgaben
         public void LadeArtikelNeu(string sort)
         {
             // Connection String aus der App.config 
-            string conn = Properties.Settings.Default.GartenProjekteConnectionString;
+            //string conn = Properties.Settings.Default.GartenProjekteConnectionString;
 
             //Erstellt eine neue Verbindund zur übergebenen Datenbank
             SqlConnection sql_con = new SqlConnection(conn);
@@ -349,7 +353,7 @@ namespace Gartenausgaben
                     dataGridView_Einkauf.Rows.Remove(dataGridView_Einkauf.Rows[s - 1]);
                 }
 
-                dataGridView_Einkauf.Rows.Add(positionDataGridView, numericUpDown_Menge.Value + "x", cb_Artikel.Text, numericUpDown_Einzelpreis.Value + " €", tb_GesamtBetrag.Text + " €", cb_Projekt.Text);
+                dataGridView_Einkauf.Rows.Add(positionDataGridView, numericUpDown_Menge.Value, cb_Artikel.Text, numericUpDown_Einzelpreis.Value, tb_GesamtBetrag.Text, cb_Projekt.Text);
 
                 //Summe aller Gesamtpreise - Zur Kontrolle des Kassenbons
                 if (s > 1)
@@ -360,8 +364,7 @@ namespace Gartenausgaben
                     {
                         try
                         {
-                            x += Convert.ToDecimal(dataGridView_Einkauf.Rows[i].Cells["Gesamtpreis"].Value.ToString().
-                                Remove(dataGridView_Einkauf.Rows[i].Cells["Gesamtpreis"].Value.ToString().Length - 2));
+                            x += Convert.ToDecimal(dataGridView_Einkauf.Rows[i].Cells["Gesamtpreis"].Value.ToString());
                         }
                         catch
                         {
@@ -412,6 +415,7 @@ namespace Gartenausgaben
             dataGridView_Einkauf.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView_Einkauf.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             dataGridView_Einkauf.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            dataGridView_Einkauf.Columns[3].DefaultCellStyle.Format = "N2";
             dataGridView_Einkauf.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             dataGridView_Einkauf.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             dataGridView_Einkauf.Columns[2].Width = 200;
@@ -429,11 +433,11 @@ namespace Gartenausgaben
             dataGridView_Einkauf.Columns[2].Name = "Artikel";
             dataGridView_Einkauf.Columns[2].ValueType = typeof(string);
             dataGridView_Einkauf.Columns[1].Name = "Menge";
-            dataGridView_Einkauf.Columns[1].ValueType = typeof(string);
+            dataGridView_Einkauf.Columns[1].ValueType = typeof(Int32);
             dataGridView_Einkauf.Columns[3].Name = "Einzelpreis";
-            dataGridView_Einkauf.Columns[3].ValueType = typeof(string);
+            dataGridView_Einkauf.Columns[3].ValueType = typeof(decimal);
             dataGridView_Einkauf.Columns[4].Name = "Gesamtpreis";
-            dataGridView_Einkauf.Columns[4].ValueType = typeof(string);
+            dataGridView_Einkauf.Columns[4].ValueType = typeof(decimal);
             dataGridView_Einkauf.Columns[5].Name = "Projekt";
             dataGridView_Einkauf.Columns[5].ValueType = typeof(string);
         }
@@ -452,7 +456,7 @@ namespace Gartenausgaben
 
             if (cb_Haendler.Text != "" && cb_Artikel.Text != "")
             {
-                string conn = Properties.Settings.Default.GartenProjekteConnectionString;
+                //string conn = Properties.Settings.Default.GartenProjekteConnectionString;
 
                 using (SqlConnection sql_conn = new SqlConnection(conn))
                 {
