@@ -14,6 +14,8 @@ using Microsoft.SqlServer.Server;
 using System.Windows.Forms;
 using System.Threading;
 using System.Text.RegularExpressions;
+using Gartenausgaben.Datenbank;
+using Gartenausgaben.Datenbank.GartenProjekteDataSetTableAdapters;
 
 namespace Gartenausgaben
 {
@@ -24,10 +26,12 @@ namespace Gartenausgaben
         decimal gesamtBetrag;
         string conn = Properties.Settings.Default.GartenProjekteConnectionString; // Connection String aus der App.config
         DataTable einkauf;
+        DataSet datasetEinkauf = new DataSet();
         DataColumn column;
         //DataRow row;
         int positionDataGridView = 1;
         decimal x = 0.00m;
+        string se;
 
 
         public Invoice()
@@ -73,8 +77,7 @@ namespace Gartenausgaben
             column.ColumnName = "Projekt";
             einkauf.Columns.Add(column);
 
-            var dataset = new DataSet();
-            dataset.Tables.Add(einkauf);
+            datasetEinkauf.Tables.Add(einkauf);
         }        
 
         public void SetMyCustomFormat()
@@ -309,10 +312,148 @@ namespace Gartenausgaben
                     einkauf2.Rows[einkauf2.Rows.Count - 1][cell.ColumnIndex] = cell.Value.ToString();
                 }
             }
+            var dataset = new DataSet();
+            dataset.Tables.Add(einkauf2);
+
+            // Holen der jeweilgen Id aus DB
+            var artikelId = GetId("Artikelbezeichnung","Artikel","Artikel");
+            var projektId = GetId("Projektname","Projekt","Projekt");
+            var haendlerId = GetId("Name", "Haendler", lbl_Haendler.Text.Remove(lbl_Haendler.Text.IndexOf(",")));
+            //var artPreisId = GetId("", "", "");
+
+            // nicht mehr notwendig----------------------------
+            int idArtikel;
+            using (SqlConnection sql_conn = new SqlConnection(conn))
+            {
+                //int preisID; int artikelHaendlerID; int artikelID; int projektID; int haendlerID;int einkaufID;
+                
+                string sql_Select = "SELECT * FROM Artikel";
+                //string sql_Select = "SELECT * FROM Artikel WHERE Artikelbezeichnung = @Artikelbezeichnung";
+                //string sql_Insert = "INSERT INTO Artikel (Artikelbezeichnung) VALUES (@Artikelbezeichnung)";
+
+                SqlCommand sql_command = new SqlCommand(sql_Select, sql_conn);
+
+                //sql_command.Parameters.Add("@Artikelbezeichnung", SqlDbType.VarChar).Value = Artikelbezeichnung;
+                
+                SqlDataAdapter adapter = new SqlDataAdapter(sql_Select, sql_conn);
+                DataTable artikel = new DataTable();
+                sql_conn.Open();
+
+                adapter.Fill(artikel);
+
+                // --------------------Nicht mehr notwendig da IDs über GetId geholtb werden----------------------
+
+                for (int i = 0; i < dataGridView_Einkauf.RowCount; i++)
+                {
+                    foreach (DataColumn column in artikel.Columns)
+                    {
+                        if (column.ColumnName == "Artikelbezeichnung")
+                        {
+                            foreach (DataRow row in artikel.Rows)
+                            {
+                                for (int j = 0; j < row.ItemArray.Length; j++)
+                                {
+                                    if (row.ItemArray[j].ToString() == dataGridView_Einkauf.Rows[i].Cells["Artikel"].Value.ToString())
+                                    {
+                                        idArtikel = (int)row.ItemArray[0];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                //foreach (DataTable thisTable in datasetEinkauf.Tables)
+                //{
+                //    foreach (DataRow row in thisTable.Rows)
+                //    {
+                //        foreach (DataColumn column in thisTable.Columns)
+                //        {
+                //            if(row[column].ToString() == "Artikel")
+                //            se = row[column].ToString();
+                //        }
+                //    }
+                //}
 
 
+
+                //if (sql_command.ExecuteScalar() == null)
+                //{
+                //    SqlCommand sql_command2 = new SqlCommand(sql_Insert, sql_conn);
+
+                //    sql_command2.Parameters.Add("@Name", SqlDbType.VarChar).Value = name;
+
+
+                //    sql_command2.ExecuteNonQuery();
+                //}
+                //else
+                //{
+                //    MessageBox.Show("Der Händler ist schon vorhanden", "Achtung", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //}
+
+                sql_conn.Close();
+            }
             //new Invoice();
             //LadeStartDaten();
+        }
+        private int GetId(string DbColumnName, string DbTable, string DgvColumnName)
+        {
+            int id = 0;
+            string ort = lbl_Haendler.Text.Substring(lbl_Haendler.Text.IndexOf(' ')).Trim();
+
+            using (SqlConnection sql_conn = new SqlConnection(conn))
+            {
+                string sql_Select = "SELECT * FROM " + DbTable;
+                string sql_Select_Haendler = "SELECT * FROM " + DbTable + " WHERE Ort = @Ort";
+
+                SqlDataAdapter adapter = new SqlDataAdapter(sql_Select, sql_conn);
+                SqlDataAdapter adapterhaendler = new SqlDataAdapter(sql_Select_Haendler, sql_conn);
+                adapterhaendler.SelectCommand.Parameters.AddWithValue("@Ort", SqlDbType.VarChar).Value = ort;
+
+                DataTable dt = new DataTable();
+                sql_conn.Open();
+
+                if (DbTable != "Haendler")
+                {
+                    adapter.Fill(dt);
+
+                    for (int i = 0; i < dataGridView_Einkauf.RowCount; i++)
+                    {
+                        foreach (DataColumn column in dt.Columns)
+                        {
+                            if (column.ColumnName == DbColumnName)
+                            {
+                                foreach (DataRow row in dt.Rows)
+                                {
+                                    for (int j = 0; j < row.ItemArray.Length; j++)
+                                    {
+                                        if (row.ItemArray[j].ToString() == dataGridView_Einkauf.Rows[i].Cells[DgvColumnName].Value.ToString())
+                                        {
+                                            id = (int)row.ItemArray[0];
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                // Hole Haendler ID
+                else if (DbTable == "Haendler")
+                {
+                    adapterhaendler.Fill(dt);
+
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        for (int j = 0; j < row.ItemArray.Length; j++)
+                        {
+                            if (row.ItemArray[j].ToString() == DgvColumnName)
+                                id = (int)row.ItemArray[0];
+                        }
+                    }
+                }
+                sql_conn.Close();
+            }
+                return id;
         }
 
         private void BtnClose_Click(object sender, EventArgs e)
@@ -336,13 +477,13 @@ namespace Gartenausgaben
         {
             if(numericUpDown_Einzelpreis.Value != 0 && numericUpDown_Menge.Value != 0 && cb_Artikel.Text != "")
             {
-                //row = einkauf.NewRow();
-                //row["Haendler"] = cb_Haendler.Text;
-                //row["Datum"] = dateTimePickerDatum.Value;
-                //row["Artikel"] = cb_Artikel.Text;
-                //row["Menge"] = numericUpDown_Menge.Value;
-                //row["Einzelpreis"] = Convert.ToDecimal(tb_Einzelpreis.Text);
-                //row["Projekt"] = cb_Projekt.Text;
+                var row = einkauf.NewRow();
+                row["Haendler"] = cb_Haendler.Text;
+                row["Datum"] = dateTimePickerDatum.Value;
+                row["Artikel"] = cb_Artikel.Text;
+                row["Menge"] = numericUpDown_Menge.Value;
+                row["Einzelpreis"] = numericUpDown_Einzelpreis.Value;
+                row["Projekt"] = cb_Projekt.Text;
 
                 lbl_Datum.Text = dateTimePickerDatum.Value.ToString("dd. MMMM yyyy");
                 lbl_Haendler.Text = cb_Haendler.Text;
@@ -506,6 +647,53 @@ namespace Gartenausgaben
         private void numericUpDown_Einzelpreis_ValueChanged(object sender, EventArgs e)
         {
             CalculateAmount();
+        }
+
+        private int PrüfeArtikel()
+        {
+            using (SqlConnection sql_conn = new SqlConnection(conn))
+            {
+                int id;
+                string artikel = cb_Artikel.Text;
+                string sql_SelectArtikel = "SELECT Artikelbezeichnung FROM Artikel WHERE Artikelbezeichnung = @Artikelbezeichnung";
+                string sql_SelectId = "SELECT ID FROM Artikel WHERE Artikelbezeichnung = @Artikelbezeichnung";
+                string sql_InsertArtikel = "INSERT INTO Artikel (Artikelbezeichnung) VALUES (@Artikelbezeichnung)";
+
+                SqlCommand sql_command = new SqlCommand(sql_SelectArtikel, sql_conn);
+                
+                sql_command.Parameters.Add("@Artikelbezeichnung", SqlDbType.VarChar).Value = artikel;
+
+                sql_conn.Open();
+
+                if (sql_command.ExecuteScalar() == null)
+                {
+                    SqlCommand sql_command2 = new SqlCommand(sql_InsertArtikel, sql_conn);
+
+                    sql_command2.Parameters.Add("@Artikelbezeichnung", SqlDbType.VarChar).Value = artikel;
+
+                    sql_command2.ExecuteNonQuery();
+
+                    SqlCommand sql_comnand_ID = new SqlCommand(sql_SelectId, sql_conn);
+
+                    id = Convert.ToInt32(sql_comnand_ID.ExecuteScalar().ToString());
+
+                    sql_conn.Close();
+                    return id;
+                }
+                else
+                {
+                    SqlCommand sql_comnand_ID = new SqlCommand(sql_SelectId, sql_conn);
+
+                    id = Convert.ToInt32(sql_comnand_ID.ExecuteScalar().ToString());
+
+                    sql_conn.Close();
+
+                    return id;
+                }
+
+                
+            }
+
         }
     }
 }
