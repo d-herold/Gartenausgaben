@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Gartenausgaben
 {
-    class Baumarkt
+    public class Projekt
     {
+        public int Id { get; set; }
+        public int Name { get; set; }
     }
 }

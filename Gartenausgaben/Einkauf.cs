@@ -8,19 +8,21 @@ namespace Gartenausgaben
 {
     public class Einkauf
     {
-        string haendler;
 
+        public int Id { get; set; }
+        public int HaendlerId { get; set; }
+        public DateTime Datum { get; set; }
 
-
-
-        public string Haendler { get; set; }
-        public decimal Einzelpreis { get; set; }
-        public int Menge { get; set; }
-        public string Projekt { get; set; }
-
-        public Einkauf(/*string haendler, int menge, decimal e_preis, string projekt*/)
+        public Einkauf()
         {
-            //this.haendler = haendler;
+            var position = new Einkaufspositionen();
+
+
         }
+        public void SetId()
+        {
+            //Hole letzte ID aus Datenbank und addiere 1 dazu
+        }
+        
     }
 }

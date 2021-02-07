@@ -288,12 +288,19 @@ namespace Gartenausgaben
         private void BtnSave_Click(object sender, EventArgs e)
         {
             //Erstelle DataTable
-            var einkauf2 = new DataTable();
+            var dgvEinkauf = new DataTable();
+            var dbEinkaufposition = new DataTable();
+            var dbArtikel = new DataTable();
+            var dbHaendler = new DataTable();
+            var dbArtikelHaendler = new DataTable();
+            var dbArtikelPreis = new DataTable();
+            var dbProjekt = new DataTable();
+            var dbEinkauf = new DataTable();
 
             //Hinzufügen der Spalten
             foreach (DataGridViewColumn column in dataGridView_Einkauf.Columns)
             {
-                einkauf2.Columns.Add(column.HeaderText, column.ValueType);
+                dgvEinkauf.Columns.Add(column.HeaderText, column.ValueType);
             }
 
             //Löschen der Summenzeile
@@ -306,21 +313,82 @@ namespace Gartenausgaben
             //Hinzufügen der Zeilen
             foreach (DataGridViewRow row in dataGridView_Einkauf.Rows)
             {
-                einkauf2.Rows.Add();
+                dgvEinkauf.Rows.Add();
                 foreach (DataGridViewCell cell in row.Cells)
                 {
-                    einkauf2.Rows[einkauf2.Rows.Count - 1][cell.ColumnIndex] = cell.Value.ToString();
+                    dgvEinkauf.Rows[dgvEinkauf.Rows.Count - 1][cell.ColumnIndex] = cell.Value.ToString();
                 }
             }
             var dataset = new DataSet();
-            dataset.Tables.Add(einkauf2);
+            dataset.Tables.Add(dgvEinkauf);
+
+
+            using (SqlConnection sql_conn = new SqlConnection(this.conn))
+            {
+                string querySql1 = "SELECT * FROM Einkaufpositionen";
+                string querySql2 = "SELECT * FROM Artikel";
+                string querySql3 = "SELECT * FROM Haendler";
+                string querySql4 = "SELECT * FROM Artikel_Haendler";
+                string querySql5 = "SELECT * FROM Artikel_Preis";
+                string querySql6 = "SELECT * FROM Projekt";
+                string querySql7 = "SELECT * FROM Einkauf";
+
+                //Erstellt einen Adapter um die Daten aus der DB-Tabelle in eine Tabelle zu laden
+                SqlDataAdapter sql_adapt1 = new SqlDataAdapter(querySql1, sql_conn);
+                SqlDataAdapter sql_adapt2 = new SqlDataAdapter(querySql2, sql_conn);
+                SqlDataAdapter sql_adapt3 = new SqlDataAdapter(querySql3, sql_conn);
+                SqlDataAdapter sql_adapt4 = new SqlDataAdapter(querySql4, sql_conn);
+                SqlDataAdapter sql_adapt5 = new SqlDataAdapter(querySql5, sql_conn);
+                SqlDataAdapter sql_adapt6 = new SqlDataAdapter(querySql6, sql_conn);
+                SqlDataAdapter sql_adapt7 = new SqlDataAdapter(querySql7, sql_conn);
+
+                sql_adapt1.Fill(dbEinkaufposition);
+                sql_adapt2.Fill(dbArtikel);
+                sql_adapt3.Fill(dbHaendler);
+                sql_adapt4.Fill(dbArtikelHaendler);
+                sql_adapt5.Fill(dbArtikelPreis);
+                sql_adapt6.Fill(dbProjekt);
+                sql_adapt7.Fill(dbEinkauf);
+
+                dataset.Tables.Add(dbEinkaufposition);
+                dataset.Tables.Add(dbArtikel);
+                dataset.Tables.Add(dbHaendler);
+                dataset.Tables.Add(dbArtikelHaendler);
+                dataset.Tables.Add(dbArtikelPreis);
+                dataset.Tables.Add(dbProjekt);
+                dataset.Tables.Add(dbEinkauf);
+
+                sql_conn.Close();
+            }
+
+            /* 1. Hole Einkauf_ID und erhöhe um eins
+             * 2. Hole Händler ID
+             * 3. Nimm erste Reihe DGV
+             * 4. Hole die ID Artikel und Projekt ID
+             * 5. Hole PreisID 
+             *      5.1 Hat Haendler diesen Artikel schon? Stimmt Preis noch?
+             *      5.2 über Abfrage mit Datum Preis == oder != Ist Preis ungleich neue Artikel_HändlerID ---> Preis eintragen mit Datum und ID holen
+             * 6. Hole Menge
+             * 7. Trage in Tabelle Einkaufposition erste Reihe DGV ein (ID)
+             * 8. Nimm nächste Reihe DGV
+             * */
+
+
+
+            /* Es muss ein Objekt Einkauf gebildet werden, welches aus verschiedenen Unterobjekten besteht,
+           für die Unterobjekte werden Werte gebraucht, die zuerst aus der DataGridView geholt werden müssen. 
+            Frage, Muss es gemacht werden?????*/
+
 
             // Holen der jeweilgen Id aus DB
-            var artikelId = GetId("Artikelbezeichnung","Artikel","Artikel");
-            var projektId = GetId("Projektname","Projekt","Projekt");
-            var haendlerId = GetId("Name", "Haendler", lbl_Haendler.Text.Remove(lbl_Haendler.Text.IndexOf(",")));
+            var artikelId = GetId("Artikelbezeichnung","Artikel","Artikel", s /* Hier muss der index der DgV Reihe rein*/);
+            var projektId = GetId("Projektname","Projekt","Projekt", s);
+            var haendlerId = GetId("Name", "Haendler", lbl_Haendler.Text.Remove(lbl_Haendler.Text.IndexOf(",")), s);
             //var artPreisId = GetId("", "", "");
 
+
+
+            /*
             // nicht mehr notwendig----------------------------
             int idArtikel;
             using (SqlConnection sql_conn = new SqlConnection(conn))
@@ -390,13 +458,15 @@ namespace Gartenausgaben
                 //{
                 //    MessageBox.Show("Der Händler ist schon vorhanden", "Achtung", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 //}
+            
 
                 sql_conn.Close();
             }
             //new Invoice();
             //LadeStartDaten();
+            */
         }
-        private int GetId(string DbColumnName, string DbTable, string DgvColumnName)
+        private int GetId(string DbColumnName, string DbTable, string DgvColumnName, int index)
         {
             int id = 0;
             string ort = lbl_Haendler.Text.Substring(lbl_Haendler.Text.IndexOf(' ')).Trim();
@@ -429,7 +499,9 @@ namespace Gartenausgaben
                                     {
                                         if (row.ItemArray[j].ToString() == dataGridView_Einkauf.Rows[i].Cells[DgvColumnName].Value.ToString())
                                         {
-                                            id = (int)row.ItemArray[0];
+                                            //Wenn die richtige Reihe (index) gewählt wurde, dann nimm die ID
+                                            if(index == j)
+                                                id = (int)row.ItemArray[0];
                                         }
                                     }
                                 }

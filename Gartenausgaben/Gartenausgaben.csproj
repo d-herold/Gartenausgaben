@@ -62,9 +62,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Baumarkt.cs" />
+    <Compile Include="Artikel.cs" />
+    <Compile Include="ArtikelHaendler.cs" />
+    <Compile Include="ArtikelPreis.cs" />
     <Compile Include="DbConnect.cs" />
     <Compile Include="Einkauf.cs" />
+    <Compile Include="Einkaufspositionen.cs" />
     <Compile Include="Evaluation.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -76,6 +79,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>GartenProjekteDataSet.xsd</DependentUpon>
     </Compile>
+    <Compile Include="Haendler.cs" />
     <Compile Include="Invoice.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -89,6 +93,7 @@
       <DependentUpon>NeuerHaendler.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
+    <Compile Include="Projekt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Gartenausgaben.cs">
       <SubType>Form</SubType>
