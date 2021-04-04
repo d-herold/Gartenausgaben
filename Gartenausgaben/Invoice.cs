@@ -381,8 +381,8 @@ namespace Gartenausgaben
 
 
             // Holen der jeweilgen Id aus DB
-            var artikelId = GetId("Artikelbezeichnung","Artikel","Artikel", s /* Hier muss der index der DgV Reihe rein*/);
-            var projektId = GetId("Projektname","Projekt","Projekt", s);
+            var artikelId = GetId("Artikelbezeichnung","Artikel","Artikel", 2 /* Hier muss der index der DgV Reihe rein*/);
+            var projektId = GetId("Projektname","Projekt","Projekt", 3);
             var haendlerId = GetId("Name", "Haendler", lbl_Haendler.Text.Remove(lbl_Haendler.Text.IndexOf(",")), s);
             //var artPreisId = GetId("", "", "");
 
@@ -499,9 +499,8 @@ namespace Gartenausgaben
                                     {
                                         if (row.ItemArray[j].ToString() == dataGridView_Einkauf.Rows[i].Cells[DgvColumnName].Value.ToString())
                                         {
-                                            //Wenn die richtige Reihe (index) gewählt wurde, dann nimm die ID
-                                            if(index == j)
-                                                id = (int)row.ItemArray[0];
+                                            id = (int)row.ItemArray[0];
+                                            return id;
                                         }
                                     }
                                 }
