@@ -32,6 +32,11 @@ namespace Gartenausgaben
         int positionDataGridView = 1;
         decimal x = 0.00m;
         string se;
+        int artikelId;
+        int projektId;
+        int haendlerId;
+        int artikelPreisId;
+        int artikelHaendlerId;
 
 
         public Invoice()
@@ -110,7 +115,6 @@ namespace Gartenausgaben
             set
             {
                 artikelMenge = numericUpDown_Menge.Value;
-
             }
         }
 
@@ -381,10 +385,12 @@ namespace Gartenausgaben
 
 
             // Holen der jeweilgen Id aus DB
-            var artikelId = GetId("Artikelbezeichnung","Artikel","Artikel", 2 /* Hier muss der index der DgV Reihe rein*/);
-            var projektId = GetId("Projektname","Projekt","Projekt", 3);
-            var haendlerId = GetId("Name", "Haendler", lbl_Haendler.Text.Remove(lbl_Haendler.Text.IndexOf(",")), s);
-            //var artPreisId = GetId("", "", "");
+            // Params (DB Tabelle, DB Spalte, DgvColumnName, int Index)
+            artikelId = GetId("Artikel", "Artikelbezeichnung", "Artikel", 2 /* Hier muss der index der DgV Reihe rein*/);
+            projektId = GetId("Projekt", "Projektname", "Projekt", 3);
+            haendlerId = GetId("Haendler", "Name", lbl_Haendler.Text.Remove(lbl_Haendler.Text.IndexOf(",")), s);
+            artikelHaendlerId = GetId("Artikel_Haendler", artikelId, haendlerId);
+            // NÄCHSTE AUFGABE                 artikelPreisId = GetId("", "Artikel_Preis", "Haendler_ID" );
 
 
 
@@ -466,38 +472,46 @@ namespace Gartenausgaben
             //LadeStartDaten();
             */
         }
-        private int GetId(string DbColumnName, string DbTable, string DgvColumnName, int index)
+        //private int GetId(string DbTable, string DbColumnName, string DgvColumnName, int index)
+        private int GetId(params object[] list)
         {
             int id = 0;
             string ort = lbl_Haendler.Text.Substring(lbl_Haendler.Text.IndexOf(' ')).Trim();
 
             using (SqlConnection sql_conn = new SqlConnection(conn))
             {
-                string sql_Select = "SELECT * FROM " + DbTable;
-                string sql_Select_Haendler = "SELECT * FROM " + DbTable + " WHERE Ort = @Ort";
+                //string sql_Select = "SELECT * FROM " + DbTable --> obsolet;
+                string sql_Select = "SELECT * FROM " + list[0];
+                //string sql_Select_Haendler = "SELECT * FROM " + DbTable + " WHERE Ort = @Ort";
+                string sql_Select_Haendler = "SELECT * FROM " + list[0] + " WHERE Ort = @Ort";
+                //string sql_Select_ArtikelHaendler = "SELECT * FROM " + DbTable + " WHERE Artikel_ID = @Artikel_ID AND Haendler_ID = @Haendler_ID";
+                string sql_Select_ArtikelHaendler = "SELECT * FROM " + list[0] + " WHERE Artikel_ID = @Artikel_ID AND Haendler_ID = @Haendler_ID";
 
-                SqlDataAdapter adapter = new SqlDataAdapter(sql_Select, sql_conn);
-                SqlDataAdapter adapterhaendler = new SqlDataAdapter(sql_Select_Haendler, sql_conn);
-                adapterhaendler.SelectCommand.Parameters.AddWithValue("@Ort", SqlDbType.VarChar).Value = ort;
+                SqlDataAdapter adapterArtikel = new SqlDataAdapter(sql_Select, sql_conn);
+                SqlDataAdapter adapterHaendler = new SqlDataAdapter(sql_Select_Haendler, sql_conn);
+                SqlDataAdapter adapterArtikelHaendler = new SqlDataAdapter(sql_Select_ArtikelHaendler, sql_conn);
+                adapterHaendler.SelectCommand.Parameters.AddWithValue("@Ort", SqlDbType.VarChar).Value = ort;
+                adapterArtikelHaendler.SelectCommand.Parameters.AddWithValue("@Artikel_ID", SqlDbType.Int).Value = artikelId;
+                adapterArtikelHaendler.SelectCommand.Parameters.AddWithValue("@Haendler_ID", SqlDbType.Int).Value = haendlerId;
 
                 DataTable dt = new DataTable();
                 sql_conn.Open();
 
-                if (DbTable != "Haendler")
+                if (list[0].ToString() != "Haendler" && list[0].ToString() != "Artikel_Haendler")
                 {
-                    adapter.Fill(dt);
+                    adapterArtikel.Fill(dt);
 
                     for (int i = 0; i < dataGridView_Einkauf.RowCount; i++)
                     {
                         foreach (DataColumn column in dt.Columns)
                         {
-                            if (column.ColumnName == DbColumnName)
+                            if (column.ColumnName == list[1].ToString())
                             {
                                 foreach (DataRow row in dt.Rows)
                                 {
                                     for (int j = 0; j < row.ItemArray.Length; j++)
                                     {
-                                        if (row.ItemArray[j].ToString() == dataGridView_Einkauf.Rows[i].Cells[DgvColumnName].Value.ToString())
+                                        if (row.ItemArray[j].ToString() == dataGridView_Einkauf.Rows[i].Cells[list[2].ToString()].Value.ToString())
                                         {
                                             id = (int)row.ItemArray[0];
                                             return id;
@@ -509,17 +523,31 @@ namespace Gartenausgaben
                     }
                 }
                 // Hole Haendler ID
-                else if (DbTable == "Haendler")
+                else if (list[0].ToString() == "Haendler")
                 {
-                    adapterhaendler.Fill(dt);
+                    adapterHaendler.Fill(dt);
 
                     foreach (DataRow row in dt.Rows)
                     {
                         for (int j = 0; j < row.ItemArray.Length; j++)
                         {
-                            if (row.ItemArray[j].ToString() == DgvColumnName)
+                            if (row.ItemArray[j].ToString() == list[2].ToString())
                                 id = (int)row.ItemArray[0];
                         }
+                    }
+                }
+
+                // Hole ArtikelHaendlerID
+                else if (list[0].ToString() == "Artikel_Haendler")
+                {
+                    adapterArtikelHaendler.Fill(dt);
+
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        if (row.ItemArray[1].ToString() == list[1].ToString() && row.ItemArray[2].ToString() == list[2].ToString())
+                            id = (int)row.ItemArray[0];
+                        else
+                            id = 0;
                     }
                 }
                 sql_conn.Close();

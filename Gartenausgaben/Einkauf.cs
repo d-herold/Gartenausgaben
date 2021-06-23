@@ -16,8 +16,6 @@ namespace Gartenausgaben
         public Einkauf()
         {
             var position = new Einkaufspositionen();
-
-
         }
         public void SetId()
         {
