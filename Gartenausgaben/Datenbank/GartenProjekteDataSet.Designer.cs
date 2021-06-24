@@ -3519,7 +3519,8 @@ SELECT Artikel_Id, Artikelbezeichnung FROM Artikel WHERE (Artikel_Id = @Artikel_
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         private void InitConnection() {
             this._connection = new global::System.Data.SqlClient.SqlConnection();
-            this._connection.ConnectionString = global::Gartenausgaben.Properties.Settings.Default.GartenProjekteConnectionString;
+            //this._connection.ConnectionString = global::Gartenausgaben.Properties.Settings.Default.GartenProjekteConnectionString;
+            this._connection.ConnectionString = global::Gartenausgaben.Properties.Settings.Default.GartenDB;
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3851,7 +3852,8 @@ SELECT Id, Artikel_Id, Artikelpreis FROM Artikel_Preis WHERE (Id = @Id)";
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         private void InitConnection() {
             this._connection = new global::System.Data.SqlClient.SqlConnection();
-            this._connection.ConnectionString = global::Gartenausgaben.Properties.Settings.Default.GartenProjekteConnectionString;
+            //this._connection.ConnectionString = global::Gartenausgaben.Properties.Settings.Default.GartenProjekteConnectionString;
+            this._connection.ConnectionString = global::Gartenausgaben.Properties.Settings.Default.GartenDB;
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -4182,7 +4184,8 @@ SELECT Kauf_Id, Kauf_Datum FROM Einkaufdatum WHERE (Kauf_Id = @Kauf_Id)";
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         private void InitConnection() {
             this._connection = new global::System.Data.SqlClient.SqlConnection();
-            this._connection.ConnectionString = global::Gartenausgaben.Properties.Settings.Default.GartenProjekteConnectionString;
+            //this._connection.ConnectionString = global::Gartenausgaben.Properties.Settings.Default.GartenProjekteConnectionString;
+            this._connection.ConnectionString = global::Gartenausgaben.Properties.Settings.Default.GartenDB;
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -4519,7 +4522,8 @@ SELECT Kauf_Id, Menge, Projekt_Id, Artikel_Id FROM Einkaufpositionen WHERE (Kauf
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         private void InitConnection() {
             this._connection = new global::System.Data.SqlClient.SqlConnection();
-            this._connection.ConnectionString = global::Gartenausgaben.Properties.Settings.Default.GartenProjekteConnectionString;
+            //this._connection.ConnectionString = global::Gartenausgaben.Properties.Settings.Default.GartenProjekteConnectionString;
+            this._connection.ConnectionString = global::Gartenausgaben.Properties.Settings.Default.GartenDB;
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -4879,7 +4883,8 @@ SELECT Haendler_Id, Name, Anschrift, PLZ, Ort, Telefon FROM Haendler WHERE (Haen
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         private void InitConnection() {
             this._connection = new global::System.Data.SqlClient.SqlConnection();
-            this._connection.ConnectionString = global::Gartenausgaben.Properties.Settings.Default.GartenProjekteConnectionString;
+            //this._connection.ConnectionString = global::Gartenausgaben.Properties.Settings.Default.GartenProjekteConnectionString;
+            this._connection.ConnectionString = global::Gartenausgaben.Properties.Settings.Default.GartenDB;
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5316,7 +5321,8 @@ SELECT Miet_Id, Fahrzeug FROM Mietfahrzeuge WHERE (Miet_Id = @Miet_Id)";
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         private void InitConnection() {
             this._connection = new global::System.Data.SqlClient.SqlConnection();
-            this._connection.ConnectionString = global::Gartenausgaben.Properties.Settings.Default.GartenProjekteConnectionString;
+            //this._connection.ConnectionString = global::Gartenausgaben.Properties.Settings.Default.GartenProjekteConnectionString;
+            this._connection.ConnectionString = global::Gartenausgaben.Properties.Settings.Default.GartenDB;
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5643,7 +5649,8 @@ SELECT Projekt_Id, Projekt_Name FROM Projekt WHERE (Projekt_Id = @Projekt_Id)";
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         private void InitConnection() {
             this._connection = new global::System.Data.SqlClient.SqlConnection();
-            this._connection.ConnectionString = global::Gartenausgaben.Properties.Settings.Default.GartenProjekteConnectionString;
+            //this._connection.ConnectionString = global::Gartenausgaben.Properties.Settings.Default.GartenProjekteConnectionString;
+            this._connection.ConnectionString = global::Gartenausgaben.Properties.Settings.Default.GartenDB;
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]

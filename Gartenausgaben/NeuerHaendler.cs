@@ -26,8 +26,8 @@ namespace Gartenausgaben
         }
         private int Db_execute(string sql_Insert)
         {
-            string conn = Properties.Settings.Default.GartenProjekteConnectionString;
-
+            //string conn = Properties.Settings.Default.GartenProjekteConnectionString;
+            string conn = Properties.Settings.Default.GartenDB;
             SqlConnection sql_conn = new SqlConnection(conn);
             if (sql_conn.State != ConnectionState.Open) sql_conn.Open();
             SqlCommand sql_com = new SqlCommand(sql_Insert, sql_conn);
@@ -38,7 +38,8 @@ namespace Gartenausgaben
         }
         private void SetNeuerHaendler()
         {
-            string conn = Properties.Settings.Default.GartenProjekteConnectionString;
+            //string conn = Properties.Settings.Default.GartenProjekteConnectionString;
+            string conn = Properties.Settings.Default.GartenDB;
 
             string name = txbNeuerHaendlerName.Text;
             string strasse = txbNeuerHaendlerStrasse.Text;

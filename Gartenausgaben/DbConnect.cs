@@ -14,8 +14,8 @@ namespace Gartenausgaben
     {
         internal static int Db_execute(string sql_Insert)
         {
-            string conn = Properties.Settings.Default.GartenProjekteConnectionString;
-
+            //string conn = Properties.Settings.Default.GartenProjekteConnectionString;
+            string conn = Properties.Settings.Default.GartenDB;
             SqlConnection sql_conn = new SqlConnection(conn);
             if (sql_conn.State != ConnectionState.Open) sql_conn.Open();
             SqlCommand sql_com = new SqlCommand(sql_Insert, sql_conn);
@@ -27,7 +27,8 @@ namespace Gartenausgaben
         internal static bool EqualsArtikel(string artikel)
         {
             // Connection String aus der App.config 
-            string conn = Properties.Settings.Default.GartenProjekteConnectionString;
+            //string conn = Properties.Settings.Default.GartenProjekteConnectionString;
+            string conn = Properties.Settings.Default.GartenDB;
 
             //Erstellt eine neue Verbindund zur übergebenen Datenbank
             SqlConnection sql_conn = new SqlConnection(conn);
