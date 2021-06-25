@@ -22,7 +22,7 @@ namespace Gartenausgaben
     public partial class Invoice : Form
     {
         decimal einzelPreis;
-        decimal artikelMenge;
+        int artikelMenge;
         decimal gesamtBetrag;
         string conn = Properties.Settings.Default.GartenDB; // Connection String aus der App.config
         //string conn = Properties.Settings.Default.GartenProjekteConnectionString; // Connection String aus der App.config
@@ -32,7 +32,6 @@ namespace Gartenausgaben
         //DataRow row;
         int positionDataGridView = 1;
         decimal x = 0.00m;
-        string se;
         int artikelId;
         int projektId;
         int haendlerId;
@@ -94,7 +93,7 @@ namespace Gartenausgaben
             dateTimePickerDatum.CustomFormat = "dd. MMMM yyyy"; //MMMM dd, yyyy";
         }
 
-        public decimal GetEinzelPreis
+        public decimal EinzelPreis
         {
             get 
             { 
@@ -106,7 +105,7 @@ namespace Gartenausgaben
             }
         }
                                                                                                                 
-        public decimal GetMenge
+        public int ArtikelMenge
         {
             get
             {
@@ -114,11 +113,12 @@ namespace Gartenausgaben
             }
             set
             {
-                artikelMenge = numericUpDown_Menge.Value;
+                artikelMenge = Convert.ToInt32(value);
+                //artikelMenge = numericUpDown_Menge.Value;
             }
         }
 
-        public decimal GetGesamtBetrag
+        public decimal GesamtBetrag
         {
             get
             {
@@ -133,8 +133,9 @@ namespace Gartenausgaben
 
         private void CalculateAmount()
         {
-            gesamtBetrag = numericUpDown_Einzelpreis.Value * numericUpDown_Menge.Value;
+            //gesamtBetrag = numericUpDown_Einzelpreis.Value * numericUpDown_Menge.Value;
 
+            GesamtBetrag = numericUpDown_Einzelpreis.Value * numericUpDown_Menge.Value;
             tb_GesamtBetrag.Text = gesamtBetrag.ToString("0.00");
 
         }
@@ -309,9 +310,11 @@ namespace Gartenausgaben
 
             //Löschen der Summenzeile
             var s = dataGridView_Einkauf.Rows.Count;
+
             if (s > 1)
             {
                 dataGridView_Einkauf.Rows.Remove(dataGridView_Einkauf.Rows[s - 1]);
+                s = dataGridView_Einkauf.Rows.Count;
             }
 
             //Hinzufügen der Zeilen
@@ -323,9 +326,9 @@ namespace Gartenausgaben
                     dgvEinkauf.Rows[dgvEinkauf.Rows.Count - 1][cell.ColumnIndex] = cell.Value.ToString();
                 }
             }
+
             var dataset = new DataSet();
             dataset.Tables.Add(dgvEinkauf);
-
 
             using (SqlConnection sql_conn = new SqlConnection(this.conn))
             {
@@ -383,31 +386,32 @@ namespace Gartenausgaben
            für die Unterobjekte werden Werte gebraucht, die zuerst aus der DataGridView geholt werden müssen. 
             Frage, Muss es gemacht werden?????*/
 
-
-            // Holen der jeweilgen Id aus DB
-            // Params (DB Tabelle, DB Spalte, DgvColumnName, int Index)
-            SetEinzelpreis();
-            artikelId = GetId("Artikel", "Artikelbezeichnung", "Artikel", 2 /* Hier muss der index der DgV Reihe rein*/);
-            projektId = GetId("Projekt", "Projektname", "Projekt", 3);
-            haendlerId = GetId("Haendler", "Name", lbl_Haendler.Text.Remove(lbl_Haendler.Text.IndexOf(",")), s);
-            if (GetId("Artikel_Haendler", artikelId, haendlerId) == 0)
+            foreach (DataGridViewRow row in dataGridView_Einkauf.Rows)
             {
-                InsertArtikelHaendler();
-                artikelHaendlerId = GetId("Artikel_Haendler", artikelId, haendlerId);
-            }
-            else
-                artikelHaendlerId = GetId("Artikel_Haendler", artikelId, haendlerId);
+                SetEinzelpreis(row.Index);
 
-            if (GetId("Artikel_Preis", artikelHaendlerId, GetEinzelPreis) == 0)
-            {
-                InsertArtikelPreis();
-                artikelPreisId = GetId("Artikel_Preis", artikelHaendlerId, GetEinzelPreis);
-            }
-            else
-                artikelPreisId = GetId("Artikel_Preis", artikelHaendlerId, GetEinzelPreis);
+                //GetId(DbTable, DbColumnName, DgvColumnName, DgvRowIndex)
+                artikelId = GetId("Artikel", "Artikelbezeichnung", "Artikel", row.Index);
+                projektId = GetId("Projekt", "Projektname", "Projekt", row.Index);
+                haendlerId = GetId("Haendler", "Name", lbl_Haendler.Text.Remove(lbl_Haendler.Text.IndexOf(",")));
+                if (GetId("Artikel_Haendler", artikelId, haendlerId) == 0)
+                {
+                    InsertArtikelHaendler();
+                    artikelHaendlerId = GetId("Artikel_Haendler", artikelId, haendlerId);
+                }
+                else
+                    artikelHaendlerId = GetId("Artikel_Haendler", artikelId, haendlerId);
 
+                if (GetId("Artikel_Preis", artikelHaendlerId, EinzelPreis) == 0)
+                {
+                    InsertArtikelPreis();
+                    artikelPreisId = GetId("Artikel_Preis", artikelHaendlerId, EinzelPreis);
+                }
+                else
+                    artikelPreisId = GetId("Artikel_Preis", artikelHaendlerId, EinzelPreis);
+            }
         }
-        //private int GetId(string DbTable, string DbColumnName, string DgvColumnName, int index)
+
         private int GetId(params object[] list)
         {
             int id = 0;
@@ -434,32 +438,30 @@ namespace Gartenausgaben
                 DataTable dt = new DataTable();
                 sql_conn.Open();
 
-                if (list[0].ToString() != "Haendler" && list[0].ToString() != "Artikel_Haendler" && list[0].ToString() != "Artikel_Preis")
+                // Get Artikel und Projekt ID
+                if (list[0].ToString() == "Artikel" || list[0].ToString() == "Projekt")
                 {
                     adapterArtikel.Fill(dt);
-
-                    for (int i = 0; i < dataGridView_Einkauf.RowCount; i++)
+                    foreach (DataColumn column in dt.Columns)
                     {
-                        foreach (DataColumn column in dt.Columns)
+                        if (column.ColumnName == list[1].ToString())
                         {
-                            if (column.ColumnName == list[1].ToString())
+                            foreach (DataRow row in dt.Rows)
                             {
-                                foreach (DataRow row in dt.Rows)
+                                for (int j = 0; j < row.ItemArray.Length; j++)
                                 {
-                                    for (int j = 0; j < row.ItemArray.Length; j++)
+                                    if (row.ItemArray[j].ToString() == dataGridView_Einkauf.Rows[(int)list[3]].Cells[list[2].ToString()].Value.ToString())
                                     {
-                                        if (row.ItemArray[j].ToString() == dataGridView_Einkauf.Rows[i].Cells[list[2].ToString()].Value.ToString())
-                                        {
-                                            id = (int)row.ItemArray[0];
-                                            return id;
-                                        }
+                                        id = (int)row.ItemArray[0];
+                                        return id;
                                     }
-                                }
-                            }
-                        }
-                    }
+                                } 
+                            } 
+                        } 
+                    } 
                 }
-                // Hole Haendler ID
+
+                // Get Haendler ID
                 else if (list[0].ToString() == "Haendler")
                 {
                     adapterHaendler.Fill(dt);
@@ -474,7 +476,7 @@ namespace Gartenausgaben
                     }
                 }
 
-                // Hole ArtikelHaendlerID
+                // Get ArtikelHaendlerID
                 else if (list[0].ToString() == "Artikel_Haendler")
                 {
                     adapterArtikelHaendler.Fill(dt);
@@ -501,24 +503,31 @@ namespace Gartenausgaben
                             id = 0;
                     }
                 }
+
                 sql_conn.Close();
             }
                 return id;
         }
-        private void SetEinzelpreis()
-        {
-            for (int i = 0; i < dataGridView_Einkauf.Columns.Count; i++)
-            {
-                if (dataGridView_Einkauf.Columns[i].Name == "Einzelpreis")
-                {
-                    for (int j = 0; j < dataGridView_Einkauf.RowCount; j++)
-                    {
-                        GetEinzelPreis = Convert.ToDecimal(dataGridView_Einkauf.Rows[j].Cells[i].Value);
-                    }
 
-                }
-            }
+        private void SetEinzelpreis(int row)
+        {
+            for (int i = 0; i < dataGridView_Einkauf.Columns.Count; i++) 
+            {
+                if (dataGridView_Einkauf.Columns[i].Name == "Einzelpreis") 
+                {
+                    for (int j = 0; j < dataGridView_Einkauf.RowCount; j++) 
+                    {
+                        if (j == row) 
+                        {
+                            EinzelPreis = Convert.ToDecimal(dataGridView_Einkauf.Rows[j].Cells[i].Value);
+                            break;
+                        } 
+                    }
+                    break; 
+                } 
+            } 
         }
+
         private void InsertArtikelHaendler()
         {
             string sql_Insert = "INSERT INTO Artikel_Haendler (Artikel_ID, Haendler_ID) " + "VALUES (@Artikel_ID, @Haendler_ID)";
@@ -543,7 +552,7 @@ namespace Gartenausgaben
             using (SqlCommand command = new SqlCommand(sql_Insert, sql_conn))
             {
                 command.Parameters.Add("@ArtikelHaendler_ID", SqlDbType.Int).Value = artikelHaendlerId;
-                command.Parameters.Add("@Artikelpreis", SqlDbType.Decimal).Value = GetEinzelPreis;
+                command.Parameters.Add("@Artikelpreis", SqlDbType.Decimal).Value = EinzelPreis;
                 command.Parameters.Add("@Datum", SqlDbType.Date).Value = dateTimePickerDatum.Value.Date;
                 sql_conn.Open();
                 command.ExecuteNonQuery();
@@ -633,6 +642,7 @@ namespace Gartenausgaben
                 MessageBox.Show("Bitte überprüfen Sie Ihre Eingaben. Die Felder Menge, Einzelpreis und Artikel müssen ausgefüllt sein", "Achtung", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         private void SetDataGrid_Tabelle()
         {
             dataGridView_Einkauf.ColumnCount = 6;
@@ -685,6 +695,7 @@ namespace Gartenausgaben
             LadeArtikelNeu("Artikel_ID");
             tb_NeuerArtikel.Clear();
         }
+
         private void LadeEinzelpreis()
         {
             var haendler = cb_Haendler.Text;
