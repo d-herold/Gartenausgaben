@@ -54,6 +54,7 @@
             this.lbl_Haendler = new System.Windows.Forms.Label();
             this.numericUpDown_Menge = new System.Windows.Forms.NumericUpDown();
             this.numericUpDown_Einzelpreis = new System.Windows.Forms.NumericUpDown();
+            this.btnMietgeraete = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_Einkauf)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Menge)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Einzelpreis)).BeginInit();
@@ -161,7 +162,7 @@
             // 
             // BtnClose
             // 
-            this.BtnClose.Location = new System.Drawing.Point(233, 503);
+            this.BtnClose.Location = new System.Drawing.Point(240, 503);
             this.BtnClose.Margin = new System.Windows.Forms.Padding(2);
             this.BtnClose.Name = "BtnClose";
             this.BtnClose.Size = new System.Drawing.Size(143, 41);
@@ -191,7 +192,7 @@
             // 
             // btnNeuerHaendler
             // 
-            this.btnNeuerHaendler.Location = new System.Drawing.Point(433, 503);
+            this.btnNeuerHaendler.Location = new System.Drawing.Point(439, 503);
             this.btnNeuerHaendler.Margin = new System.Windows.Forms.Padding(2);
             this.btnNeuerHaendler.Name = "btnNeuerHaendler";
             this.btnNeuerHaendler.Size = new System.Drawing.Size(143, 41);
@@ -318,12 +319,23 @@
             this.numericUpDown_Einzelpreis.TabIndex = 128;
             this.numericUpDown_Einzelpreis.ValueChanged += new System.EventHandler(this.numericUpDown_Einzelpreis_ValueChanged);
             // 
+            // btnMietgeraete
+            // 
+            this.btnMietgeraete.Location = new System.Drawing.Point(638, 503);
+            this.btnMietgeraete.Margin = new System.Windows.Forms.Padding(2);
+            this.btnMietgeraete.Name = "btnMietgeraete";
+            this.btnMietgeraete.Size = new System.Drawing.Size(143, 41);
+            this.btnMietgeraete.TabIndex = 129;
+            this.btnMietgeraete.Text = "Mietgeräte / Mietfahrzeuge";
+            this.btnMietgeraete.UseVisualStyleBackColor = true;
+            // 
             // Invoice
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1169, 671);
+            this.Controls.Add(this.btnMietgeraete);
             this.Controls.Add(this.numericUpDown_Einzelpreis);
             this.Controls.Add(this.numericUpDown_Menge);
             this.Controls.Add(this.lbl_Haendler);
@@ -390,6 +402,7 @@
         private System.Windows.Forms.Label lbl_Haendler;
         private System.Windows.Forms.NumericUpDown numericUpDown_Menge;
         private System.Windows.Forms.NumericUpDown numericUpDown_Einzelpreis;
+        private System.Windows.Forms.Button btnMietgeraete;
     }
 }
 

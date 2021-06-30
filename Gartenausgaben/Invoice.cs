@@ -37,6 +37,8 @@ namespace Gartenausgaben
         int haendlerId;
         int artikelPreisId;
         int artikelHaendlerId;
+        int einkaufId;
+        int einkaufspositionId;
 
 
         public Invoice()
@@ -126,7 +128,6 @@ namespace Gartenausgaben
             }
             set
             {
-                this.gesamtBetrag = Convert.ToDecimal(tb_GesamtBetrag.Text);
                 gesamtBetrag = value;
             }
         }
@@ -136,7 +137,7 @@ namespace Gartenausgaben
             //gesamtBetrag = numericUpDown_Einzelpreis.Value * numericUpDown_Menge.Value;
 
             GesamtBetrag = numericUpDown_Einzelpreis.Value * numericUpDown_Menge.Value;
-            tb_GesamtBetrag.Text = gesamtBetrag.ToString("0.00");
+            tb_GesamtBetrag.Text = GesamtBetrag.ToString("0.00");
 
         }
 
@@ -367,8 +368,9 @@ namespace Gartenausgaben
 
                 sql_conn.Close();
             }
+            SetNewEinkaufId();
 
-            /* 1. Hole Einkauf_ID und erhöhe um eins
+            /* 1. Setze neuen Einkauf 
              * 2. Hole Händler ID
              * 3. Nimm erste Reihe DGV
              * 4. Hole die ID Artikel und Projekt ID
@@ -378,6 +380,8 @@ namespace Gartenausgaben
              * 6. Hole Menge
              * 7. Trage in Tabelle Einkaufposition erste Reihe DGV ein (ID)
              * 8. Nimm nächste Reihe DGV
+             * 9. Mietgeräte einbinden
+             * 10 Verbindungen zwischen Miet und Einkauf herstellen
              * */
 
 
@@ -390,28 +394,82 @@ namespace Gartenausgaben
             {
                 SetEinzelpreis(row.Index);
 
-                //GetId(DbTable, DbColumnName, DgvColumnName, DgvRowIndex)
                 artikelId = GetId("Artikel", "Artikelbezeichnung", "Artikel", row.Index);
                 projektId = GetId("Projekt", "Projektname", "Projekt", row.Index);
-                haendlerId = GetId("Haendler", "Name", lbl_Haendler.Text.Remove(lbl_Haendler.Text.IndexOf(",")));
-                if (GetId("Artikel_Haendler", artikelId, haendlerId) == 0)
-                {
-                    InsertArtikelHaendler();
-                    artikelHaendlerId = GetId("Artikel_Haendler", artikelId, haendlerId);
-                }
-                else
-                    artikelHaendlerId = GetId("Artikel_Haendler", artikelId, haendlerId);
+                artikelHaendlerId = GetId("Artikel_Haendler", artikelId, haendlerId);
 
-                if (GetId("Artikel_Preis", artikelHaendlerId, EinzelPreis) == 0)
-                {
+                if (artikelHaendlerId == 0)
+                    InsertArtikelHaendler();
+
+                artikelPreisId = GetId("Artikel_Preis", artikelHaendlerId, EinzelPreis);
+
+                if (artikelPreisId == 0)
                     InsertArtikelPreis();
-                    artikelPreisId = GetId("Artikel_Preis", artikelHaendlerId, EinzelPreis);
-                }
-                else
-                    artikelPreisId = GetId("Artikel_Preis", artikelHaendlerId, EinzelPreis);
+
+                SetEinkaufsposition();
             }
         }
 
+        private int SetEinkaufsposition()
+        {
+            string sql_Insert = "INSERT INTO Einkaufpositionen (Menge, Projekt_ID, Artikel_ID, Einkauf_ID, Preis_ID) " + "VALUES (@Menge,  @ProjektId, @ArtikelId, @Einkauf_Id, @PreisId); "
+                + "SELECT CAST(scope_identity() AS int)";
+
+            using (SqlConnection sql_conn = new SqlConnection(conn))
+            using (SqlCommand command = new SqlCommand(sql_Insert, sql_conn))
+            {
+                command.Parameters.Add("@ArtikelId", SqlDbType.Int).Value = artikelId;
+                command.Parameters.Add("@ProjektId", SqlDbType.Decimal).Value = projektId;
+                command.Parameters.Add("@Einkauf_Id", SqlDbType.Int).Value = einkaufId;
+                command.Parameters.Add("@PreisId", SqlDbType.Decimal).Value = artikelPreisId;
+                command.Parameters.Add("@Menge", SqlDbType.Decimal).Value = ArtikelMenge;
+                try
+                {
+                    sql_conn.Open();
+                    einkaufspositionId = (Int32)command.ExecuteScalar();
+                    sql_conn.Close();
+                    return einkaufspositionId;
+                }
+                catch
+                {
+                    MessageBox.Show("Es ist ein Fehler, beim Eintragen in der Tabelle \"Einkaufspositionen\" aufgetreten", "Achtung", MessageBoxButtons.OK);
+                    return 0;
+                }
+            }
+            
+        }
+
+        private int SetNewEinkaufId()
+        {
+            haendlerId = GetId("Haendler", "Name", lbl_Haendler.Text.Remove(lbl_Haendler.Text.IndexOf(",")));
+            string sql_Insert = "INSERT INTO Einkauf (Datum, Haendler_ID)" + "VALUES (@Datum, @HaendlerID); " + "SELECT CAST(scope_identity() AS int)";
+
+            using (SqlConnection sql_conn = new SqlConnection(conn))
+            using (SqlCommand command = new SqlCommand(sql_Insert, sql_conn))
+            {
+                command.Parameters.Add("@Datum", SqlDbType.Date).Value = dateTimePickerDatum.Value.Date;
+                command.Parameters.Add("@HaendlerID", SqlDbType.Int).Value = haendlerId;
+                try
+                {
+                    sql_conn.Open();
+                    einkaufId = (Int32)command.ExecuteScalar();
+                    sql_conn.Close();
+                }
+                catch
+                {
+                    MessageBox.Show("Es ist ein Fehler, beim Eintragen einer neuen Einkauf_ID aufgetreten", "Achtung", MessageBoxButtons.OK);
+                }
+            }
+            return einkaufId;
+        }
+
+        /// <summary>
+        /// Funktion zum Abrufen und Setzen der jeweiligen Primärschlüssel aus der Datenbank <br></br>
+        /// GetId(string DbTable,string DbColumnName, string DgvColumnName, int DgvRowIndex)
+        /// </summary>
+        /// <param name="list"></param>
+        /// <paramref>GetId(DbTable, DbColumnName, DgvColumnName, DgvRowIndex)</paramref>
+        /// <returns>ID</returns>
         private int GetId(params object[] list)
         {
             int id = 0;
@@ -420,12 +478,12 @@ namespace Gartenausgaben
 
             using (SqlConnection sql_conn = new SqlConnection(conn))
             {
-                string sql_Select_Artikel = "SELECT * FROM " + list[0];
+                string sql_Select = "SELECT * FROM " + list[0];
                 string sql_Select_Haendler = "SELECT * FROM " + list[0] + " WHERE Ort = @Ort";
                 string sql_Select_ArtikelHaendler = "SELECT * FROM " + list[0] + " WHERE Artikel_ID = @Artikel_ID AND Haendler_ID = @Haendler_ID";
                 string sql_Select_ArtikelPreis = "SELECT * FROM " + list[0] + " WHERE ArtikelHaendler_ID = @ArtikelHaendler_ID AND Artikelpreis = @Artikelpreis";
 
-                SqlDataAdapter adapterArtikel = new SqlDataAdapter(sql_Select_Artikel, sql_conn);
+                SqlDataAdapter adapter = new SqlDataAdapter(sql_Select, sql_conn);
                 SqlDataAdapter adapterHaendler = new SqlDataAdapter(sql_Select_Haendler, sql_conn);
                 SqlDataAdapter adapterArtikelHaendler = new SqlDataAdapter(sql_Select_ArtikelHaendler, sql_conn);
                 SqlDataAdapter adapterArtikelPreis = new SqlDataAdapter(sql_Select_ArtikelPreis, sql_conn);
@@ -438,10 +496,10 @@ namespace Gartenausgaben
                 DataTable dt = new DataTable();
                 sql_conn.Open();
 
-                // Get Artikel und Projekt ID
+                /// <value>Gibt die Artikel ID oder Projekt ID zuück</value>
                 if (list[0].ToString() == "Artikel" || list[0].ToString() == "Projekt")
                 {
-                    adapterArtikel.Fill(dt);
+                    adapter.Fill(dt);
                     foreach (DataColumn column in dt.Columns)
                     {
                         if (column.ColumnName == list[1].ToString())
@@ -461,7 +519,7 @@ namespace Gartenausgaben
                     } 
                 }
 
-                // Get Haendler ID
+                /// <value>Gibt die Händler ID zuück</value> 
                 else if (list[0].ToString() == "Haendler")
                 {
                     adapterHaendler.Fill(dt);
@@ -471,12 +529,15 @@ namespace Gartenausgaben
                         for (int j = 0; j < row.ItemArray.Length; j++)
                         {
                             if (row.ItemArray[j].ToString() == list[2].ToString())
+                            {
                                 id = (int)row.ItemArray[0];
+                                return id;
+                            }
                         }
                     }
                 }
 
-                // Get ArtikelHaendlerID
+                /// <value>Gibt die ArtikelHaendlerID zuück</value> 
                 else if (list[0].ToString() == "Artikel_Haendler")
                 {
                     adapterArtikelHaendler.Fill(dt);
@@ -484,13 +545,16 @@ namespace Gartenausgaben
                     foreach (DataRow row in dt.Rows)
                     {
                         if (row.ItemArray[1].ToString() == list[1].ToString() && row.ItemArray[2].ToString() == list[2].ToString())
+                        {
                             id = (int)row.ItemArray[0];
+                            return id;
+                        }
                         else
                             id = 0;
                     }
                 }
 
-                // Hole ArtikelPreisID
+                /// <value>Gibt die ArtikelPreisID zuück</value>
                 else if (list[0].ToString() == "Artikel_Preis")
                 {
                     adapterArtikelPreis.Fill(dt);
@@ -498,7 +562,10 @@ namespace Gartenausgaben
                     foreach (DataRow row in dt.Rows)
                     {
                         if (row.ItemArray[1].ToString() == list[1].ToString() && row.ItemArray[2].ToString() == list[2].ToString())
+                        {
                             id = (int)row.ItemArray[0];
+                            return id;
+                        }
                         else
                             id = 0;
                     }
@@ -528,25 +595,33 @@ namespace Gartenausgaben
             } 
         }
 
-        private void InsertArtikelHaendler()
+        private int InsertArtikelHaendler()
         {
-            string sql_Insert = "INSERT INTO Artikel_Haendler (Artikel_ID, Haendler_ID) " + "VALUES (@Artikel_ID, @Haendler_ID)";
+            string sql_Insert = "INSERT INTO Artikel_Haendler (Artikel_ID, Haendler_ID) " + "VALUES (@Artikel_ID, @Haendler_ID); " + "SELECT CAST(scope_identity() AS int)";
 
             using (SqlConnection sql_conn = new SqlConnection(conn))
             using (SqlCommand command = new SqlCommand(sql_Insert, sql_conn))
             {
                 command.Parameters.Add("@Artikel_ID", SqlDbType.Int).Value = artikelId;
                 command.Parameters.Add("@Haendler_ID", SqlDbType.Int).Value = haendlerId;
-                sql_conn.Open();
-                command.ExecuteNonQuery();
-                sql_conn.Close();
+                try
+                {
+                    sql_conn.Open();
+                    artikelHaendlerId = (Int32)command.ExecuteScalar();
+                    sql_conn.Close();
+                }
+                catch
+                {
+                    MessageBox.Show("Es ist ein Fehler, beim Eintragen der Artikel_Händler_ID aufgetreten", "Achtung", MessageBoxButtons.OK);
+                }
             }
+            return artikelHaendlerId;
             
         }
 
         private void InsertArtikelPreis()
         {
-            string sql_Insert = "INSERT INTO Artikel_Preis (ArtikelHaendler_ID, Artikelpreis, Datum) " + "VALUES (@ArtikelHaendler_ID, @Artikelpreis, @Datum)";
+            string sql_Insert = "INSERT INTO Artikel_Preis (ArtikelHaendler_ID, Artikelpreis, Datum) " + "VALUES (@ArtikelHaendler_ID, @Artikelpreis, @Datum); " + "SELECT CAST(scope_identity() AS int)";
 
             using (SqlConnection sql_conn = new SqlConnection(conn))
             using (SqlCommand command = new SqlCommand(sql_Insert, sql_conn))
@@ -554,9 +629,16 @@ namespace Gartenausgaben
                 command.Parameters.Add("@ArtikelHaendler_ID", SqlDbType.Int).Value = artikelHaendlerId;
                 command.Parameters.Add("@Artikelpreis", SqlDbType.Decimal).Value = EinzelPreis;
                 command.Parameters.Add("@Datum", SqlDbType.Date).Value = dateTimePickerDatum.Value.Date;
-                sql_conn.Open();
-                command.ExecuteNonQuery();
-                sql_conn.Close();
+                try
+                {
+                    sql_conn.Open();
+                    artikelPreisId = (Int32)command.ExecuteScalar();
+                    sql_conn.Close();
+                }
+                catch
+                {
+                    MessageBox.Show("Es ist ein Fehler, beim Eintragen der Artikel_Preis_ID aufgetreten", "Achtung", MessageBoxButtons.OK);
+                }
             }
         }
 
