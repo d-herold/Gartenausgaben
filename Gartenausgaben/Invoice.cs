@@ -22,7 +22,7 @@ namespace Gartenausgaben
     public partial class Invoice : Form
     {
         decimal einzelPreis;
-        int artikelMenge;
+        int menge;
         decimal gesamtBetrag;
         string conn = Properties.Settings.Default.GartenDB; // Connection String aus der App.config
         //string conn = Properties.Settings.Default.GartenProjekteConnectionString; // Connection String aus der App.config
@@ -107,16 +107,15 @@ namespace Gartenausgaben
             }
         }
                                                                                                                 
-        public int ArtikelMenge
+        public int Menge
         {
             get
             {
-                return artikelMenge;
+                return menge;
             }
             set
             {
-                artikelMenge = Convert.ToInt32(value);
-                //artikelMenge = numericUpDown_Menge.Value;
+                menge = value;
             }
         }
 
@@ -134,11 +133,8 @@ namespace Gartenausgaben
 
         private void CalculateAmount()
         {
-            //gesamtBetrag = numericUpDown_Einzelpreis.Value * numericUpDown_Menge.Value;
-
             GesamtBetrag = numericUpDown_Einzelpreis.Value * numericUpDown_Menge.Value;
             tb_GesamtBetrag.Text = GesamtBetrag.ToString("0.00");
-
         }
 
         /// <summary>
@@ -184,6 +180,9 @@ namespace Gartenausgaben
             cb_Artikel.DisplayMember = "Artikelbezeichnung";
             cb_Artikel.ValueMember = "[Artikel_ID]";
             cb_Artikel.DataSource = tblData_Artikel;
+
+            //nochmaliges zuweisen, da Artikel am Anfang noch nicht geladen wurden und der Einzelpreis sonst leer bleibt
+            cb_Haendler.DataSource = tblData_Haendler;
 
 
             //Projektdaten laden
@@ -380,9 +379,8 @@ namespace Gartenausgaben
              * 6. Hole Menge
              * 7. Trage in Tabelle Einkaufposition erste Reihe DGV ein (ID)
              * 8. Nimm nächste Reihe DGV
-             * 9. Mietgeräte einbinden
-             * 10 Verbindungen zwischen Miet und Einkauf herstellen
-             * */
+             *
+             */
 
 
 
@@ -392,7 +390,7 @@ namespace Gartenausgaben
 
             foreach (DataGridViewRow row in dataGridView_Einkauf.Rows)
             {
-                SetEinzelpreis(row.Index);
+                SetEinzelpreisUndMenge(row.Index);
 
                 artikelId = GetId("Artikel", "Artikelbezeichnung", "Artikel", row.Index);
                 projektId = GetId("Projekt", "Projektname", "Projekt", row.Index);
@@ -406,13 +404,15 @@ namespace Gartenausgaben
                 if (artikelPreisId == 0)
                     InsertArtikelPreis();
 
+                
                 SetEinkaufsposition();
+
             }
         }
 
         private int SetEinkaufsposition()
         {
-            string sql_Insert = "INSERT INTO Einkaufpositionen (Menge, Projekt_ID, Artikel_ID, Einkauf_ID, Preis_ID) " + "VALUES (@Menge,  @ProjektId, @ArtikelId, @Einkauf_Id, @PreisId); "
+            string sql_Insert = "INSERT INTO Einkaufpositionen (Menge, Projekt_ID, Artikel_ID, Einkauf_ID, Preis_ID) " + "VALUES (@Menge,  @ProjektId, @ArtikelId, @EinkaufId, @PreisId); "
                 + "SELECT CAST(scope_identity() AS int)";
 
             using (SqlConnection sql_conn = new SqlConnection(conn))
@@ -420,9 +420,9 @@ namespace Gartenausgaben
             {
                 command.Parameters.Add("@ArtikelId", SqlDbType.Int).Value = artikelId;
                 command.Parameters.Add("@ProjektId", SqlDbType.Decimal).Value = projektId;
-                command.Parameters.Add("@Einkauf_Id", SqlDbType.Int).Value = einkaufId;
+                command.Parameters.Add("@EinkaufId", SqlDbType.Int).Value = einkaufId;
                 command.Parameters.Add("@PreisId", SqlDbType.Decimal).Value = artikelPreisId;
-                command.Parameters.Add("@Menge", SqlDbType.Decimal).Value = ArtikelMenge;
+                command.Parameters.Add("@Menge", SqlDbType.Int).Value = Menge;
                 try
                 {
                     sql_conn.Open();
@@ -576,21 +576,23 @@ namespace Gartenausgaben
                 return id;
         }
 
-        private void SetEinzelpreis(int row)
+        private void SetEinzelpreisUndMenge(int row)
         {
             for (int i = 0; i < dataGridView_Einkauf.Columns.Count; i++) 
             {
-                if (dataGridView_Einkauf.Columns[i].Name == "Einzelpreis") 
+                if (dataGridView_Einkauf.Columns[i].Name == "Einzelpreis" || dataGridView_Einkauf.Columns[i].Name == "Menge") 
                 {
                     for (int j = 0; j < dataGridView_Einkauf.RowCount; j++) 
                     {
-                        if (j == row) 
+                        if (j == row && dataGridView_Einkauf.Columns[i].Name == "Einzelpreis")
                         {
                             EinzelPreis = Convert.ToDecimal(dataGridView_Einkauf.Rows[j].Cells[i].Value);
-                            break;
-                        } 
+                        }
+                        else if (j == row && dataGridView_Einkauf.Columns[i].Name == "Menge")
+                        {
+                            Menge = Convert.ToInt32(dataGridView_Einkauf.Rows[j].Cells[i].Value);
+                        }
                     }
-                    break; 
                 } 
             } 
         }
@@ -780,7 +782,15 @@ namespace Gartenausgaben
 
         private void LadeEinzelpreis()
         {
+            
+            //var haendler = cb_Haendler.Text;
+            char[] charToTrim = { ',', ' ' };
+            var ort = cb_Haendler.Text.Substring(cb_Haendler.Text.IndexOf(',')).TrimStart(charToTrim);
             var haendler = cb_Haendler.Text;
+ 
+            string[] subs = haendler.Split(',');
+            haendler = subs[0];
+
             var artikel = cb_Artikel.Text;
 
             if (cb_Haendler.Text != "" && cb_Artikel.Text != "")
@@ -793,22 +803,38 @@ namespace Gartenausgaben
                             "JOIN Artikel_Haendler ON Artikel_Haendler.ArtikelHaendler_ID = Artikel_Preis.ArtikelHaendler_ID " +
                             "JOIN Artikel ON Artikel.Artikel_ID = Artikel_Haendler.Artikel_ID " +
                             "JOIN Haendler ON Haendler.Haendler_ID = Artikel_Haendler.Haendler_ID " +
-                            "WHERE Haendler.Name = @Name AND Artikel.Artikelbezeichnung = @Artikelbezeichnung";
+                            "WHERE Haendler.Name = @Name AND Haendler.Ort = @Ort AND Artikel.Artikelbezeichnung = @Artikelbezeichnung " +
+                            "ORDER BY Datum DESC";
+
+
+                    //string artikelPreis = "SELECT Artikelpreis FROM Artikel_Preis " + "WHERE Artikel_Preis.Datum =" + " (SELECT MAX(Artikel_Preis.Datum) FROM Artikel_Preis " +
+                    //        "JOIN Artikel_Haendler ON Artikel_Haendler.ArtikelHaendler_ID = Artikel_Preis.ArtikelHaendler_ID " +
+                    //        "JOIN Artikel ON Artikel.Artikel_ID = Artikel_Haendler.Artikel_ID " +
+                    //        "JOIN Haendler ON Haendler.Haendler_ID = Artikel_Haendler.Haendler_ID " +
+                    //        "WHERE Haendler.Name = @Name AND Haendler.Ort = @Ort AND Artikel.Artikelbezeichnung = @Artikelbezeichnung)";
 
 
                     SqlCommand sql_command = new SqlCommand(artikelPreis, sql_conn);
                     // Setzten der Paramter für WHERE
                     sql_command.Parameters.Add("@Name", SqlDbType.VarChar).Value = haendler;
+                    sql_command.Parameters.Add("@Ort", SqlDbType.VarChar).Value = ort;
                     sql_command.Parameters.Add("@Artikelbezeichnung", SqlDbType.VarChar).Value = artikel;
 
-                    sql_conn.Open();
+                    try
+                    {
+                        sql_conn.Open();
+                        if (sql_command.ExecuteScalar() != null)
+                            numericUpDown_Einzelpreis.Value = Convert.ToDecimal(sql_command.ExecuteScalar());
+                        else
+                            numericUpDown_Einzelpreis.Value = 0;
+                        sql_conn.Close();
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Es ist ein Fehler, beim Eintragen in der Tabelle \"Einzelpreis\" aufgetreten", "Achtung", MessageBoxButtons.OK);
+                    }
+
                     
-                    if(sql_command.ExecuteScalar() != null)
-                        numericUpDown_Einzelpreis.Value = Convert.ToDecimal(sql_command.ExecuteScalar());
-                    else
-                        numericUpDown_Einzelpreis.Value = 0;
-                    
-                    sql_conn.Close();
                 }
             }
             if (numericUpDown_Menge.Value > 0)
@@ -837,51 +863,15 @@ namespace Gartenausgaben
             CalculateAmount();
         }
 
-        private int PrüfeArtikel()
+        private void btnDgvDelete_Click(object sender, EventArgs e)
         {
-            using (SqlConnection sql_conn = new SqlConnection(conn))
-            {
-                int id;
-                string artikel = cb_Artikel.Text;
-                string sql_SelectArtikel = "SELECT Artikelbezeichnung FROM Artikel WHERE Artikelbezeichnung = @Artikelbezeichnung";
-                string sql_SelectId = "SELECT ID FROM Artikel WHERE Artikelbezeichnung = @Artikelbezeichnung";
-                string sql_InsertArtikel = "INSERT INTO Artikel (Artikelbezeichnung) VALUES (@Artikelbezeichnung)";
+            int count = dataGridView_Einkauf.Rows.Count;
+            dataGridView_Einkauf.Rows.RemoveAt(count-1);
+        }
 
-                SqlCommand sql_command = new SqlCommand(sql_SelectArtikel, sql_conn);
-                
-                sql_command.Parameters.Add("@Artikelbezeichnung", SqlDbType.VarChar).Value = artikel;
-
-                sql_conn.Open();
-
-                if (sql_command.ExecuteScalar() == null)
-                {
-                    SqlCommand sql_command2 = new SqlCommand(sql_InsertArtikel, sql_conn);
-
-                    sql_command2.Parameters.Add("@Artikelbezeichnung", SqlDbType.VarChar).Value = artikel;
-
-                    sql_command2.ExecuteNonQuery();
-
-                    SqlCommand sql_comnand_ID = new SqlCommand(sql_SelectId, sql_conn);
-
-                    id = Convert.ToInt32(sql_comnand_ID.ExecuteScalar().ToString());
-
-                    sql_conn.Close();
-                    return id;
-                }
-                else
-                {
-                    SqlCommand sql_comnand_ID = new SqlCommand(sql_SelectId, sql_conn);
-
-                    id = Convert.ToInt32(sql_comnand_ID.ExecuteScalar().ToString());
-
-                    sql_conn.Close();
-
-                    return id;
-                }
-
-                
-            }
-
+        private void btnAlleLoeschen_Click(object sender, EventArgs e)
+        {
+            dataGridView_Einkauf.Rows.Clear();
         }
     }
 }

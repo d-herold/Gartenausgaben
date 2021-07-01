@@ -54,7 +54,8 @@
             this.lbl_Haendler = new System.Windows.Forms.Label();
             this.numericUpDown_Menge = new System.Windows.Forms.NumericUpDown();
             this.numericUpDown_Einzelpreis = new System.Windows.Forms.NumericUpDown();
-            this.btnMietgeraete = new System.Windows.Forms.Button();
+            this.btnDgvDelete = new System.Windows.Forms.Button();
+            this.btnAlleLoeschen = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_Einkauf)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Menge)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Einzelpreis)).BeginInit();
@@ -255,7 +256,7 @@
             this.dataGridView_Einkauf.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView_Einkauf.Location = new System.Drawing.Point(458, 106);
             this.dataGridView_Einkauf.Name = "dataGridView_Einkauf";
-            this.dataGridView_Einkauf.Size = new System.Drawing.Size(666, 150);
+            this.dataGridView_Einkauf.Size = new System.Drawing.Size(666, 304);
             this.dataGridView_Einkauf.TabIndex = 120;
             // 
             // label9
@@ -319,15 +320,27 @@
             this.numericUpDown_Einzelpreis.TabIndex = 128;
             this.numericUpDown_Einzelpreis.ValueChanged += new System.EventHandler(this.numericUpDown_Einzelpreis_ValueChanged);
             // 
-            // btnMietgeraete
+            // btnDgvDelete
             // 
-            this.btnMietgeraete.Location = new System.Drawing.Point(638, 503);
-            this.btnMietgeraete.Margin = new System.Windows.Forms.Padding(2);
-            this.btnMietgeraete.Name = "btnMietgeraete";
-            this.btnMietgeraete.Size = new System.Drawing.Size(143, 41);
-            this.btnMietgeraete.TabIndex = 129;
-            this.btnMietgeraete.Text = "Mietgeräte / Mietfahrzeuge";
-            this.btnMietgeraete.UseVisualStyleBackColor = true;
+            this.btnDgvDelete.Location = new System.Drawing.Point(629, 503);
+            this.btnDgvDelete.Margin = new System.Windows.Forms.Padding(2);
+            this.btnDgvDelete.Name = "btnDgvDelete";
+            this.btnDgvDelete.Size = new System.Drawing.Size(143, 41);
+            this.btnDgvDelete.TabIndex = 129;
+            this.btnDgvDelete.Text = "Zeile löschen";
+            this.btnDgvDelete.UseVisualStyleBackColor = true;
+            this.btnDgvDelete.Click += new System.EventHandler(this.btnDgvDelete_Click);
+            // 
+            // btnAlleLoeschen
+            // 
+            this.btnAlleLoeschen.Location = new System.Drawing.Point(811, 503);
+            this.btnAlleLoeschen.Margin = new System.Windows.Forms.Padding(2);
+            this.btnAlleLoeschen.Name = "btnAlleLoeschen";
+            this.btnAlleLoeschen.Size = new System.Drawing.Size(143, 41);
+            this.btnAlleLoeschen.TabIndex = 130;
+            this.btnAlleLoeschen.Text = "Alles löschen";
+            this.btnAlleLoeschen.UseVisualStyleBackColor = true;
+            this.btnAlleLoeschen.Click += new System.EventHandler(this.btnAlleLoeschen_Click);
             // 
             // Invoice
             // 
@@ -335,7 +348,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1169, 671);
-            this.Controls.Add(this.btnMietgeraete);
+            this.Controls.Add(this.btnAlleLoeschen);
+            this.Controls.Add(this.btnDgvDelete);
             this.Controls.Add(this.numericUpDown_Einzelpreis);
             this.Controls.Add(this.numericUpDown_Menge);
             this.Controls.Add(this.lbl_Haendler);
@@ -402,7 +416,8 @@
         private System.Windows.Forms.Label lbl_Haendler;
         private System.Windows.Forms.NumericUpDown numericUpDown_Menge;
         private System.Windows.Forms.NumericUpDown numericUpDown_Einzelpreis;
-        private System.Windows.Forms.Button btnMietgeraete;
+        private System.Windows.Forms.Button btnDgvDelete;
+        private System.Windows.Forms.Button btnAlleLoeschen;
     }
 }
 
