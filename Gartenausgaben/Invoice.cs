@@ -862,5 +862,9 @@ namespace Gartenausgaben
             positionDataGridView = count+1;
         }
 
+        private void btnNeuesProjekt_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
