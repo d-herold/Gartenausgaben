@@ -31,7 +31,6 @@ namespace Gartenausgaben
         DataColumn column;
         //DataRow row;
         int positionDataGridView = 1;
-        decimal x = 0.00m;
         int artikelId;
         int projektId;
         int haendlerId;
@@ -369,21 +368,6 @@ namespace Gartenausgaben
             }
             SetNewEinkaufId();
 
-            /* 1. Setze neuen Einkauf 
-             * 2. Hole Händler ID
-             * 3. Nimm erste Reihe DGV
-             * 4. Hole die ID Artikel und Projekt ID
-             * 5. Hole PreisID 
-             *      5.1 Hat Haendler diesen Artikel schon? Stimmt Preis noch?
-             *      5.2 über Abfrage mit Datum Preis == oder != Ist Preis ungleich neue Artikel_HändlerID ---> Preis eintragen mit Datum und ID holen
-             * 6. Hole Menge
-             * 7. Trage in Tabelle Einkaufposition erste Reihe DGV ein (ID)
-             * 8. Nimm nächste Reihe DGV
-             *
-             */
-
-
-
             /* Es muss ein Objekt Einkauf gebildet werden, welches aus verschiedenen Unterobjekten besteht,
            für die Unterobjekte werden Werte gebraucht, die zuerst aus der DataGridView geholt werden müssen. 
             Frage, Muss es gemacht werden?????*/
@@ -665,7 +649,7 @@ namespace Gartenausgaben
         {
             if(numericUpDown_Einzelpreis.Value != 0 && numericUpDown_Menge.Value != 0 && cb_Artikel.Text != "")
             {
-                var row = einkauf.NewRow();
+                DataRow row = einkauf.NewRow();
                 row["Haendler"] = cb_Haendler.Text;
                 row["Datum"] = dateTimePickerDatum.Value;
                 row["Artikel"] = cb_Artikel.Text;
@@ -676,20 +660,17 @@ namespace Gartenausgaben
                 lbl_Datum.Text = dateTimePickerDatum.Value.ToString("dd. MMMM yyyy");
                 lbl_Haendler.Text = cb_Haendler.Text;
 
-                var s = dataGridView_Einkauf.Rows.Count;
-                if (s > 1)
-                {
-                    dataGridView_Einkauf.Rows.Remove(dataGridView_Einkauf.Rows[s - 1]);
-                }
+                var count = dataGridView_Einkauf.Rows.Count;
 
                 dataGridView_Einkauf.Rows.Add(positionDataGridView, numericUpDown_Menge.Value, cb_Artikel.Text, numericUpDown_Einzelpreis.Value, tb_GesamtBetrag.Text, cb_Projekt.Text);
 
                 //Summe aller Gesamtpreise - Zur Kontrolle des Kassenbons
-                if (s > 1)
-                {
-                    x = 0;
+                count = dataGridView_Einkauf.Rows.Count;
+                decimal x = 0.00m;
 
-                    for (int i = 0; i < s; i++)
+                if (count > 1)
+                {
+                    for (int i = 0; i < count; i++)
                     {
                         try
                         {
@@ -704,16 +685,8 @@ namespace Gartenausgaben
                 else
                     x = Convert.ToDecimal(tb_GesamtBetrag.Text);
 
-                dataGridView_Einkauf.Rows.Add("Summe", "", "", "", x + " €");
+                lbl_SummeBetrag.Text = x.ToString() + " €";
 
-                //letzte Zeile Fett darstellen
-                s = dataGridView_Einkauf.Rows.Count;
-                if (s < 2)
-                    dataGridView_Einkauf.Rows[s - 1].DefaultCellStyle.Font = new Font(DataGridView.DefaultFont, FontStyle.Bold);
-                else
-                    dataGridView_Einkauf.Rows[s - 1].DefaultCellStyle.Font = new Font(DataGridView.DefaultFont, FontStyle.Bold);
-
-                //Hochzählen der Positionen
                 positionDataGridView++;
 
                 cb_Artikel.Text = "";
@@ -759,11 +732,11 @@ namespace Gartenausgaben
             dataGridView_Einkauf.RowHeadersVisible = false;
 
             dataGridView_Einkauf.Columns[0].Name = "Position";
-            dataGridView_Einkauf.Columns[0].ValueType = typeof(int);
+            dataGridView_Einkauf.Columns[0].ValueType = typeof(Int16);
             dataGridView_Einkauf.Columns[2].Name = "Artikel";
             dataGridView_Einkauf.Columns[2].ValueType = typeof(string);
             dataGridView_Einkauf.Columns[1].Name = "Menge";
-            dataGridView_Einkauf.Columns[1].ValueType = typeof(Int32);
+            dataGridView_Einkauf.Columns[1].ValueType = typeof(Int16);
             dataGridView_Einkauf.Columns[3].Name = "Einzelpreis";
             dataGridView_Einkauf.Columns[3].ValueType = typeof(decimal);
             dataGridView_Einkauf.Columns[4].Name = "Gesamtpreis";
@@ -869,9 +842,25 @@ namespace Gartenausgaben
             dataGridView_Einkauf.Rows.RemoveAt(count-1);
         }
 
-        private void btnAlleLoeschen_Click(object sender, EventArgs e)
+        private void dataGridView_Einkauf_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            dataGridView_Einkauf.Rows.Clear();
+            DataGridViewRow DataRowa = new DataGridViewRow();
+            DataRowa = dataGridView_Einkauf.CurrentRow;
+            dataGridView_Einkauf.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         }
+
+        private void dataGridView_Einkauf_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e) { 
+        
+            var row = 0;
+            var count = dataGridView_Einkauf.Rows.Count;
+            for (int i = 1; i <= count; i++)
+            {
+                this.dataGridView_Einkauf.Rows[row].Cells["Position"].Value = i;
+                row++;
+                
+            }
+            positionDataGridView = count+1;
+        }
+
     }
 }

@@ -55,7 +55,8 @@
             this.numericUpDown_Menge = new System.Windows.Forms.NumericUpDown();
             this.numericUpDown_Einzelpreis = new System.Windows.Forms.NumericUpDown();
             this.btnDgvDelete = new System.Windows.Forms.Button();
-            this.btnAlleLoeschen = new System.Windows.Forms.Button();
+            this.lbl_Summe = new System.Windows.Forms.Label();
+            this.lbl_SummeBetrag = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_Einkauf)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Menge)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Einzelpreis)).BeginInit();
@@ -63,11 +64,12 @@
             // 
             // tb_GesamtBetrag
             // 
+            this.tb_GesamtBetrag.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tb_GesamtBetrag.Location = new System.Drawing.Point(40, 390);
             this.tb_GesamtBetrag.Margin = new System.Windows.Forms.Padding(2);
             this.tb_GesamtBetrag.Name = "tb_GesamtBetrag";
             this.tb_GesamtBetrag.ReadOnly = true;
-            this.tb_GesamtBetrag.Size = new System.Drawing.Size(144, 20);
+            this.tb_GesamtBetrag.Size = new System.Drawing.Size(144, 26);
             this.tb_GesamtBetrag.TabIndex = 4;
             // 
             // label1
@@ -142,7 +144,7 @@
             // 
             // BtnSave
             // 
-            this.BtnSave.Location = new System.Drawing.Point(41, 503);
+            this.BtnSave.Location = new System.Drawing.Point(981, 503);
             this.BtnSave.Margin = new System.Windows.Forms.Padding(2);
             this.BtnSave.Name = "BtnSave";
             this.BtnSave.Size = new System.Drawing.Size(143, 41);
@@ -153,11 +155,12 @@
             // 
             // dateTimePickerDatum
             // 
+            this.dateTimePickerDatum.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dateTimePickerDatum.Location = new System.Drawing.Point(40, 223);
             this.dateTimePickerDatum.Margin = new System.Windows.Forms.Padding(2);
             this.dateTimePickerDatum.MinDate = new System.DateTime(2000, 1, 1, 0, 0, 0, 0);
             this.dateTimePickerDatum.Name = "dateTimePickerDatum";
-            this.dateTimePickerDatum.Size = new System.Drawing.Size(223, 20);
+            this.dateTimePickerDatum.Size = new System.Drawing.Size(223, 22);
             this.dateTimePickerDatum.TabIndex = 5;
             this.dateTimePickerDatum.Value = new System.DateTime(2020, 11, 9, 0, 0, 0, 0);
             // 
@@ -174,20 +177,22 @@
             // 
             // cb_Projekt
             // 
+            this.cb_Projekt.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cb_Projekt.FormattingEnabled = true;
             this.cb_Projekt.Location = new System.Drawing.Point(40, 438);
             this.cb_Projekt.Margin = new System.Windows.Forms.Padding(2);
             this.cb_Projekt.Name = "cb_Projekt";
-            this.cb_Projekt.Size = new System.Drawing.Size(144, 21);
+            this.cb_Projekt.Size = new System.Drawing.Size(144, 28);
             this.cb_Projekt.TabIndex = 6;
             // 
             // cb_Haendler
             // 
+            this.cb_Haendler.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cb_Haendler.FormattingEnabled = true;
             this.cb_Haendler.Location = new System.Drawing.Point(41, 166);
             this.cb_Haendler.Margin = new System.Windows.Forms.Padding(2);
             this.cb_Haendler.Name = "cb_Haendler";
-            this.cb_Haendler.Size = new System.Drawing.Size(144, 21);
+            this.cb_Haendler.Size = new System.Drawing.Size(144, 28);
             this.cb_Haendler.TabIndex = 7;
             this.cb_Haendler.SelectedIndexChanged += new System.EventHandler(this.cb_Haendler_SelectedIndexChanged);
             // 
@@ -204,7 +209,7 @@
             // 
             // btnEintragen
             // 
-            this.btnEintragen.Location = new System.Drawing.Point(40, 475);
+            this.btnEintragen.Location = new System.Drawing.Point(41, 482);
             this.btnEintragen.Name = "btnEintragen";
             this.btnEintragen.Size = new System.Drawing.Size(144, 23);
             this.btnEintragen.TabIndex = 112;
@@ -224,11 +229,11 @@
             // 
             // tb_NeuerArtikel
             // 
-            this.tb_NeuerArtikel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.tb_NeuerArtikel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tb_NeuerArtikel.Location = new System.Drawing.Point(40, 109);
             this.tb_NeuerArtikel.Margin = new System.Windows.Forms.Padding(2);
             this.tb_NeuerArtikel.Name = "tb_NeuerArtikel";
-            this.tb_NeuerArtikel.Size = new System.Drawing.Size(334, 20);
+            this.tb_NeuerArtikel.Size = new System.Drawing.Size(334, 26);
             this.tb_NeuerArtikel.TabIndex = 117;
             // 
             // BtnNeuerArtikel
@@ -243,10 +248,11 @@
             // 
             // cb_Artikel
             // 
+            this.cb_Artikel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cb_Artikel.FormattingEnabled = true;
             this.cb_Artikel.Location = new System.Drawing.Point(40, 277);
             this.cb_Artikel.Name = "cb_Artikel";
-            this.cb_Artikel.Size = new System.Drawing.Size(334, 21);
+            this.cb_Artikel.Size = new System.Drawing.Size(334, 24);
             this.cb_Artikel.TabIndex = 119;
             this.cb_Artikel.SelectedIndexChanged += new System.EventHandler(this.cb_Artikel_SelectedIndexChanged);
             // 
@@ -258,6 +264,8 @@
             this.dataGridView_Einkauf.Name = "dataGridView_Einkauf";
             this.dataGridView_Einkauf.Size = new System.Drawing.Size(666, 304);
             this.dataGridView_Einkauf.TabIndex = 120;
+            this.dataGridView_Einkauf.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_Einkauf_CellDoubleClick);
+            this.dataGridView_Einkauf.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dataGridView_Einkauf_RowsRemoved);
             // 
             // label9
             // 
@@ -305,18 +313,20 @@
             // 
             // numericUpDown_Menge
             // 
+            this.numericUpDown_Menge.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.numericUpDown_Menge.Location = new System.Drawing.Point(41, 331);
             this.numericUpDown_Menge.Name = "numericUpDown_Menge";
-            this.numericUpDown_Menge.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDown_Menge.Size = new System.Drawing.Size(120, 26);
             this.numericUpDown_Menge.TabIndex = 127;
             this.numericUpDown_Menge.ValueChanged += new System.EventHandler(this.numericUpDown_Menge_ValueChanged);
             // 
             // numericUpDown_Einzelpreis
             // 
             this.numericUpDown_Einzelpreis.DecimalPlaces = 2;
+            this.numericUpDown_Einzelpreis.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.numericUpDown_Einzelpreis.Location = new System.Drawing.Point(230, 331);
             this.numericUpDown_Einzelpreis.Name = "numericUpDown_Einzelpreis";
-            this.numericUpDown_Einzelpreis.Size = new System.Drawing.Size(109, 20);
+            this.numericUpDown_Einzelpreis.Size = new System.Drawing.Size(109, 26);
             this.numericUpDown_Einzelpreis.TabIndex = 128;
             this.numericUpDown_Einzelpreis.ValueChanged += new System.EventHandler(this.numericUpDown_Einzelpreis_ValueChanged);
             // 
@@ -327,20 +337,32 @@
             this.btnDgvDelete.Name = "btnDgvDelete";
             this.btnDgvDelete.Size = new System.Drawing.Size(143, 41);
             this.btnDgvDelete.TabIndex = 129;
-            this.btnDgvDelete.Text = "Zeile löschen";
+            this.btnDgvDelete.Text = "Letzte Zeile löschen";
             this.btnDgvDelete.UseVisualStyleBackColor = true;
             this.btnDgvDelete.Click += new System.EventHandler(this.btnDgvDelete_Click);
             // 
-            // btnAlleLoeschen
+            // lbl_Summe
             // 
-            this.btnAlleLoeschen.Location = new System.Drawing.Point(811, 503);
-            this.btnAlleLoeschen.Margin = new System.Windows.Forms.Padding(2);
-            this.btnAlleLoeschen.Name = "btnAlleLoeschen";
-            this.btnAlleLoeschen.Size = new System.Drawing.Size(143, 41);
-            this.btnAlleLoeschen.TabIndex = 130;
-            this.btnAlleLoeschen.Text = "Alles löschen";
-            this.btnAlleLoeschen.UseVisualStyleBackColor = true;
-            this.btnAlleLoeschen.Click += new System.EventHandler(this.btnAlleLoeschen_Click);
+            this.lbl_Summe.AutoSize = true;
+            this.lbl_Summe.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_Summe.Location = new System.Drawing.Point(885, 415);
+            this.lbl_Summe.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lbl_Summe.Name = "lbl_Summe";
+            this.lbl_Summe.Size = new System.Drawing.Size(108, 29);
+            this.lbl_Summe.TabIndex = 131;
+            this.lbl_Summe.Text = "Summe:";
+            // 
+            // lbl_SummeBetrag
+            // 
+            this.lbl_SummeBetrag.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.lbl_SummeBetrag.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_SummeBetrag.Location = new System.Drawing.Point(997, 413);
+            this.lbl_SummeBetrag.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lbl_SummeBetrag.Name = "lbl_SummeBetrag";
+            this.lbl_SummeBetrag.Size = new System.Drawing.Size(127, 31);
+            this.lbl_SummeBetrag.TabIndex = 132;
+            this.lbl_SummeBetrag.Text = "0,00 €";
+            this.lbl_SummeBetrag.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // Invoice
             // 
@@ -348,7 +370,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1169, 671);
-            this.Controls.Add(this.btnAlleLoeschen);
+            this.Controls.Add(this.lbl_SummeBetrag);
+            this.Controls.Add(this.lbl_Summe);
             this.Controls.Add(this.btnDgvDelete);
             this.Controls.Add(this.numericUpDown_Einzelpreis);
             this.Controls.Add(this.numericUpDown_Menge);
@@ -417,7 +440,8 @@
         private System.Windows.Forms.NumericUpDown numericUpDown_Menge;
         private System.Windows.Forms.NumericUpDown numericUpDown_Einzelpreis;
         private System.Windows.Forms.Button btnDgvDelete;
-        private System.Windows.Forms.Button btnAlleLoeschen;
+        private System.Windows.Forms.Label lbl_Summe;
+        private System.Windows.Forms.Label lbl_SummeBetrag;
     }
 }
 
