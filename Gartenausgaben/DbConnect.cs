@@ -12,52 +12,58 @@ namespace Gartenausgaben
 {
     internal static class DbConnect
     {
+        static string conn = Properties.Settings.Default.GartenDB;
+        //static string conn = Properties.Settings.Default.GartenProjekteConnectionString;
+
         internal static int Db_execute(string sql_Insert)
         {
-            //string conn = Properties.Settings.Default.GartenProjekteConnectionString;
-            string conn = Properties.Settings.Default.GartenDB;
-            SqlConnection sql_conn = new SqlConnection(conn);
-            if (sql_conn.State != ConnectionState.Open) sql_conn.Open();
-            SqlCommand sql_com = new SqlCommand(sql_Insert, sql_conn);
+            using (SqlConnection sql_conn = new SqlConnection(conn))
+            {
+                if (sql_conn.State != ConnectionState.Open) sql_conn.Open();
+                SqlCommand sql_com = new SqlCommand(sql_Insert, sql_conn);
 
-            int nResult = sql_com.ExecuteNonQuery();
-            sql_conn.Close();
-            return nResult;
+                int nResult = sql_com.ExecuteNonQuery();
+                sql_conn.Close();
+                return nResult;
+            }
+            
         }
         internal static bool EqualsArtikel(string artikel)
         {
-            // Connection String aus der App.config 
-            //string conn = Properties.Settings.Default.GartenProjekteConnectionString;
-            string conn = Properties.Settings.Default.GartenDB;
-
-            //Erstellt eine neue Verbindund zur übergebenen Datenbank
-            SqlConnection sql_conn = new SqlConnection(conn);
-            if (sql_conn.State != ConnectionState.Open) sql_conn.Open();
-
             //Abfrage-String für alle Namen aus der Händler Tabelle
-            string querySql = "SELECT Artikel_ID FROM Artikel Where ([Artikelbezeichnung] = @Artikelbezeichnung)";                 // '" + artikel + "'";
+            string querySql = "SELECT Artikel_ID FROM Artikel " + "Where Artikelbezeichnung = @Artikelbezeichnung";
 
-            SqlCommand command = new SqlCommand(querySql, sql_conn);
-
-            command.Parameters.AddWithValue("@Artikelbezeichnung", artikel);
-
-            SqlDataReader reader = command.ExecuteReader();
-
-            if (reader.HasRows)
+            // Connection String aus der App.config 
+            //Erstellt eine neue Verbindund zur übergebenen Datenbank
+            using (SqlConnection sql_conn = new SqlConnection(conn))
             {
-                reader.Close();
-                return true;
-            }
-                
-            else
-            {
-                reader.Close();
+                SqlCommand command = new SqlCommand(querySql, sql_conn);
+                command.Parameters.AddWithValue("@Artikelbezeichnung", artikel);
+                try
+                {
+                    if (sql_conn.State != ConnectionState.Open)
+                        sql_conn.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        reader.Close();
+                        return true;
+                    }
+                    else
+                    {
+                        reader.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
                 return false;
             }
         }
         internal static int AddNeuerArtikel(string newName, string connString)
         {
-            
             int newArtikelID = 0;
             string sql =
                 "INSERT INTO Artikel (Artikelbezeichnung) VALUES (@Artikelbezeichnung); "
@@ -80,6 +86,5 @@ namespace Gartenausgaben
             }
             return newArtikelID;
         }
-        
     }
 }
