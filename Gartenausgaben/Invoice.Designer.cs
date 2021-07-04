@@ -36,16 +36,16 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.BtnSave = new System.Windows.Forms.Button();
+            this.BtnSaveDB = new System.Windows.Forms.Button();
             this.dateTimePickerDatum = new System.Windows.Forms.DateTimePicker();
             this.BtnClose = new System.Windows.Forms.Button();
             this.cb_Projekt = new System.Windows.Forms.ComboBox();
             this.cb_Haendler = new System.Windows.Forms.ComboBox();
-            this.btnNeuerHaendler = new System.Windows.Forms.Button();
-            this.btnEintragen = new System.Windows.Forms.Button();
+            this.BtnNewShop = new System.Windows.Forms.Button();
+            this.BtnCopyToList = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
             this.tb_NeuerArtikel = new System.Windows.Forms.TextBox();
-            this.BtnNeuerArtikel = new System.Windows.Forms.Button();
+            this.BtnNewItem = new System.Windows.Forms.Button();
             this.cb_Artikel = new System.Windows.Forms.ComboBox();
             this.dataGridView_Einkauf = new System.Windows.Forms.DataGridView();
             this.label9 = new System.Windows.Forms.Label();
@@ -54,11 +54,11 @@
             this.lbl_Haendler = new System.Windows.Forms.Label();
             this.numericUpDown_Menge = new System.Windows.Forms.NumericUpDown();
             this.numericUpDown_Einzelpreis = new System.Windows.Forms.NumericUpDown();
-            this.btnDgvDelete = new System.Windows.Forms.Button();
+            this.BtnDgvDeleteLastRow = new System.Windows.Forms.Button();
             this.lbl_Summe = new System.Windows.Forms.Label();
             this.lbl_SummeBetrag = new System.Windows.Forms.Label();
-            this.btnNeuesProjekt = new System.Windows.Forms.Button();
-            this.btnNeuerEinkauf = new System.Windows.Forms.Button();
+            this.BtnNewProject = new System.Windows.Forms.Button();
+            this.BtnNewShopping = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_Einkauf)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Menge)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Einzelpreis)).BeginInit();
@@ -144,16 +144,16 @@
             this.label7.TabIndex = 100;
             this.label7.Text = "Artikel";
             // 
-            // BtnSave
+            // BtnSaveDB
             // 
-            this.BtnSave.Location = new System.Drawing.Point(981, 476);
-            this.BtnSave.Margin = new System.Windows.Forms.Padding(2);
-            this.BtnSave.Name = "BtnSave";
-            this.BtnSave.Size = new System.Drawing.Size(143, 41);
-            this.BtnSave.TabIndex = 8;
-            this.BtnSave.Text = "Speichern";
-            this.BtnSave.UseVisualStyleBackColor = true;
-            this.BtnSave.Click += new System.EventHandler(this.BtnSave_Click);
+            this.BtnSaveDB.Location = new System.Drawing.Point(981, 476);
+            this.BtnSaveDB.Margin = new System.Windows.Forms.Padding(2);
+            this.BtnSaveDB.Name = "BtnSaveDB";
+            this.BtnSaveDB.Size = new System.Drawing.Size(143, 41);
+            this.BtnSaveDB.TabIndex = 8;
+            this.BtnSaveDB.Text = "Speichern";
+            this.BtnSaveDB.UseVisualStyleBackColor = true;
+            this.BtnSaveDB.Click += new System.EventHandler(this.BtnSave_Click);
             // 
             // dateTimePickerDatum
             // 
@@ -196,29 +196,29 @@
             this.cb_Haendler.Name = "cb_Haendler";
             this.cb_Haendler.Size = new System.Drawing.Size(223, 21);
             this.cb_Haendler.TabIndex = 2;
-            this.cb_Haendler.SelectedIndexChanged += new System.EventHandler(this.cb_Haendler_SelectedIndexChanged);
+            this.cb_Haendler.SelectedIndexChanged += new System.EventHandler(this.Cb_Haendler_SelectedIndexChanged);
             // 
-            // btnNeuerHaendler
+            // BtnNewShop
             // 
-            this.btnNeuerHaendler.Location = new System.Drawing.Point(269, 155);
-            this.btnNeuerHaendler.Margin = new System.Windows.Forms.Padding(2);
-            this.btnNeuerHaendler.Name = "btnNeuerHaendler";
-            this.btnNeuerHaendler.Size = new System.Drawing.Size(105, 34);
-            this.btnNeuerHaendler.TabIndex = 109;
-            this.btnNeuerHaendler.Text = "Neuen Händler eintragen";
-            this.btnNeuerHaendler.UseVisualStyleBackColor = true;
-            this.btnNeuerHaendler.Click += new System.EventHandler(this.btnNeuerHaendler_Click);
+            this.BtnNewShop.Location = new System.Drawing.Point(269, 155);
+            this.BtnNewShop.Margin = new System.Windows.Forms.Padding(2);
+            this.BtnNewShop.Name = "BtnNewShop";
+            this.BtnNewShop.Size = new System.Drawing.Size(105, 34);
+            this.BtnNewShop.TabIndex = 109;
+            this.BtnNewShop.Text = "Neuen Händler eintragen";
+            this.BtnNewShop.UseVisualStyleBackColor = true;
+            this.BtnNewShop.Click += new System.EventHandler(this.BtnNeuerHaendler_Click);
             // 
-            // btnEintragen
+            // BtnCopyToList
             // 
-            this.btnEintragen.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEintragen.Location = new System.Drawing.Point(40, 521);
-            this.btnEintragen.Name = "btnEintragen";
-            this.btnEintragen.Size = new System.Drawing.Size(144, 23);
-            this.btnEintragen.TabIndex = 7;
-            this.btnEintragen.Text = "In Liste übernehmen";
-            this.btnEintragen.UseVisualStyleBackColor = true;
-            this.btnEintragen.Click += new System.EventHandler(this.btnEintragen_Click);
+            this.BtnCopyToList.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BtnCopyToList.Location = new System.Drawing.Point(40, 521);
+            this.BtnCopyToList.Name = "BtnCopyToList";
+            this.BtnCopyToList.Size = new System.Drawing.Size(144, 23);
+            this.BtnCopyToList.TabIndex = 7;
+            this.BtnCopyToList.Text = "In Liste übernehmen";
+            this.BtnCopyToList.UseVisualStyleBackColor = true;
+            this.BtnCopyToList.Click += new System.EventHandler(this.BtnEintragen_Click);
             // 
             // label8
             // 
@@ -238,16 +238,17 @@
             this.tb_NeuerArtikel.Name = "tb_NeuerArtikel";
             this.tb_NeuerArtikel.Size = new System.Drawing.Size(224, 22);
             this.tb_NeuerArtikel.TabIndex = 100;
+            this.tb_NeuerArtikel.TextChanged += new System.EventHandler(this.Tb_NeuerArtikel_TextChanged);
             // 
-            // BtnNeuerArtikel
+            // BtnNewItem
             // 
-            this.BtnNeuerArtikel.Location = new System.Drawing.Point(269, 210);
-            this.BtnNeuerArtikel.Name = "BtnNeuerArtikel";
-            this.BtnNeuerArtikel.Size = new System.Drawing.Size(105, 34);
-            this.BtnNeuerArtikel.TabIndex = 101;
-            this.BtnNeuerArtikel.Text = "übernehmen";
-            this.BtnNeuerArtikel.UseVisualStyleBackColor = true;
-            this.BtnNeuerArtikel.Click += new System.EventHandler(this.btnNeuerArtikel_Click);
+            this.BtnNewItem.Location = new System.Drawing.Point(269, 210);
+            this.BtnNewItem.Name = "BtnNewItem";
+            this.BtnNewItem.Size = new System.Drawing.Size(105, 34);
+            this.BtnNewItem.TabIndex = 101;
+            this.BtnNewItem.Text = "übernehmen";
+            this.BtnNewItem.UseVisualStyleBackColor = true;
+            this.BtnNewItem.Click += new System.EventHandler(this.BtnNeuerArtikel_Click);
             // 
             // cb_Artikel
             // 
@@ -257,7 +258,7 @@
             this.cb_Artikel.Name = "cb_Artikel";
             this.cb_Artikel.Size = new System.Drawing.Size(334, 24);
             this.cb_Artikel.TabIndex = 3;
-            this.cb_Artikel.SelectedIndexChanged += new System.EventHandler(this.cb_Artikel_SelectedIndexChanged);
+            this.cb_Artikel.SelectedIndexChanged += new System.EventHandler(this.Cb_Artikel_SelectedIndexChanged);
             // 
             // dataGridView_Einkauf
             // 
@@ -267,8 +268,8 @@
             this.dataGridView_Einkauf.Name = "dataGridView_Einkauf";
             this.dataGridView_Einkauf.Size = new System.Drawing.Size(666, 304);
             this.dataGridView_Einkauf.TabIndex = 120;
-            this.dataGridView_Einkauf.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_Einkauf_CellDoubleClick);
-            this.dataGridView_Einkauf.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dataGridView_Einkauf_RowsRemoved);
+            this.dataGridView_Einkauf.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView_Einkauf_CellDoubleClick);
+            this.dataGridView_Einkauf.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.DataGridView_Einkauf_RowsRemoved);
             // 
             // label9
             // 
@@ -326,7 +327,7 @@
             this.numericUpDown_Menge.Name = "numericUpDown_Menge";
             this.numericUpDown_Menge.Size = new System.Drawing.Size(91, 22);
             this.numericUpDown_Menge.TabIndex = 4;
-            this.numericUpDown_Menge.ValueChanged += new System.EventHandler(this.numericUpDown_Menge_ValueChanged);
+            this.numericUpDown_Menge.ValueChanged += new System.EventHandler(this.NumericUpDown_Menge_ValueChanged);
             // 
             // numericUpDown_Einzelpreis
             // 
@@ -341,18 +342,18 @@
             this.numericUpDown_Einzelpreis.Name = "numericUpDown_Einzelpreis";
             this.numericUpDown_Einzelpreis.Size = new System.Drawing.Size(91, 22);
             this.numericUpDown_Einzelpreis.TabIndex = 5;
-            this.numericUpDown_Einzelpreis.ValueChanged += new System.EventHandler(this.numericUpDown_Einzelpreis_ValueChanged);
+            this.numericUpDown_Einzelpreis.ValueChanged += new System.EventHandler(this.NumericUpDown_Einzelpreis_ValueChanged);
             // 
-            // btnDgvDelete
+            // BtnDgvDeleteLastRow
             // 
-            this.btnDgvDelete.Location = new System.Drawing.Point(230, 521);
-            this.btnDgvDelete.Margin = new System.Windows.Forms.Padding(2);
-            this.btnDgvDelete.Name = "btnDgvDelete";
-            this.btnDgvDelete.Size = new System.Drawing.Size(144, 23);
-            this.btnDgvDelete.TabIndex = 129;
-            this.btnDgvDelete.Text = "Letzte Zeile löschen";
-            this.btnDgvDelete.UseVisualStyleBackColor = true;
-            this.btnDgvDelete.Click += new System.EventHandler(this.btnDgvDelete_Click);
+            this.BtnDgvDeleteLastRow.Location = new System.Drawing.Point(230, 521);
+            this.BtnDgvDeleteLastRow.Margin = new System.Windows.Forms.Padding(2);
+            this.BtnDgvDeleteLastRow.Name = "BtnDgvDeleteLastRow";
+            this.BtnDgvDeleteLastRow.Size = new System.Drawing.Size(144, 23);
+            this.BtnDgvDeleteLastRow.TabIndex = 129;
+            this.BtnDgvDeleteLastRow.Text = "Letzte Zeile löschen";
+            this.BtnDgvDeleteLastRow.UseVisualStyleBackColor = true;
+            this.BtnDgvDeleteLastRow.Click += new System.EventHandler(this.BtnDgvDelete_Click);
             // 
             // lbl_Summe
             // 
@@ -377,26 +378,26 @@
             this.lbl_SummeBetrag.Text = "0,00 €";
             this.lbl_SummeBetrag.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // btnNeuesProjekt
+            // BtnNewProject
             // 
-            this.btnNeuesProjekt.Location = new System.Drawing.Point(269, 428);
-            this.btnNeuesProjekt.Margin = new System.Windows.Forms.Padding(2);
-            this.btnNeuesProjekt.Name = "btnNeuesProjekt";
-            this.btnNeuesProjekt.Size = new System.Drawing.Size(105, 34);
-            this.btnNeuesProjekt.TabIndex = 102;
-            this.btnNeuesProjekt.Text = "Neues Projekt eintragen";
-            this.btnNeuesProjekt.UseVisualStyleBackColor = true;
-            this.btnNeuesProjekt.Click += new System.EventHandler(this.btnNeuesProjekt_Click);
+            this.BtnNewProject.Location = new System.Drawing.Point(269, 428);
+            this.BtnNewProject.Margin = new System.Windows.Forms.Padding(2);
+            this.BtnNewProject.Name = "BtnNewProject";
+            this.BtnNewProject.Size = new System.Drawing.Size(105, 34);
+            this.BtnNewProject.TabIndex = 102;
+            this.BtnNewProject.Text = "Neues Projekt eintragen";
+            this.BtnNewProject.UseVisualStyleBackColor = true;
+            this.BtnNewProject.Click += new System.EventHandler(this.BtnNeuesProjekt_Click);
             // 
-            // btnNeuerEinkauf
+            // BtnNewShopping
             // 
-            this.btnNeuerEinkauf.Location = new System.Drawing.Point(981, 521);
-            this.btnNeuerEinkauf.Margin = new System.Windows.Forms.Padding(2);
-            this.btnNeuerEinkauf.Name = "btnNeuerEinkauf";
-            this.btnNeuerEinkauf.Size = new System.Drawing.Size(143, 41);
-            this.btnNeuerEinkauf.TabIndex = 9;
-            this.btnNeuerEinkauf.Text = "Neu";
-            this.btnNeuerEinkauf.UseVisualStyleBackColor = true;
+            this.BtnNewShopping.Location = new System.Drawing.Point(981, 521);
+            this.BtnNewShopping.Margin = new System.Windows.Forms.Padding(2);
+            this.BtnNewShopping.Name = "BtnNewShopping";
+            this.BtnNewShopping.Size = new System.Drawing.Size(143, 41);
+            this.BtnNewShopping.TabIndex = 9;
+            this.BtnNewShopping.Text = "Neu";
+            this.BtnNewShopping.UseVisualStyleBackColor = true;
             // 
             // Invoice
             // 
@@ -404,11 +405,11 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1165, 654);
-            this.Controls.Add(this.btnNeuerEinkauf);
-            this.Controls.Add(this.btnNeuesProjekt);
+            this.Controls.Add(this.BtnNewShopping);
+            this.Controls.Add(this.BtnNewProject);
             this.Controls.Add(this.lbl_SummeBetrag);
             this.Controls.Add(this.lbl_Summe);
-            this.Controls.Add(this.btnDgvDelete);
+            this.Controls.Add(this.BtnDgvDeleteLastRow);
             this.Controls.Add(this.numericUpDown_Einzelpreis);
             this.Controls.Add(this.numericUpDown_Menge);
             this.Controls.Add(this.lbl_Haendler);
@@ -417,16 +418,16 @@
             this.Controls.Add(this.label9);
             this.Controls.Add(this.dataGridView_Einkauf);
             this.Controls.Add(this.cb_Artikel);
-            this.Controls.Add(this.BtnNeuerArtikel);
+            this.Controls.Add(this.BtnNewItem);
             this.Controls.Add(this.tb_NeuerArtikel);
             this.Controls.Add(this.label8);
-            this.Controls.Add(this.btnEintragen);
-            this.Controls.Add(this.btnNeuerHaendler);
+            this.Controls.Add(this.BtnCopyToList);
+            this.Controls.Add(this.BtnNewShop);
             this.Controls.Add(this.cb_Haendler);
             this.Controls.Add(this.cb_Projekt);
             this.Controls.Add(this.BtnClose);
             this.Controls.Add(this.dateTimePickerDatum);
-            this.Controls.Add(this.BtnSave);
+            this.Controls.Add(this.BtnSaveDB);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
@@ -457,16 +458,16 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Button BtnSave;
+        private System.Windows.Forms.Button BtnSaveDB;
         private System.Windows.Forms.DateTimePicker dateTimePickerDatum;
         private System.Windows.Forms.Button BtnClose;
         private System.Windows.Forms.ComboBox cb_Projekt;
         private System.Windows.Forms.ComboBox cb_Haendler;
-        private System.Windows.Forms.Button btnNeuerHaendler;
-        private System.Windows.Forms.Button btnEintragen;
+        private System.Windows.Forms.Button BtnNewShop;
+        private System.Windows.Forms.Button BtnCopyToList;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox tb_NeuerArtikel;
-        private System.Windows.Forms.Button BtnNeuerArtikel;
+        private System.Windows.Forms.Button BtnNewItem;
         private System.Windows.Forms.ComboBox cb_Artikel;
         private System.Windows.Forms.DataGridView dataGridView_Einkauf;
         private System.Windows.Forms.Label label9;
@@ -475,11 +476,11 @@
         private System.Windows.Forms.Label lbl_Haendler;
         private System.Windows.Forms.NumericUpDown numericUpDown_Menge;
         private System.Windows.Forms.NumericUpDown numericUpDown_Einzelpreis;
-        private System.Windows.Forms.Button btnDgvDelete;
+        private System.Windows.Forms.Button BtnDgvDeleteLastRow;
         private System.Windows.Forms.Label lbl_Summe;
         private System.Windows.Forms.Label lbl_SummeBetrag;
-        private System.Windows.Forms.Button btnNeuesProjekt;
-        private System.Windows.Forms.Button btnNeuerEinkauf;
+        private System.Windows.Forms.Button BtnNewProject;
+        private System.Windows.Forms.Button BtnNewShopping;
     }
 }
 

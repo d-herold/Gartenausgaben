@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Data.SqlTypes;
 using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,11 +22,10 @@ namespace Gartenausgaben
 {
     public partial class Invoice : Form
     {
-        string conn = Properties.Settings.Default.GartenDB; // Connection String aus der App.config
+        readonly string conn = Properties.Settings.Default.GartenDB; // Connection String aus der App.config
         //string conn = Properties.Settings.Default.GartenProjekteConnectionString; // Alter Connection String aus der App.config --> obsolete?
         DataTable einkauf;
-        DataSet datasetEinkauf = new DataSet();
-        DataColumn column;
+        bool listeSort = true;
         int positionDataGridView = 1;
         public decimal EinzelPreis { get; set; }
         public int Menge { get; set; }
@@ -45,41 +45,21 @@ namespace Gartenausgaben
             LadeStartDaten();
             ErstelleDataTable();
             SetDataGrid_Tabelle();
+            BtnNewItem.Enabled = false;
+            
         }
         
         public void ErstelleDataTable()
         {
+            DataSet datasetEinkauf = new DataSet();
             einkauf = new DataTable();
 
-            column = new DataColumn();
-            column.DataType = System.Type.GetType("System.String");
-            column.ColumnName = "Haendler";
-            einkauf.Columns.Add(column);
-
-            column = new DataColumn();
-            column.DataType = System.Type.GetType("System.DateTime");
-            column.ColumnName = "Datum";
-            einkauf.Columns.Add(column);
-
-            column = new DataColumn();
-            column.DataType = System.Type.GetType("System.String");
-            column.ColumnName = "Artikel";
-            einkauf.Columns.Add(column);
-
-            column = new DataColumn();
-            column.DataType = System.Type.GetType("System.Decimal");
-            column.ColumnName = "Einzelpreis";
-            einkauf.Columns.Add(column);
-
-            column = new DataColumn();
-            column.DataType = System.Type.GetType("System.Int32");
-            column.ColumnName = "Menge";
-            einkauf.Columns.Add(column);
-
-            column = new DataColumn();
-            column.DataType = System.Type.GetType("System.String");
-            column.ColumnName = "Projekt";
-            einkauf.Columns.Add(column);
+            einkauf.Columns.Add("Haendler", typeof(String));
+            einkauf.Columns.Add("Datum", typeof(DateTime));
+            einkauf.Columns.Add("Artikel", typeof(String));
+            einkauf.Columns.Add("Einzelpreis", typeof(Decimal));
+            einkauf.Columns.Add("Menge", typeof(Int32));
+            einkauf.Columns.Add("Projekt", typeof(String));
 
             datasetEinkauf.Tables.Add(einkauf);
         }        
@@ -107,54 +87,63 @@ namespace Gartenausgaben
             //string conn = Properties.Settings.Default.GartenProjekteConnectionString;
 
             //Erstellt eine neue Verbindund zur übergebenen Datenbank
-            SqlConnection sql_con = new SqlConnection(conn);
+            using (SqlConnection sql_con = new SqlConnection(conn))
+            {
 
-            //Abfrage-String für alle Namen aus der Händler Tabelle
-            string querySql_Haendler = "SELECT Name, Ort FROM Haendler ORDER BY Name ASC";
-            string querySql_Artikel = "SELECT Artikelbezeichnung FROM Artikel ORDER BY Artikelbezeichnung ASC";
-            string querySql_Projekt = "SELECT Projektname FROM Projekt ORDER BY Projektname ASC";
+                //Abfrage-String für alle Namen aus der Händler Tabelle
+                string querySql_Haendler = "SELECT Name, Ort FROM Haendler ORDER BY Name ASC";
+                string querySql_Artikel = "SELECT Artikelbezeichnung FROM Artikel ORDER BY Artikelbezeichnung ASC";
+                string querySql_Projekt = "SELECT Projektname FROM Projekt ORDER BY Projektname ASC";
 
-            //Erstellt einen Adapter um die Daten aus der DB-Tabelle in eine Tabelle zu laden
-            SqlDataAdapter sql_adapt_Haendler = new SqlDataAdapter(querySql_Haendler, sql_con);
-            SqlDataAdapter sql_adapt_Artikel = new SqlDataAdapter(querySql_Artikel, sql_con);
-            SqlDataAdapter sql_adapt_Projekt = new SqlDataAdapter(querySql_Projekt, sql_con);
+                try
+                {
+                    sql_con.Open();
+                    //Erstellt einen Adapter um die Daten aus der DB-Tabelle in eine Tabelle zu laden
+                    SqlDataAdapter sql_adapt_Haendler = new SqlDataAdapter(querySql_Haendler, sql_con);
+                    SqlDataAdapter sql_adapt_Artikel = new SqlDataAdapter(querySql_Artikel, sql_con);
+                    SqlDataAdapter sql_adapt_Projekt = new SqlDataAdapter(querySql_Projekt, sql_con);
 
-            //Händlerliste laden
-            //Erstellt eine neue Tabelle im Arbeitsspeicher
-            DataTable tblData_Haendler = new DataTable();
-            //Befüllt die DataTable
-            sql_adapt_Haendler.Fill(tblData_Haendler);
+                    //Händlerliste laden
+                    //Erstellt eine neue Tabelle im Arbeitsspeicher
+                    DataTable tblData_Haendler = new DataTable();
+                    //Befüllt die DataTable
+                    sql_adapt_Haendler.Fill(tblData_Haendler);
 
-            //Anzeige in der ComboBox alle Namen der vorhanden Ids
-            tblData_Haendler.Columns.Add("NameOrt", typeof(string), "Name + ', ' + Ort");
+                    //Anzeige in der ComboBox alle Namen der vorhanden Ids
+                    tblData_Haendler.Columns.Add("NameOrt", typeof(string), "Name + ', ' + Ort");
 
-            cb_Haendler.DisplayMember = "NameOrt";
-            cb_Haendler.ValueMember = "[Haendler_ID]";
+                    cb_Haendler.DisplayMember = "NameOrt";
+                    cb_Haendler.ValueMember = "[Haendler_ID]";
 
-            //Zuweisen der Datentabelle zur Datenquelle
-            cb_Haendler.DataSource = tblData_Haendler;
+                    //Zuweisen der Datentabelle zur Datenquelle
+                    cb_Haendler.DataSource = tblData_Haendler;
 
-            //Artikelliste laden
-            DataTable tblData_Artikel = new DataTable();
-            sql_adapt_Artikel.Fill(tblData_Artikel);
+                    //Artikelliste laden
+                    DataTable tblData_Artikel = new DataTable();
+                    sql_adapt_Artikel.Fill(tblData_Artikel);
 
-            cb_Artikel.DisplayMember = "Artikelbezeichnung";
-            cb_Artikel.ValueMember = "[Artikel_ID]";
-            cb_Artikel.DataSource = tblData_Artikel;
+                    cb_Artikel.DisplayMember = "Artikelbezeichnung";
+                    cb_Artikel.ValueMember = "[Artikel_ID]";
+                    cb_Artikel.DataSource = tblData_Artikel;
 
-            //nochmaliges zuweisen, da Artikel am Anfang noch nicht geladen wurden und der Einzelpreis sonst leer bleibt
-            cb_Haendler.DataSource = tblData_Haendler;
+                    //nochmaliges zuweisen, da Artikel am Anfang noch nicht geladen wurden und der Einzelpreis sonst leer bleibt
+                    cb_Haendler.DataSource = tblData_Haendler;
 
 
-            //Projektdaten laden
-            DataTable tblData_Projekt = new DataTable();
-            sql_adapt_Projekt.Fill(tblData_Projekt);
+                    //Projektdaten laden
+                    DataTable tblData_Projekt = new DataTable();
+                    sql_adapt_Projekt.Fill(tblData_Projekt);
 
-            cb_Projekt.DisplayMember = "Projektname";
-            cb_Projekt.ValueMember = "[Projekt_ID]";
-            cb_Projekt.DataSource = tblData_Projekt;
-
-            sql_con.Close();
+                    cb_Projekt.DisplayMember = "Projektname";
+                    cb_Projekt.ValueMember = "[Projekt_ID]";
+                    cb_Projekt.DataSource = tblData_Projekt;
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show("Achtung: " + ex.Message);
+                }
+                sql_con.Close();
+            }
             lbl_Haendler.Text = cb_Haendler.Text;
             lbl_Datum.Text = dateTimePickerDatum.Value.ToString("dd. MMMM yyyy");
         }
@@ -194,27 +183,67 @@ namespace Gartenausgaben
         /// Sortierung nach ID Absteigend
         /// </summary>
         /// <param name="sort"></param>
-        public void LadeArtikelNeu(string sort)
+        public void LadeArtikelNeu(string sort, string orderBy)
         {
             // Connection String aus der App.config 
             //string conn = Properties.Settings.Default.GartenProjekteConnectionString;
 
-            //Abfrage-String für alle Namen aus der Händler Tabelle
-            string querySql_Artikel = "SELECT Artikelbezeichnung FROM Artikel ORDER BY " + sort + " DESC";
+            string querySql_Artikel = "SELECT Artikelbezeichnung FROM Artikel ORDER BY " + sort + " " + orderBy;
 
             //Erstellt eine neue Verbindund zur übergebenen Datenbank
             using (SqlConnection sql_con = new SqlConnection(conn))
             {
-                //Erstellt einen Adapter um die Daten aus der DB-Tabelle in eine Tabelle zu laden
-                SqlDataAdapter sql_adapt_Artikel = new SqlDataAdapter(querySql_Artikel, sql_con);
+                try
+                {
+                    sql_con.Open();
+                    //Erstellt einen Adapter um die Daten aus der DB-Tabelle in eine Tabelle zu laden
+                    SqlDataAdapter sql_adapt_Artikel = new SqlDataAdapter(querySql_Artikel, sql_con);
 
-                DataTable tblData_Artikel = new DataTable();
-                sql_adapt_Artikel.Fill(tblData_Artikel);
+                    DataTable tblData_Artikel = new DataTable();
 
-                cb_Artikel.DisplayMember = "Artikelbezeichnung";
-                cb_Artikel.ValueMember = "[Artikel_ID]";
-                cb_Artikel.DataSource = tblData_Artikel;
 
+                    sql_adapt_Artikel.Fill(tblData_Artikel);
+
+                    cb_Artikel.DisplayMember = "Artikelbezeichnung";
+                    cb_Artikel.ValueMember = "[Artikel_ID]";
+                    cb_Artikel.DataSource = tblData_Artikel;
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show("Exception Message: " + ex.Message);
+                }
+                sql_con.Close();
+            }
+        }
+        public void LadeProjektNeu(string sort, string orderBy)
+        {
+            // Connection String aus der App.config 
+            //string conn = Properties.Settings.Default.GartenProjekteConnectionString;
+
+            string querySql_Projekt = "SELECT Projektname FROM Projekt ORDER BY " + sort + " " + orderBy;
+
+            //Erstellt eine neue Verbindund zur übergebenen Datenbank
+            using (SqlConnection sql_con = new SqlConnection(conn))
+            {
+                try
+                {
+                    sql_con.Open();
+                    //Erstellt einen Adapter um die Daten aus der DB-Tabelle in eine Tabelle zu laden
+                    SqlDataAdapter sql_adapt_Projekt = new SqlDataAdapter(querySql_Projekt, sql_con);
+
+                    DataTable tblData_Projekt = new DataTable();
+
+
+                    sql_adapt_Projekt.Fill(tblData_Projekt);
+
+                    cb_Projekt.DisplayMember = "Projektname";
+                    cb_Projekt.ValueMember = "[Projekt_ID]";
+                    cb_Projekt.DataSource = tblData_Projekt;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Exception Message: " + ex.Message);
+                }
                 sql_con.Close();
             }
         }
@@ -266,31 +295,38 @@ namespace Gartenausgaben
                 string querySql6 = "SELECT * FROM Projekt";
                 string querySql7 = "SELECT * FROM Einkauf";
 
-                //Erstellt einen Adapter um die Daten aus der DB-Tabelle in eine Tabelle zu laden
-                SqlDataAdapter sql_adapt1 = new SqlDataAdapter(querySql1, sql_conn);
-                SqlDataAdapter sql_adapt2 = new SqlDataAdapter(querySql2, sql_conn);
-                SqlDataAdapter sql_adapt3 = new SqlDataAdapter(querySql3, sql_conn);
-                SqlDataAdapter sql_adapt4 = new SqlDataAdapter(querySql4, sql_conn);
-                SqlDataAdapter sql_adapt5 = new SqlDataAdapter(querySql5, sql_conn);
-                SqlDataAdapter sql_adapt6 = new SqlDataAdapter(querySql6, sql_conn);
-                SqlDataAdapter sql_adapt7 = new SqlDataAdapter(querySql7, sql_conn);
+                try
+                {
+                    sql_conn.Open();
+                    //Erstellt einen Adapter um die Daten aus der DB-Tabelle in eine Tabelle zu laden
+                    SqlDataAdapter sql_adapt1 = new SqlDataAdapter(querySql1, sql_conn);
+                    SqlDataAdapter sql_adapt2 = new SqlDataAdapter(querySql2, sql_conn);
+                    SqlDataAdapter sql_adapt3 = new SqlDataAdapter(querySql3, sql_conn);
+                    SqlDataAdapter sql_adapt4 = new SqlDataAdapter(querySql4, sql_conn);
+                    SqlDataAdapter sql_adapt5 = new SqlDataAdapter(querySql5, sql_conn);
+                    SqlDataAdapter sql_adapt6 = new SqlDataAdapter(querySql6, sql_conn);
+                    SqlDataAdapter sql_adapt7 = new SqlDataAdapter(querySql7, sql_conn);
 
-                sql_adapt1.Fill(dbEinkaufposition);
-                sql_adapt2.Fill(dbArtikel);
-                sql_adapt3.Fill(dbHaendler);
-                sql_adapt4.Fill(dbArtikelHaendler);
-                sql_adapt5.Fill(dbArtikelPreis);
-                sql_adapt6.Fill(dbProjekt);
-                sql_adapt7.Fill(dbEinkauf);
+                    sql_adapt1.Fill(dbEinkaufposition);
+                    sql_adapt2.Fill(dbArtikel);
+                    sql_adapt3.Fill(dbHaendler);
+                    sql_adapt4.Fill(dbArtikelHaendler);
+                    sql_adapt5.Fill(dbArtikelPreis);
+                    sql_adapt6.Fill(dbProjekt);
+                    sql_adapt7.Fill(dbEinkauf);
 
-                dataset.Tables.Add(dbEinkaufposition);
-                dataset.Tables.Add(dbArtikel);
-                dataset.Tables.Add(dbHaendler);
-                dataset.Tables.Add(dbArtikelHaendler);
-                dataset.Tables.Add(dbArtikelPreis);
-                dataset.Tables.Add(dbProjekt);
-                dataset.Tables.Add(dbEinkauf);
-
+                    dataset.Tables.Add(dbEinkaufposition);
+                    dataset.Tables.Add(dbArtikel);
+                    dataset.Tables.Add(dbHaendler);
+                    dataset.Tables.Add(dbArtikelHaendler);
+                    dataset.Tables.Add(dbArtikelPreis);
+                    dataset.Tables.Add(dbProjekt);
+                    dataset.Tables.Add(dbEinkauf);
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show("Achtung: " + ex.Message);
+                }
                 sql_conn.Close();
             }
 
@@ -526,7 +562,6 @@ namespace Gartenausgaben
                 }
             }
             return ArtikelHaendlerID;
-            
         }
 
         private void InsertArtikelPreis()
@@ -557,19 +592,19 @@ namespace Gartenausgaben
             Close();
         }
 
-        private void btnNeuerHaendler_Click(object sender, EventArgs e)
+        private void BtnNeuerHaendler_Click(object sender, EventArgs e)
         {
             var neuerHaendler = new NeuerHaendler();
-            neuerHaendler.FormClosed += new FormClosedEventHandler(f2_FormClosed);
+            neuerHaendler.FormClosed += new FormClosedEventHandler(F2_FormClosed);
             neuerHaendler.Show();
         }
 
-        void f2_FormClosed(object sender, FormClosedEventArgs e)
+        void F2_FormClosed(object sender, FormClosedEventArgs e)
         {
             this.LadeHaendler("Haendler_Id");
         }
 
-        private void btnEintragen_Click(object sender, EventArgs e)
+        private void BtnEintragen_Click(object sender, EventArgs e)
         {
             if(numericUpDown_Einzelpreis.Value != 0 && numericUpDown_Menge.Value != 0 && cb_Artikel.Text != "")
             {
@@ -584,12 +619,10 @@ namespace Gartenausgaben
                 lbl_Datum.Text = dateTimePickerDatum.Value.ToString("dd. MMMM yyyy");
                 lbl_Haendler.Text = cb_Haendler.Text;
 
-                var count = dataGridView_Einkauf.Rows.Count;
-
                 dataGridView_Einkauf.Rows.Add(positionDataGridView, numericUpDown_Menge.Value, cb_Artikel.Text, numericUpDown_Einzelpreis.Value, tb_GesamtBetrag.Text, cb_Projekt.Text);
 
                 //Summe aller Gesamtpreise - Zur Kontrolle des Kassenbons
-                count = dataGridView_Einkauf.Rows.Count;
+                var count = dataGridView_Einkauf.Rows.Count;
                 decimal x = 0.00m;
 
                 if (count > 1)
@@ -622,6 +655,12 @@ namespace Gartenausgaben
             {
                 MessageBox.Show("Bitte überprüfen Sie Ihre Eingaben. Die Felder Menge, Einzelpreis und Artikel müssen ausgefüllt sein", "Achtung", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            if (!listeSort)
+            {
+                LadeArtikelNeu("Artikelbezeichnung", "ASC");
+                listeSort = true;
+            }
+                
         }
 
         private void SetDataGrid_Tabelle()
@@ -669,11 +708,12 @@ namespace Gartenausgaben
             dataGridView_Einkauf.Columns[5].ValueType = typeof(string);
         }
 
-        private void btnNeuerArtikel_Click(object sender, EventArgs e)
+        private void BtnNeuerArtikel_Click(object sender, EventArgs e)
         {
             if (!DbConnect.EqualsArtikel(tb_NeuerArtikel.Text))
                 DbConnect.AddNeuerArtikel(tb_NeuerArtikel.Text, conn);
-            LadeArtikelNeu("Artikel_ID");
+            LadeArtikelNeu("Artikel_ID", "DESC");
+            listeSort = false;
             tb_NeuerArtikel.Clear();
         }
 
@@ -730,40 +770,38 @@ namespace Gartenausgaben
             }
         }
 
-        private void cb_Artikel_SelectedIndexChanged(object sender, EventArgs e)
+        private void Cb_Artikel_SelectedIndexChanged(object sender, EventArgs e)
         {
             LadeEinzelpreis();
         }
 
-        private void cb_Haendler_SelectedIndexChanged(object sender, EventArgs e)
+        private void Cb_Haendler_SelectedIndexChanged(object sender, EventArgs e)
         {
             LadeEinzelpreis();
         }
 
-        private void numericUpDown_Menge_ValueChanged(object sender, EventArgs e)
+        private void NumericUpDown_Menge_ValueChanged(object sender, EventArgs e)
         {
             CalculateAmount();
         }
 
-        private void numericUpDown_Einzelpreis_ValueChanged(object sender, EventArgs e)
+        private void NumericUpDown_Einzelpreis_ValueChanged(object sender, EventArgs e)
         {
             CalculateAmount();
         }
 
-        private void btnDgvDelete_Click(object sender, EventArgs e)
+        private void BtnDgvDelete_Click(object sender, EventArgs e)
         {
             int count = dataGridView_Einkauf.Rows.Count;
             dataGridView_Einkauf.Rows.RemoveAt(count-1);
         }
 
-        private void dataGridView_Einkauf_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        private void DataGridView_Einkauf_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            DataGridViewRow DataRowa = new DataGridViewRow();
-            DataRowa = dataGridView_Einkauf.CurrentRow;
             dataGridView_Einkauf.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         }
 
-        private void dataGridView_Einkauf_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e) { 
+        private void DataGridView_Einkauf_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e) { 
         
             var row = 0;
             var count = dataGridView_Einkauf.Rows.Count;
@@ -776,9 +814,77 @@ namespace Gartenausgaben
             positionDataGridView = count+1;
         }
 
-        private void btnNeuesProjekt_Click(object sender, EventArgs e)
+        private void BtnNeuesProjekt_Click(object sender, EventArgs e)
         {
+            AddNewProjectControl();
+        }
 
+        public Button okNewProject = new Button();
+        public TextBox tbNewProject = new TextBox();
+
+        public void AddNewProjectControl()
+        {
+            okNewProject = new Button();
+            tbNewProject = new TextBox{
+                Location = new Point(40, 470),
+                Size = new Size(224, 24)
+            };
+            Controls.Add(tbNewProject);
+            tbNewProject.Focus();
+
+            Invoice.ActiveForm.Controls.Add(okNewProject);
+            this.okNewProject.Click += new System.EventHandler(this.BtnOkNewProject_Click);
+            okNewProject.Size = new Size(30, tbNewProject.ClientSize.Height + 2);
+            okNewProject.Dock = DockStyle.Right;
+            okNewProject.Cursor = Cursors.Default;
+            okNewProject.FlatStyle = FlatStyle.Flat;
+            okNewProject.ForeColor = Color.Black;
+            okNewProject.FlatAppearance.BorderSize = 0;
+            okNewProject.Font = new Font(okNewProject.Font.FontFamily, 6);
+            okNewProject.Text = "OK";
+            tbNewProject.Controls.Add(okNewProject);
+            //this.AcceptButton = okNewProject;
+        }
+
+        private void RemoveNewProjectControl()
+        {
+            if (Invoice.ActiveForm.Controls.Contains(tbNewProject))
+            {
+                this.okNewProject.Click -= new System.EventHandler(this.BtnOkNewProject_Click);
+                Invoice.ActiveForm.Controls.Remove(tbNewProject);
+                Invoice.ActiveForm.Controls.Remove(okNewProject);
+                tbNewProject.Dispose();
+                okNewProject.Dispose();
+            }
+        }
+
+        private void BtnOkNewProject_Click(object sender, EventArgs e)
+        {
+            if(tbNewProject.Text == "")
+                RemoveNewProjectControl();
+
+            if (!DbConnect.EqualsArtikel(tbNewProject.Text))
+                DbConnect.AddNewProject(tbNewProject.Text, conn);
+            else
+                MessageBox.Show("Das Projekt existiert schon","Hinweis", MessageBoxButtons.OK);
+            
+            LadeProjektNeu("Projekt_ID", "DESC");
+            //listeSort = false;
+
+            RemoveNewProjectControl();
+        }
+
+        private void Tb_NeuerArtikel_TextChanged(object sender, EventArgs e)
+        {
+            var artikel = tb_NeuerArtikel.Text.Trim();
+
+            if (artikel != "")
+                BtnNewItem.Enabled = true;
+            else
+            {
+                tb_NeuerArtikel.Text = artikel.Trim();
+                BtnNewItem.Enabled = false;
+            }
         }
     }
 }

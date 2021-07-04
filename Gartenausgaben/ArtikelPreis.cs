@@ -11,7 +11,7 @@ namespace Gartenausgaben
     public class ArtikelPreis
     {
         //string conn = Properties.Settings.Default.GartenProjekteConnectionString; // Connection String aus der App.config
-        string conn = Properties.Settings.Default.GartenDB;
+        readonly string conn = Properties.Settings.Default.GartenDB;
         public int PreisId { get; set; }
         public int ArtikelHaendlerId { get; set; }
         public int Preis { get; set; }

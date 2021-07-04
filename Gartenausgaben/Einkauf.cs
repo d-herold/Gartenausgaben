@@ -13,10 +13,6 @@ namespace Gartenausgaben
         public int HaendlerId { get; set; }
         public DateTime Datum { get; set; }
 
-        public Einkauf()
-        {
-            var position = new Einkaufspositionen();
-        }
         public void SetId()
         {
             //Hole letzte ID aus Datenbank und addiere 1 dazu
