@@ -860,16 +860,22 @@ namespace Gartenausgaben
 
         private void BtnOkNewProject_Click(object sender, EventArgs e)
         {
-            if(tbNewProject.Text == "")
-                RemoveNewProjectControl();
+            var projekt = tbNewProject.Text.Trim();
 
-            if (!DbConnect.EqualsArtikel(tbNewProject.Text))
-                DbConnect.AddNewProject(tbNewProject.Text, conn);
+            if(projekt == "")
+                RemoveNewProjectControl();
             else
-                MessageBox.Show("Das Projekt existiert schon","Hinweis", MessageBoxButtons.OK);
+            {
+                if (!DbConnect.EqualsProject(tbNewProject.Text))
+                {
+                    DbConnect.AddNewProject(projekt, conn);
+                    LadeProjektNeu("Projekt_ID", "DESC");
+                }
+                else
+                    MessageBox.Show("Das Projekt existiert schon", "Hinweis", MessageBoxButtons.OK);
+            }
+
             
-            LadeProjektNeu("Projekt_ID", "DESC");
-            //listeSort = false;
 
             RemoveNewProjectControl();
         }
