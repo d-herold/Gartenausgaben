@@ -99,6 +99,42 @@ namespace Gartenausgaben
             }
         }
 
+        /* Überarbeiten !!!!!!! */
+        internal static bool EqualsDBEinträge(string select, string from, string where)
+        {
+            string querySql = "SELECT " + select + " FROM Projekt " + "Where Projektname = @NewProjcetName";
+
+            // Connection String aus der App.config 
+            //Erstellt eine neue Verbindund zur übergebenen Datenbank
+            using (SqlConnection sql_conn = new SqlConnection(conn))
+            {
+                SqlCommand command = new SqlCommand(querySql, sql_conn);
+                command.Parameters.AddWithValue("@NewProjcetName", from);
+                try
+                {
+                    if (sql_conn.State != ConnectionState.Open)
+                        sql_conn.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        reader.Close();
+                        return true;
+                    }
+                    else
+                    {
+                        reader.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                sql_conn.Close();
+                return false;
+            }
+        }
+
         internal static int AddNeuerArtikel(string newName, string connString)
         {
             int newArtikelID = 0;
