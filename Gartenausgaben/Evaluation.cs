@@ -17,7 +17,7 @@ namespace Gartenausgaben
             InitializeComponent();
         }
 
-        private void cmd_Close_Click(object sender, EventArgs e)
+        private void Cmd_Close_Click(object sender, EventArgs e)
         {
             Close();
         }

@@ -8,7 +8,7 @@ namespace Gartenausgaben
 {
     public class Artikel
     {
-        public int Id { get; set; }
+        internal int ArtikelId { get; set; }
         public string Artikelbezeichnung { get; set; }
     }
 }

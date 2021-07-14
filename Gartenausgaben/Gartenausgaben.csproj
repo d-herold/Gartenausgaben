@@ -65,6 +65,7 @@
     <Compile Include="Artikel.cs" />
     <Compile Include="ArtikelHaendler.cs" />
     <Compile Include="ArtikelPreis.cs" />
+    <Compile Include="DataGridView.cs" />
     <Compile Include="DbConnect.cs" />
     <Compile Include="Einkauf.cs" />
     <Compile Include="Einkaufspositionen.cs" />

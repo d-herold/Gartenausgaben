@@ -20,7 +20,7 @@ using Gartenausgaben.Datenbank.GartenProjekteDataSetTableAdapters;
 
 namespace Gartenausgaben
 {
-    public partial class Invoice : Form
+    public partial class Invoice : Form 
     {
         readonly string conn = Properties.Settings.Default.GartenDB; // Connection String aus der App.config
         //string conn = Properties.Settings.Default.GartenProjekteConnectionString; // Alter Connection String aus der App.config --> obsolete?
@@ -30,13 +30,15 @@ namespace Gartenausgaben
         public decimal EinzelPreis { get; set; }
         public int Menge { get; set; }
         public decimal GesamtBetrag { get; set; }
-        public int ArtikelID { get; set; }
+        //public int ArtikelID { get; set; }
         public int ProjektID { get; set; }
         public int HaendlerID { get; set; }
         public int ArtikelPreisID { get; set; }
         public int ArtikelHaendlerID { get; set; }
         public int EinkaufID { get; set; }
         public int EinkaufPositionID { get; set; }
+
+        readonly Artikel artikelID = new Artikel();
 
         public Invoice()
         {
@@ -46,7 +48,6 @@ namespace Gartenausgaben
             ErstelleDataTable();
             SetDataGrid_Tabelle();
             BtnNewItem.Enabled = false;
-            
         }
         
         public void ErstelleDataTable()
@@ -160,21 +161,28 @@ namespace Gartenausgaben
             //Erstellt eine neue Verbindund zur übergebenen Datenbank
             using (SqlConnection sql_con = new SqlConnection(conn))
             {
-                //Erstellt einen Adapter um die Daten aus der DB-Tabelle in eine Tabelle zu laden
-                SqlDataAdapter sql_adapt = new SqlDataAdapter(querySql, sql_con);
+                try
+                {
+                    sql_con.Open();
+                    //Erstellt einen Adapter um die Daten aus der DB-Tabelle in eine Tabelle zu laden
+                    SqlDataAdapter sql_adapt = new SqlDataAdapter(querySql, sql_con);
 
-                //Erstellt eine neue Tabelle im Arbeitsspeicher
-                DataTable tblData = new DataTable();
-                //Befüllt die DataTable
-                sql_adapt.Fill(tblData);
+                    //Erstellt eine neue Tabelle im Arbeitsspeicher
+                    DataTable tblData = new DataTable();
+                    //Befüllt die DataTable
+                    sql_adapt.Fill(tblData);
 
-                //Anzeige in der ComboBox alle Namen der vorhanden Ids
-                cb_Haendler.DisplayMember = "Name";
-                cb_Haendler.ValueMember = "[Haendler_ID]";
+                    //Anzeige in der ComboBox alle Namen der vorhanden Ids
+                    cb_Haendler.DisplayMember = "Name";
+                    cb_Haendler.ValueMember = "[Haendler_ID]";
 
-                //Zuweisen der Datentabelle zur Datenquelle
-                cb_Haendler.DataSource = tblData;
-
+                    //Zuweisen der Datentabelle zur Datenquelle
+                    cb_Haendler.DataSource = tblData;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Exception Message: " + ex.Message);
+                }
                 sql_con.Close();
             }
         }
@@ -255,6 +263,11 @@ namespace Gartenausgaben
 
         private void BtnSave_Click(object sender, EventArgs e)
         {
+            SaveDB();
+        }
+
+        private void SaveDB()
+        {
             //Erstelle DataTable
             var dgvEinkauf = new DataTable();
             var dbEinkaufposition = new DataTable();
@@ -323,7 +336,7 @@ namespace Gartenausgaben
                     dataset.Tables.Add(dbProjekt);
                     dataset.Tables.Add(dbEinkauf);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show("Achtung: " + ex.Message);
                 }
@@ -337,9 +350,11 @@ namespace Gartenausgaben
             {
                 SetEinzelpreisUndMenge(row.Index);
 
-                ArtikelID = GetId("Artikel", "Artikelbezeichnung", "Artikel", row.Index);
+                artikelID.ArtikelId = GetId("Artikel", "Artikelbezeichnung", "Artikel", row.Index);
+                //ArtikelID = GetId("Artikel", "Artikelbezeichnung", "Artikel", row.Index);
                 ProjektID = GetId("Projekt", "Projektname", "Projekt", row.Index);
-                ArtikelHaendlerID = GetId("Artikel_Haendler", ArtikelID, HaendlerID);
+                ArtikelHaendlerID = GetId("Artikel_Haendler", artikelID.ArtikelId, HaendlerID);
+                //ArtikelHaendlerID = GetId("Artikel_Haendler", ArtikelID, HaendlerID);
 
                 if (ArtikelHaendlerID == 0)
                     InsertArtikelHaendler();
@@ -351,6 +366,7 @@ namespace Gartenausgaben
 
                 SetEinkaufsposition();
             }
+            dataGridView_Einkauf.Rows.Clear();
         }
 
         private int SetEinkaufsposition()
@@ -361,7 +377,8 @@ namespace Gartenausgaben
             using (SqlConnection sql_conn = new SqlConnection(conn))
             using (SqlCommand command = new SqlCommand(sql_Insert, sql_conn))
             {
-                command.Parameters.AddWithValue("@ArtikelId", ArtikelID);
+                command.Parameters.AddWithValue("@ArtikelId", artikelID.ArtikelId); 
+                //command.Parameters.AddWithValue("@ArtikelId", ArtikelID);
                 command.Parameters.AddWithValue("@ProjektId", ProjektID);
                 command.Parameters.AddWithValue("@EinkaufId", EinkaufID);
                 command.Parameters.AddWithValue("@PreisId", ArtikelPreisID);
@@ -432,89 +449,96 @@ namespace Gartenausgaben
                 SqlDataAdapter adapterArtikelPreis = new SqlDataAdapter(sql_Select_ArtikelPreis, sql_conn);
 
                 adapterHaendler.SelectCommand.Parameters.AddWithValue("@Ort", ort);
-                adapterArtikelHaendler.SelectCommand.Parameters.AddWithValue("@Artikel_ID", ArtikelID);
+                adapterArtikelHaendler.SelectCommand.Parameters.AddWithValue("@Artikel_ID", artikelID.ArtikelId);
+                //adapterArtikelHaendler.SelectCommand.Parameters.AddWithValue("@Artikel_ID", ArtikelID);
                 adapterArtikelHaendler.SelectCommand.Parameters.AddWithValue("@Haendler_ID", HaendlerID);
                 adapterArtikelPreis.SelectCommand.Parameters.AddWithValue("@ArtikelHaendler_ID", ArtikelHaendlerID);
                 adapterArtikelPreis.SelectCommand.Parameters.AddWithValue("@Artikelpreis", EinzelPreis);
 
                 DataTable dt = new DataTable();
-                sql_conn.Open();
-
-                /// <value>Gibt die Artikel ID oder Projekt ID zuück</value>
-                if (list[0].ToString() == "Artikel" || list[0].ToString() == "Projekt")
+                try
                 {
-                    adapter.Fill(dt);
-                    foreach (DataColumn column in dt.Columns)
+                    sql_conn.Open();
+
+                    /// <value>Gibt die Artikel ID oder Projekt ID zuück</value>
+                    if (list[0].ToString() == "Artikel" || list[0].ToString() == "Projekt")
                     {
-                        if (column.ColumnName == list[1].ToString())
+                        adapter.Fill(dt);
+                        foreach (DataColumn column in dt.Columns)
                         {
-                            foreach (DataRow row in dt.Rows)
+                            if (column.ColumnName == list[1].ToString())
                             {
-                                for (int j = 0; j < row.ItemArray.Length; j++)
+                                foreach (DataRow row in dt.Rows)
                                 {
-                                    if (row.ItemArray[j].ToString() == dataGridView_Einkauf.Rows[(int)list[3]].Cells[list[2].ToString()].Value.ToString())
+                                    for (int j = 0; j < row.ItemArray.Length; j++)
                                     {
-                                        id = (int)row.ItemArray[0];
-                                        return id;
+                                        if (row.ItemArray[j].ToString() == dataGridView_Einkauf.Rows[(int)list[3]].Cells[list[2].ToString()].Value.ToString())
+                                        {
+                                            id = (int)row.ItemArray[0];
+                                            return id;
+                                        }
                                     }
-                                } 
-                            } 
-                        } 
-                    } 
-                }
+                                }
+                            }
+                        }
+                    }
 
-                /// <value>Gibt die Händler ID zuück</value> 
-                else if (list[0].ToString() == "Haendler")
-                {
-                    adapterHaendler.Fill(dt);
-
-                    foreach (DataRow row in dt.Rows)
+                    /// <value>Gibt die Händler ID zuück</value> 
+                    else if (list[0].ToString() == "Haendler")
                     {
-                        for (int j = 0; j < row.ItemArray.Length; j++)
+                        adapterHaendler.Fill(dt);
+
+                        foreach (DataRow row in dt.Rows)
                         {
-                            if (row.ItemArray[j].ToString() == list[2].ToString())
+                            for (int j = 0; j < row.ItemArray.Length; j++)
+                            {
+                                if (row.ItemArray[j].ToString() == list[2].ToString())
+                                {
+                                    id = (int)row.ItemArray[0];
+                                    return id;
+                                }
+                            }
+                        }
+                    }
+
+                    /// <value>Gibt die ArtikelHaendlerID zuück</value> 
+                    else if (list[0].ToString() == "Artikel_Haendler")
+                    {
+                        adapterArtikelHaendler.Fill(dt);
+
+                        foreach (DataRow row in dt.Rows)
+                        {
+                            if (row.ItemArray[1].ToString() == list[1].ToString() && row.ItemArray[2].ToString() == list[2].ToString())
                             {
                                 id = (int)row.ItemArray[0];
                                 return id;
                             }
+                            else
+                                id = 0;
                         }
                     }
-                }
 
-                /// <value>Gibt die ArtikelHaendlerID zuück</value> 
-                else if (list[0].ToString() == "Artikel_Haendler")
-                {
-                    adapterArtikelHaendler.Fill(dt);
-
-                    foreach (DataRow row in dt.Rows)
+                    /// <value>Gibt die ArtikelPreisID zuück</value>
+                    else if (list[0].ToString() == "Artikel_Preis")
                     {
-                        if (row.ItemArray[1].ToString() == list[1].ToString() && row.ItemArray[2].ToString() == list[2].ToString())
+                        adapterArtikelPreis.Fill(dt);
+
+                        foreach (DataRow row in dt.Rows)
                         {
-                            id = (int)row.ItemArray[0];
-                            return id;
+                            if (row.ItemArray[1].ToString() == list[1].ToString() && row.ItemArray[2].ToString() == list[2].ToString())
+                            {
+                                id = (int)row.ItemArray[0];
+                                return id;
+                            }
+                            else
+                                id = 0;
                         }
-                        else
-                            id = 0;
                     }
                 }
-
-                /// <value>Gibt die ArtikelPreisID zuück</value>
-                else if (list[0].ToString() == "Artikel_Preis")
+                catch (Exception ex)
                 {
-                    adapterArtikelPreis.Fill(dt);
-
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        if (row.ItemArray[1].ToString() == list[1].ToString() && row.ItemArray[2].ToString() == list[2].ToString())
-                        {
-                            id = (int)row.ItemArray[0];
-                            return id;
-                        }
-                        else
-                            id = 0;
-                    }
+                    MessageBox.Show("Exception Message: " + ex.Message);
                 }
-
                 sql_conn.Close();
             }
                 return id;
@@ -548,7 +572,8 @@ namespace Gartenausgaben
             using (SqlConnection sql_conn = new SqlConnection(conn))
             using (SqlCommand command = new SqlCommand(sql_Insert, sql_conn))
             {
-                command.Parameters.AddWithValue("@Artikel_ID", ArtikelID);
+                command.Parameters.AddWithValue("@Artikel_ID", artikelID.ArtikelId);
+                //command.Parameters.AddWithValue("@Artikel_ID", ArtikelID);
                 command.Parameters.AddWithValue("@Haendler_ID", HaendlerID);
                 try
                 {
@@ -890,6 +915,21 @@ namespace Gartenausgaben
             {
                 tb_NeuerArtikel.Text = artikel.Trim();
                 BtnNewItem.Enabled = false;
+            }
+        }
+
+        private void BtnNewShopping_Click(object sender, EventArgs e)
+        {
+            if (dataGridView_Einkauf.Rows.Count <1)
+            {
+                MessageBox.Show("Es sind keine Artikel zum löschen vorhanden!", "Hinweis", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                DialogResult result = 
+                    MessageBox.Show("Wollen Sie wirklich alle Artikel aus der Liste löschen? Die vorhandenen Daten werden nicht gespeichert!", "ACHTUNG", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                if (result == DialogResult.OK)
+                    dataGridView_Einkauf.Rows.Clear();
             }
         }
     }

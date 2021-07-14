@@ -398,6 +398,7 @@
             this.BtnNewShopping.TabIndex = 9;
             this.BtnNewShopping.Text = "Neu";
             this.BtnNewShopping.UseVisualStyleBackColor = true;
+            this.BtnNewShopping.Click += new System.EventHandler(this.BtnNewShopping_Click);
             // 
             // Invoice
             // 

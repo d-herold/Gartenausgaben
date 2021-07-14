@@ -15,6 +15,7 @@ namespace Gartenausgaben
         static readonly string conn = Properties.Settings.Default.GartenDB;
         //static string conn = Properties.Settings.Default.GartenProjekteConnectionString;
 
+        //obsolete?
         internal static int Db_execute(string sql_Insert)
         {
             using (SqlConnection sql_conn = new SqlConnection(conn))
@@ -184,28 +185,29 @@ namespace Gartenausgaben
             }
             return newProjectID;
         }
-        internal static int InsertArtikelHaendler()
-        {
-            var a = new Invoice();
-            string sql_Insert = "INSERT INTO Artikel_Haendler (Artikel_ID, Haendler_ID) " + "VALUES (@Artikel_ID, @Haendler_ID); " + "SELECT CAST(scope_identity() AS int)";
 
-            using (SqlConnection sql_conn = new SqlConnection(conn))
-            using (SqlCommand command = new SqlCommand(sql_Insert, sql_conn))
-            {
-                command.Parameters.AddWithValue("@Artikel_ID", a.ArtikelID);
-                command.Parameters.AddWithValue("@Haendler_ID", a.HaendlerID);
-                try
-                {
-                    sql_conn.Open();
-                    a.ArtikelHaendlerID = (Int32)command.ExecuteScalar();
-                    sql_conn.Close();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message); //MessageBox.Show("Es ist ein Fehler, beim Eintragen der Artikel_Händler_ID aufgetreten", "Achtung", MessageBoxButtons.OK);
-                }
-            }
-            return a.ArtikelHaendlerID;
-        }
+        //internal static int InsertArtikelHaendler()
+        //{
+        //    var a = new Invoice();
+        //    string sql_Insert = "INSERT INTO Artikel_Haendler (Artikel_ID, Haendler_ID) " + "VALUES (@Artikel_ID, @Haendler_ID); " + "SELECT CAST(scope_identity() AS int)";
+
+        //    using (SqlConnection sql_conn = new SqlConnection(conn))
+        //    using (SqlCommand command = new SqlCommand(sql_Insert, sql_conn))
+        //    {
+        //        command.Parameters.AddWithValue("@Artikel_ID", a.ArtikelID);
+        //        command.Parameters.AddWithValue("@Haendler_ID", a.HaendlerID);
+        //        try
+        //        {
+        //            sql_conn.Open();
+        //            a.ArtikelHaendlerID = (Int32)command.ExecuteScalar();
+        //            sql_conn.Close();
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Console.WriteLine(ex.Message); //MessageBox.Show("Es ist ein Fehler, beim Eintragen der Artikel_Händler_ID aufgetreten", "Achtung", MessageBoxButtons.OK);
+        //        }
+        //    }
+        //    return a.ArtikelHaendlerID;
+        //}
     }
 }
