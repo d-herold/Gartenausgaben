@@ -85,7 +85,7 @@
             this.btnNeuerHaendlerSpeichern.TabIndex = 5;
             this.btnNeuerHaendlerSpeichern.Text = "Speichern";
             this.btnNeuerHaendlerSpeichern.UseVisualStyleBackColor = true;
-            this.btnNeuerHaendlerSpeichern.Click += new System.EventHandler(this.btnNeuerHaendlerSpeichern_Click);
+            this.btnNeuerHaendlerSpeichern.Click += new System.EventHandler(this.BtnNeuerHaendlerSpeichern_Click);
             // 
             // btnNeuerHaendlerAbbrechen
             // 
@@ -95,7 +95,7 @@
             this.btnNeuerHaendlerAbbrechen.TabIndex = 6;
             this.btnNeuerHaendlerAbbrechen.Text = "Abbrechen";
             this.btnNeuerHaendlerAbbrechen.UseVisualStyleBackColor = true;
-            this.btnNeuerHaendlerAbbrechen.Click += new System.EventHandler(this.btnNeuerHaendlerAbbrechen_Click);
+            this.btnNeuerHaendlerAbbrechen.Click += new System.EventHandler(this.BtnNeuerHaendlerAbbrechen_Click);
             // 
             // lblHaendlerName
             // 

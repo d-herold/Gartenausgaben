@@ -19,23 +19,23 @@ namespace Gartenausgaben
             InitializeComponent();
         }
 
-        private void btnNeuerHaendlerSpeichern_Click(object sender, EventArgs e)
+        private void BtnNeuerHaendlerSpeichern_Click(object sender, EventArgs e)
         {
             SetNeuerHaendler();
             this.Close();
         }
-        private int Db_execute(string sql_Insert)
-        {
-            //string conn = Properties.Settings.Default.GartenProjekteConnectionString;
-            string conn = Properties.Settings.Default.GartenDB;
-            SqlConnection sql_conn = new SqlConnection(conn);
-            if (sql_conn.State != ConnectionState.Open) sql_conn.Open();
-            SqlCommand sql_com = new SqlCommand(sql_Insert, sql_conn);
+        //private int Db_execute(string sql_Insert)
+        //{
+        //    //string conn = Properties.Settings.Default.GartenProjekteConnectionString;
+        //    string conn = Properties.Settings.Default.GartenDB;
+        //    SqlConnection sql_conn = new SqlConnection(conn);
+        //    if (sql_conn.State != ConnectionState.Open) sql_conn.Open();
+        //    SqlCommand sql_com = new SqlCommand(sql_Insert, sql_conn);
 
-            int nResult = sql_com.ExecuteNonQuery();
-            sql_conn.Close();
-            return nResult;
-        }
+        //    int nResult = sql_com.ExecuteNonQuery();
+        //    sql_conn.Close();
+        //    return nResult;
+        //}
         private void SetNeuerHaendler()
         {
             //string conn = Properties.Settings.Default.GartenProjekteConnectionString;
@@ -83,7 +83,7 @@ namespace Gartenausgaben
             //DbConnect.Db_execute(sql_Insert);
         }
 
-        private void btnNeuerHaendlerAbbrechen_Click(object sender, EventArgs e)
+        private void BtnNeuerHaendlerAbbrechen_Click(object sender, EventArgs e)
         {
             if (txbNeuerHaendlerTelefon.Text == "" && txbNeuerHaendlerName.Text == "" && 
                 txbNeuerHaendlerStrasse.Text == "" && txbNeuerHaendlerPlz.Text == "" && txbNeuerHaendlerOrt.Text == "")
