@@ -101,7 +101,7 @@ namespace Gartenausgaben
         }
 
         /* Überarbeiten !!!!!!! */
-        internal static bool EqualsDBEinträge(string select, string from, string where)
+        internal static bool EqualsDBEinträge(string select, string from)
         {
             string querySql = "SELECT " + select + " FROM Projekt " + "Where Projektname = @NewProjcetName";
 
