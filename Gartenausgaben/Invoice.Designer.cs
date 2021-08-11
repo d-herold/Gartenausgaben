@@ -353,7 +353,7 @@
             this.BtnDgvDeleteLastRow.TabIndex = 129;
             this.BtnDgvDeleteLastRow.Text = "Letzte Zeile löschen";
             this.BtnDgvDeleteLastRow.UseVisualStyleBackColor = true;
-            this.BtnDgvDeleteLastRow.Click += new System.EventHandler(this.BtnDgvDelete_Click);
+            this.BtnDgvDeleteLastRow.Click += new System.EventHandler(this.BtnDgvDeleteLastRow_Click);
             // 
             // lbl_Summe
             // 

@@ -66,13 +66,16 @@
             // txbNeuerHaendlerPlz
             // 
             this.txbNeuerHaendlerPlz.Location = new System.Drawing.Point(23, 191);
+            this.txbNeuerHaendlerPlz.MaxLength = 5;
             this.txbNeuerHaendlerPlz.Name = "txbNeuerHaendlerPlz";
             this.txbNeuerHaendlerPlz.Size = new System.Drawing.Size(293, 20);
             this.txbNeuerHaendlerPlz.TabIndex = 2;
+            this.txbNeuerHaendlerPlz.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txbNeuerHaendlerPlz_KeyPress);
             // 
             // txbNeuerHaendlerTelefon
             // 
             this.txbNeuerHaendlerTelefon.Location = new System.Drawing.Point(23, 342);
+            this.txbNeuerHaendlerTelefon.MaxLength = 15;
             this.txbNeuerHaendlerTelefon.Name = "txbNeuerHaendlerTelefon";
             this.txbNeuerHaendlerTelefon.Size = new System.Drawing.Size(293, 20);
             this.txbNeuerHaendlerTelefon.TabIndex = 4;

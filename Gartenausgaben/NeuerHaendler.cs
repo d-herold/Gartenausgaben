@@ -24,21 +24,8 @@ namespace Gartenausgaben
             SetNeuerHaendler();
             this.Close();
         }
-        //private int Db_execute(string sql_Insert)
-        //{
-        //    //string conn = Properties.Settings.Default.GartenProjekteConnectionString;
-        //    string conn = Properties.Settings.Default.GartenDB;
-        //    SqlConnection sql_conn = new SqlConnection(conn);
-        //    if (sql_conn.State != ConnectionState.Open) sql_conn.Open();
-        //    SqlCommand sql_com = new SqlCommand(sql_Insert, sql_conn);
-
-        //    int nResult = sql_com.ExecuteNonQuery();
-        //    sql_conn.Close();
-        //    return nResult;
-        //}
         private void SetNeuerHaendler()
         {
-            //string conn = Properties.Settings.Default.GartenProjekteConnectionString;
             string conn = Properties.Settings.Default.GartenDB;
 
             string name = txbNeuerHaendlerName.Text;
@@ -76,11 +63,8 @@ namespace Gartenausgaben
                 {
                     MessageBox.Show("Der Händler ist schon vorhanden", "Achtung", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-
                 sql_conn.Close();
             }
-
-            //DbConnect.Db_execute(sql_Insert);
         }
 
         private void BtnNeuerHaendlerAbbrechen_Click(object sender, EventArgs e)
@@ -89,7 +73,17 @@ namespace Gartenausgaben
                 txbNeuerHaendlerStrasse.Text == "" && txbNeuerHaendlerPlz.Text == "" && txbNeuerHaendlerOrt.Text == "")
                 Close();
             else
-                MessageBox.Show("Die Daten werden nicht gespeichert", "Abbrechen", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            {
+                DialogResult result = MessageBox.Show("Die Daten werden nicht gespeichert", "Abbrechen", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                if (result == DialogResult.OK)
+                    Close();
+            }
+        }
+
+        private void txbNeuerHaendlerPlz_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+                e.Handled = true;
         }
     }
 }

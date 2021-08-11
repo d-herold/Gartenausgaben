@@ -158,7 +158,7 @@ namespace Gartenausgaben
         public void LadeHaendlerNeu(string sortierung)
         {
             //Abfrage-String für alle Namen aus der Händler Tabelle
-            string querySql = "SELECT Name FROM Haendler ORDER BY " + sortierung + " DESC";
+            string querySql = "SELECT Name, Ort FROM Haendler ORDER BY " + sortierung + " DESC";
 
             //Erstellt eine neue Verbindund zur übergebenen Datenbank
             using (SqlConnection sql_con = new SqlConnection(conn))
@@ -173,13 +173,15 @@ namespace Gartenausgaben
                     DataTable tblData = new DataTable();
                     //Befüllt die DataTable
                     sql_adapt.Fill(tblData);
+                    tblData.Columns.Add("NameOrt", typeof(string), "Name + ', ' + Ort");
 
                     //Anzeige in der ComboBox alle Namen der vorhanden Ids
-                    cb_Haendler.DisplayMember = "Name";
+                    cb_Haendler.DisplayMember = "NameOrt";
                     cb_Haendler.ValueMember = "[Haendler_ID]";
 
                     //Zuweisen der Datentabelle zur Datenquelle
                     cb_Haendler.DataSource = tblData;
+
                 }
                 catch (Exception ex)
                 {
@@ -195,9 +197,6 @@ namespace Gartenausgaben
         /// <param name="sort"></param>
         public void LadeArtikelNeu(string sort, string orderBy)
         {
-            // Connection String aus der App.config 
-            //string conn = Properties.Settings.Default.GartenProjekteConnectionString;
-
             string querySql_Artikel = "SELECT Artikelbezeichnung FROM Artikel ORDER BY " + sort + " " + orderBy;
 
             //Erstellt eine neue Verbindund zur übergebenen Datenbank
@@ -371,6 +370,7 @@ namespace Gartenausgaben
                 SetEinkaufsposition();
             }
             dataGridView_Einkauf.Rows.Clear();
+            lbl_SummeBetrag.Text = "0,00 €";
         }
 
         private int SetEinkaufsposition()
@@ -634,7 +634,7 @@ namespace Gartenausgaben
 
         void F2_FormClosed(object sender, FormClosedEventArgs e)
         {
-            this.LadeHaendlerNeu("Haendler_Id");
+            this.LadeHaendlerNeu("Haendler_ID");
         }
 
         private void BtnEintragen_Click(object sender, EventArgs e)
@@ -654,28 +654,29 @@ namespace Gartenausgaben
 
                 dataGridView_Einkauf.Rows.Add(positionDataGridView, numericUpDown_Menge.Value, cb_Artikel.Text, numericUpDown_Einzelpreis.Value, tb_GesamtBetrag.Text, cb_Projekt.Text);
 
-                //Summe aller Gesamtpreise - Zur Kontrolle des Kassenbons
-                var count = dataGridView_Einkauf.Rows.Count;
-                decimal x = 0.00m;
+                ////Summe aller Gesamtpreise - Zur Kontrolle des Kassenbons
+                //var count = dataGridView_Einkauf.Rows.Count;
+                //decimal x = 0.00m;
 
-                if (count > 1)
-                {
-                    for (int i = 0; i < count; i++)
-                    {
-                        try
-                        {
-                            x += Convert.ToDecimal(dataGridView_Einkauf.Rows[i].Cells["Gesamtpreis"].Value.ToString());
-                        }
-                        catch
-                        {
-                            MessageBox.Show("Bitte überprüfen Sie Ihre Eingaben. Die Felder Menge und Einzelpreis müssen ausgefüllt sein", "Achtung", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    }
-                }
-                else
-                    x = Convert.ToDecimal(tb_GesamtBetrag.Text);
+                //if (count > 1)
+                //{
+                //    for (int i = 0; i < count; i++)
+                //    {
+                //        try
+                //        {
+                //            x += Convert.ToDecimal(dataGridView_Einkauf.Rows[i].Cells["Gesamtpreis"].Value.ToString());
+                //        }
+                //        catch
+                //        {
+                //            MessageBox.Show("Bitte überprüfen Sie Ihre Eingaben. Die Felder Menge und Einzelpreis müssen ausgefüllt sein", "Achtung", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //        }
+                //    }
+                //}
+                //else
+                //    x = Convert.ToDecimal(tb_GesamtBetrag.Text);
 
-                lbl_SummeBetrag.Text = x.ToString() + " €";
+                //lbl_SummeBetrag.Text = x.ToString() + " €";
+                Gesamtsumme();
 
                 positionDataGridView++;
 
@@ -694,6 +695,31 @@ namespace Gartenausgaben
                 listeSort = true;
             }
                 
+        }
+        private void Gesamtsumme()
+        {
+            //Summe aller Gesamtpreise - Zur Kontrolle des Kassenbons
+            var count = dataGridView_Einkauf.Rows.Count;
+            decimal x = 0.00m;
+
+            if (count > 1)
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    try
+                    {
+                        x += Convert.ToDecimal(dataGridView_Einkauf.Rows[i].Cells["Gesamtpreis"].Value.ToString());
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Bitte überprüfen Sie Ihre Eingaben. Die Felder Menge und Einzelpreis müssen ausgefüllt sein", "Achtung", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            else
+                x = Convert.ToDecimal(tb_GesamtBetrag.Text);
+            
+            lbl_SummeBetrag.Text = x.ToString() + " €";
         }
 
         private void SetDataGrid_Tabelle()
@@ -755,9 +781,10 @@ namespace Gartenausgaben
             
             //var haendler = cb_Haendler.Text;
             char[] charToTrim = { ',', ' ' };
-            var ort = cb_Haendler.Text.Substring(cb_Haendler.Text.IndexOf(',')).TrimStart(charToTrim);
             var haendler = cb_Haendler.Text;
- 
+
+            var ort = cb_Haendler.Text.Substring(cb_Haendler.Text.IndexOf(',')).TrimStart(charToTrim);
+            
             string[] subs = haendler.Split(',');
             haendler = subs[0];
 
@@ -765,8 +792,6 @@ namespace Gartenausgaben
 
             if (cb_Haendler.Text != "" && cb_Artikel.Text != "")
             {
-                //string conn = Properties.Settings.Default.GartenProjekteConnectionString;
-
                 using (SqlConnection sql_conn = new SqlConnection(conn))
                 {
                     string artikelPreis = "SELECT Artikelpreis FROM Artikel_Preis " +
@@ -823,10 +848,11 @@ namespace Gartenausgaben
             CalculateAmount();
         }
 
-        private void BtnDgvDelete_Click(object sender, EventArgs e)
+        private void BtnDgvDeleteLastRow_Click(object sender, EventArgs e)
         {
             int count = dataGridView_Einkauf.Rows.Count;
             dataGridView_Einkauf.Rows.RemoveAt(count-1);
+            Gesamtsumme();
         }
 
         private void DataGridView_Einkauf_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -845,6 +871,7 @@ namespace Gartenausgaben
                 
             }
             positionDataGridView = count+1;
+            Gesamtsumme();
         }
 
         private void BtnNeuesProjekt_Click(object sender, EventArgs e)
