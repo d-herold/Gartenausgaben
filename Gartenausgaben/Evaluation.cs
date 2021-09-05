@@ -20,6 +20,16 @@ namespace Gartenausgaben
             InitializeComponent();
             LadeProjekte();
             LblBetrag.Enabled = false;
+            Cb_Jahr.SelectedIndex = 0;
+            CheckYear();
+            Rb_GanzesJahr.Visible = false;
+            Rb_Zeitraum.Visible = false;
+            monthCalendar_StartDate.Visible = false;
+            monthCalendar_EndDate.Visible = false;
+            Tb_Auswertung_von.Visible = false;
+            Tb_Auswertung_bis.Visible = false;
+            Lbl_Datum_von.Visible = false;
+            Lbl_Datum_bis.Visible = false;
         }
 
         private void Cmd_Close_Click(object sender, EventArgs e)
@@ -70,9 +80,8 @@ namespace Gartenausgaben
                 }
             }
         }
-        public void LadeProjekte()
+        private void LadeProjekte()
         {
-
             //Erstellt eine neue Verbindund zur übergebenen Datenbank
             using (SqlConnection sql_con = new SqlConnection(conn))
             {
@@ -106,6 +115,91 @@ namespace Gartenausgaben
         {
             LblBetrag.Text = "";
             LblBetrag.Enabled = false;
+        }
+        private void CheckYear()
+        {
+            var s = Convert.ToInt32(DateTime.Now.Year);
+            var count = s - 2014;
+
+            for (int i = 1; i <= count; i++)
+            {
+                Cb_Jahr.Items.Add(2014 + i);
+            }
+                
+        }
+
+        private void Cb_Jahr_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (Cb_Jahr.SelectedItem.ToString() != "Alle")
+            {
+                Rb_Zeitraum.Visible = true;
+                Rb_GanzesJahr.Visible = true;
+            }
+        }
+
+        private void Rb_Zeitraum_CheckedChanged(object sender, EventArgs e)
+        {
+            if (Rb_Zeitraum.Checked)
+            {
+                
+                Tb_Auswertung_von.Visible = true;
+                Tb_Auswertung_bis.Visible = true;
+                Lbl_Datum_von.Visible = true;
+                Lbl_Datum_bis.Visible = true;
+                monthCalendar_StartDate.Visible = true;
+                Tb_Auswertung_von.Focus();
+            }
+        }
+
+        private void monthCalendar_StartDate_DateSelected(object sender, DateRangeEventArgs e)
+        {
+            Tb_Auswertung_von.Text = e.Start.ToShortDateString();
+            monthCalendar_StartDate.Visible = false;
+
+            if(Tb_Auswertung_bis.Text != "")
+                if (Convert.ToDateTime(Tb_Auswertung_von.Text) >= Convert.ToDateTime(e.End.ToShortDateString()))
+                    Tb_Auswertung_bis.Text = e.Start.ToShortDateString();
+
+            Tb_Auswertung_bis.Focus();
+            monthCalendar_EndDate.Visible = true;
+        }
+
+        private void monthCalendar_EndDate_DateSelected(object sender, DateRangeEventArgs e)
+        {
+            if (Convert.ToDateTime(Tb_Auswertung_von.Text) <= Convert.ToDateTime(e.End.ToShortDateString()))
+                Tb_Auswertung_bis.Text = e.End.ToShortDateString();
+            else
+            {
+                Tb_Auswertung_bis.Text = e.End.ToShortDateString();
+                Tb_Auswertung_von.Text = e.End.ToShortDateString();
+            }
+                
+
+
+        }
+
+        private void Tb_Auswertung_von_Click(object sender, EventArgs e)
+        {
+             monthCalendar_EndDate.Visible = false;
+             monthCalendar_StartDate.Visible = true;
+        }
+
+        private void Tb_Auswertung_bis_Click(object sender, EventArgs e)
+        {
+            monthCalendar_StartDate.Visible = false;
+            monthCalendar_EndDate.Visible = true;
+        }
+
+        private void Rb_GanzesJahr_CheckedChanged(object sender, EventArgs e)
+        {
+            monthCalendar_StartDate.Visible = false;
+            monthCalendar_EndDate.Visible = false;
+            Tb_Auswertung_von.Visible = false;
+            Tb_Auswertung_von.Clear();
+            Tb_Auswertung_bis.Visible = false;
+            Tb_Auswertung_bis.Clear();
+            Lbl_Datum_von.Visible = false;
+            Lbl_Datum_bis.Visible = false;
         }
     }
 }
