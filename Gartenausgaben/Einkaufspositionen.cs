@@ -90,5 +90,13 @@ namespace Gartenausgaben
         }
 
         
+
+        void x ()
+        {
+            var einkauf = new Einkauf
+            {
+                //Datum = 
+            };
+        }
     }
 }

@@ -9,6 +9,6 @@ namespace Gartenausgaben
     public class Projekt
     {
         public int Id { get; set; }
-        public int Name { get; set; }
+        public string Projektname { get; set; }
     }
 }

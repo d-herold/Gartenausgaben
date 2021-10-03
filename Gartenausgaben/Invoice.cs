@@ -267,6 +267,9 @@ namespace Gartenausgaben
             SaveInDB();
         }
 
+        /// <summary>
+        /// Funktion zum Speichern des Inhalts der DataGridView in der DB
+        /// </summary>
         private void SaveInDB()
         {
             //Erstelle DataTable
@@ -344,33 +347,46 @@ namespace Gartenausgaben
                 sql_conn.Close();
             }
 
-            SetNewEinkaufId();
-
-            //Übertragen der einzelnen Positionen in die Datenbank
-            foreach (DataGridViewRow row in dataGridView_Einkauf.Rows)
+            if (!PrüfeEinkauf())
             {
-                SetEinzelpreisUndMenge(row.Index);
 
-                
-                artikelID.ArtikelId = GetId("Artikel", "Artikelbezeichnung", "Artikel", row.Index);
-                //ArtikelID = GetId("Artikel", "Artikelbezeichnung", "Artikel", row.Index); obsolte
-                ProjektID = GetId("Projekt", "Projektname", "Projekt", row.Index);
+                SetNewEinkaufId();
 
-                //ArtikelHaendlerID = GetId("Artikel_Haendler", ArtikelID, HaendlerID); obsolte
-                ArtikelHaendlerID = GetId("Artikel_Haendler", artikelID.ArtikelId,haendlerID.Id);
+                //Übertragen der einzelnen Positionen in die Datenbank
+                foreach (DataGridViewRow row in dataGridView_Einkauf.Rows)
+                {
+                    SetEinzelpreisUndMenge(row.Index);
 
-                if (ArtikelHaendlerID == 0)
-                    InsertArtikelHaendler();
 
-                ArtikelPreisID = GetId("Artikel_Preis", ArtikelHaendlerID, EinzelPreis);
+                    artikelID.ArtikelId = GetId("Artikel", "Artikelbezeichnung", "Artikel", row.Index);
+                    //ArtikelID = GetId("Artikel", "Artikelbezeichnung", "Artikel", row.Index); obsolet
+                    ProjektID = GetId("Projekt", "Projektname", "Projekt", row.Index);
 
-                if (ArtikelPreisID == 0)
-                    InsertArtikelPreis();
+                    //ArtikelHaendlerID = GetId("Artikel_Haendler", ArtikelID, HaendlerID); obsolte
+                    ArtikelHaendlerID = GetId("Artikel_Haendler", artikelID.ArtikelId, haendlerID.Id);
 
-                SetEinkaufsposition();
+                    if (ArtikelHaendlerID == 0)
+                        InsertArtikelHaendler();
+
+                    ArtikelPreisID = GetId("Artikel_Preis", ArtikelHaendlerID, EinzelPreis);
+
+                    if (ArtikelPreisID == 0)
+                        InsertArtikelPreis();
+
+                    SetEinkaufsposition();
+                }
+                dataGridView_Einkauf.Rows.Clear();
+                lbl_SummeBetrag.Text = "0,00 €";
             }
-            dataGridView_Einkauf.Rows.Clear();
-            lbl_SummeBetrag.Text = "0,00 €";
+            else
+            {
+                var result = MessageBox.Show("Ihre Daten wurden nicht gespeichert. Möchten Sie einen neuen Bon eingeben?", "Achtung", MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    dataGridView_Einkauf.Rows.Clear();
+                    lbl_SummeBetrag.Text = "0,00 €";
+                }
+            }
         }
 
         private int SetEinkaufsposition()
@@ -654,28 +670,6 @@ namespace Gartenausgaben
 
                 dataGridView_Einkauf.Rows.Add(positionDataGridView, numericUpDown_Menge.Value, cb_Artikel.Text, numericUpDown_Einzelpreis.Value, tb_GesamtBetrag.Text, cb_Projekt.Text);
 
-                ////Summe aller Gesamtpreise - Zur Kontrolle des Kassenbons
-                //var count = dataGridView_Einkauf.Rows.Count;
-                //decimal x = 0.00m;
-
-                //if (count > 1)
-                //{
-                //    for (int i = 0; i < count; i++)
-                //    {
-                //        try
-                //        {
-                //            x += Convert.ToDecimal(dataGridView_Einkauf.Rows[i].Cells["Gesamtpreis"].Value.ToString());
-                //        }
-                //        catch
-                //        {
-                //            MessageBox.Show("Bitte überprüfen Sie Ihre Eingaben. Die Felder Menge und Einzelpreis müssen ausgefüllt sein", "Achtung", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //        }
-                //    }
-                //}
-                //else
-                //    x = Convert.ToDecimal(tb_GesamtBetrag.Text);
-
-                //lbl_SummeBetrag.Text = x.ToString() + " €";
                 Gesamtsumme();
 
                 positionDataGridView++;
@@ -696,7 +690,7 @@ namespace Gartenausgaben
             }
                 
         }
-        private void Gesamtsumme()
+        private decimal Gesamtsumme()
         {
             //Summe aller Gesamtpreise - Zur Kontrolle des Kassenbons
             var count = dataGridView_Einkauf.Rows.Count;
@@ -720,6 +714,7 @@ namespace Gartenausgaben
                 x = Convert.ToDecimal(tb_GesamtBetrag.Text);
             
             lbl_SummeBetrag.Text = x.ToString() + " €";
+            return x;
         }
 
         private void SetDataGrid_Tabelle()
@@ -966,6 +961,77 @@ namespace Gartenausgaben
                 if (result == DialogResult.OK)
                     dataGridView_Einkauf.Rows.Clear();
             }
+        }
+
+        /// <summary>
+        /// Funktion zum Prüfen, ob der aktuelle Bon/Kassenzettel schon einmal eingegeben wurde
+        /// </summary>
+        /// <returns>true -> Bon existiert</returns>
+        private bool PrüfeEinkauf()
+        {
+            Einkauf[] einkauf = null;
+            var summe = Convert.ToDecimal(lbl_SummeBetrag.Text.Remove(lbl_SummeBetrag.Text.IndexOf(" ")));
+            haendlerID.Id = GetId("Haendler", "Name", lbl_Haendler.Text.Remove(lbl_Haendler.Text.IndexOf(",")));
+            var datum = dateTimePickerDatum.Value.Date.ToString("yyyy-MM-dd");
+
+            
+            string querySql = "SELECT E.Einkauf_ID, E.Haendler_ID, SUM(AP.Artikelpreis * EP.Menge) AS Summe FROM Artikel_Preis AS AP " +
+            "INNER JOIN Artikel_Haendler AS AH ON AH.ArtikelHaendler_ID = AP.ArtikelHaendler_ID " +
+            "INNER JOIN Artikel AS A ON A.Artikel_ID = AH.Artikel_ID " +
+            "INNER JOIN Einkaufpositionen AS EP ON EP.Artikel_ID = A.Artikel_ID " +
+            "INNER JOIN Einkauf AS E ON E.Einkauf_ID = EP.Einkauf_ID " +
+            "WHERE E.Datum = @Datum " +
+            "GROUP BY E.Einkauf_ID, E.Haendler_ID ";
+
+            using (SqlConnection sql_conn = new SqlConnection(conn))
+            {
+                SqlCommand command = new SqlCommand(querySql, sql_conn);
+                command.Parameters.AddWithValue("@Haendler", haendlerID.Id);
+                command.Parameters.AddWithValue("@Datum", datum);
+
+                try
+                {
+                    if (sql_conn.State != ConnectionState.Open)
+                        sql_conn.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        var list = new List<Einkauf>();
+                        while (reader.Read())
+                        {
+                            list.Add(new Einkauf { Id = reader.GetInt32(0), HaendlerId = reader.GetInt32(1), Summe = reader.GetDecimal(2) });
+                            einkauf = list.ToArray();
+                        }
+                        reader.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                sql_conn.Close();
+            }
+            
+            if (einkauf.Length > 0)
+                {
+                    var count = 0;
+                           
+                    foreach (var item in einkauf)
+                    {
+                        if (haendlerID.Id == item.HaendlerId && item.Summe == summe)
+                            count++;
+                    }
+                    if (count > 0)
+                    {
+                        var result = MessageBox.Show("Ein Kassenbon von diesem Händler und dem selben Tag existiert schon " + count + "x." + "\n" + "Möchten Sie diese Buchung erneut speichern?", "Achtung", MessageBoxButtons.YesNo);
+                        if (result == DialogResult.Yes)
+                        {
+                            return false;
+                        }
+                        else
+                            return true;
+                    }
+                }
+            return false;
         }
     }
 }

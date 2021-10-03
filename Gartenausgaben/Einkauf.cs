@@ -8,10 +8,22 @@ namespace Gartenausgaben
 {
     public class Einkauf
     {
+        private decimal summe;
 
         public int Id { get; set; }
         public int HaendlerId { get; set; }
         public DateTime Datum { get; set; }
+        public decimal Summe
+        { 
+            get
+            {
+                return summe;
+            } 
+            set
+            {
+                summe = Decimal.Round(value, 2);
+            }
+        }
 
         public void SetId()
         {
