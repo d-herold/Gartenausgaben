@@ -24,7 +24,6 @@ namespace Gartenausgaben
     public partial class Invoice : Form
     {
         readonly string conn = Properties.Settings.Default.GartenDB; // Connection String aus der App.config
-        //string conn = Properties.Settings.Default.GartenProjekteConnectionString; // Alter Connection String aus der App.config --> obsolete?
         DataTable einkauf;
         bool listeSort = true;
         int positionDataGridView = 1;
@@ -38,7 +37,6 @@ namespace Gartenausgaben
         public int ArtikelHaendlerID { get; set; }
         public int EinkaufID { get; set; }
         public int EinkaufPositionID { get; set; }
-        string a = "";
         readonly Artikel artikelID = new Artikel();
         readonly Haendler haendlerID = new Haendler();
 
@@ -48,12 +46,14 @@ namespace Gartenausgaben
             // ComboBox-Inhalte Rechtsbündig darstellen
             this.cb_Artikel.DropDownStyle = ComboBoxStyle.DropDownList;
             SetMyCustomFormat();
+            
             LadeStartDaten();
             ErstelleDataTable();
             SetDataGrid_Tabelle();
             BtnNewItem.Enabled = false;
             
         }
+
         void comboBox_DrawItem(object sender, DrawItemEventArgs e)
         {
             e.DrawBackground();
@@ -285,7 +285,7 @@ namespace Gartenausgaben
         /// </summary>
         private void SaveInDB()
         {
-            //Erstelle DataTable
+            //Erstelle DataTables
             var dgvEinkauf = new DataTable();
             var dbEinkaufposition = new DataTable();
             var dbArtikel = new DataTable();
@@ -786,17 +786,13 @@ namespace Gartenausgaben
 
         private void LadeEinzelpreis()
         {
-
-            //var haendler = cb_Haendler.Text;
             char[] charToTrim = { ',', ' ' };
             var haendler = cb_Haendler.Text;
-
             var ort = cb_Haendler.Text.Substring(cb_Haendler.Text.IndexOf(',')).TrimStart(charToTrim);
+            var artikel = cb_Artikel.Text;
 
             string[] subs = haendler.Split(',');
             haendler = subs[0];
-
-            var artikel = cb_Artikel.Text;
 
             if (cb_Haendler.Text != "" && cb_Artikel.Text != "")
             {
