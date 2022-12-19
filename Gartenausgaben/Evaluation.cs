@@ -51,12 +51,12 @@ namespace Gartenausgaben
         private string AddAusgabenProjket(string name)
         {
             decimal summe = 0;
-            string sql_Select = "SELECT SUM(AP.Artikelpreis*EP.Menge) AS Summe FROM Artikel_Preis AS AP " +
-            "INNER JOIN Artikel_Haendler AS AH ON AH.ArtikelHaendler_ID = AP.ArtikelHaendler_ID " +
-            "INNER JOIN Artikel AS A ON A.Artikel_ID = AH.Artikel_ID " +
-            "INNER JOIN Einkaufpositionen AS EP ON EP.Artikel_ID = A.Artikel_ID " +
-            "INNER JOIN Projekt AS P ON P.Projekt_ID = EP.Projekt_ID " +
-            "INNER JOIN Einkauf AS E ON E.Einkauf_ID = EP.Einkauf_ID " +
+            string sql_Select = "SELECT SUM(ap.Artikelpreis*ep.Menge) AS Summe FROM Artikel_Preis AS ap " +
+            "INNER JOIN Artikel_Haendler AS ah ON ah.ArtikelHaendler_ID = ap.ArtikelHaendler_ID " +
+            "INNER JOIN Artikel AS a ON a.Artikel_ID = ah.Artikel_ID " +
+            "INNER JOIN Einkaufpositionen AS ep ON ep.Artikel_ID = a.Artikel_ID " +
+            "INNER JOIN Projekt AS p ON p.Projekt_ID = ep.Projekt_ID " +
+            "INNER JOIN Einkauf AS e ON e.Einkauf_ID = ep.Einkauf_ID " +
             "WHERE Projektname = @ProjektName";
 
             using (SqlConnection sql_conn = new SqlConnection(conn))

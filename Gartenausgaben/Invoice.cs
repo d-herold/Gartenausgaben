@@ -21,7 +21,7 @@ using System.Data.Linq;
 
 namespace Gartenausgaben
 {
-    public partial class Invoice : Form 
+    public partial class Invoice : Form
     {
         readonly string conn = Properties.Settings.Default.GartenDB; // Connection String aus der App.config
         //string conn = Properties.Settings.Default.GartenProjekteConnectionString; // Alter Connection String aus der App.config --> obsolete?
@@ -45,13 +45,26 @@ namespace Gartenausgaben
         public Invoice()
         {
             InitializeComponent();
+            // ComboBox-Inhalte Rechtsbündig darstellen
+            this.cb_Artikel.DropDownStyle = ComboBoxStyle.DropDownList;
             SetMyCustomFormat();
             LadeStartDaten();
             ErstelleDataTable();
             SetDataGrid_Tabelle();
             BtnNewItem.Enabled = false;
+            
         }
-        
+        void comboBox_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            e.DrawBackground();
+
+            string txt = "";
+            if (e.Index >= 0)
+                txt = cb_Artikel.Items[e.Index].ToString();
+
+            TextRenderer.DrawText(e.Graphics, txt, e.Font, e.Bounds, e.ForeColor, TextFormatFlags.Right);
+            e.DrawFocusRectangle();
+        }
         public void ErstelleDataTable()
         {
             DataSet datasetEinkauf = new DataSet();
@@ -65,7 +78,7 @@ namespace Gartenausgaben
             einkauf.Columns.Add("Projekt", typeof(String));
 
             datasetEinkauf.Tables.Add(einkauf);
-        }        
+        }
 
         public void SetMyCustomFormat()
         {
@@ -141,7 +154,7 @@ namespace Gartenausgaben
                     cb_Projekt.ValueMember = "[Projekt_ID]";
                     cb_Projekt.DataSource = tblData_Projekt;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show("Achtung: " + ex.Message);
                 }
@@ -217,7 +230,7 @@ namespace Gartenausgaben
                     cb_Artikel.ValueMember = "[Artikel_ID]";
                     cb_Artikel.DataSource = tblData_Artikel;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show("Exception Message: " + ex.Message);
                 }
@@ -416,7 +429,7 @@ namespace Gartenausgaben
                     return 0;
                 }
             }
-            
+
         }
 
         private int SetNewEinkaufId()
@@ -452,7 +465,7 @@ namespace Gartenausgaben
         /// <param name="list"></param>
         /// <paramref>GetId(DbTable, DbColumnName, DgvColumnName, DgvRowIndex)</paramref>
         /// <returns>ID</returns>
-        private int GetId(params object[] list)
+        private int GetId(params object[] list) 
         {
             int id = 0;
             char[] charToTrim = { ',', ' ' };
@@ -564,16 +577,16 @@ namespace Gartenausgaben
                 }
                 sql_conn.Close();
             }
-                return id;
+            return id;
         }
 
         private void SetEinzelpreisUndMenge(int row)
         {
-            for (int i = 0; i < dataGridView_Einkauf.Columns.Count; i++) 
+            for (int i = 0; i < dataGridView_Einkauf.Columns.Count; i++)
             {
-                if (dataGridView_Einkauf.Columns[i].Name == "Einzelpreis" || dataGridView_Einkauf.Columns[i].Name == "Menge") 
+                if (dataGridView_Einkauf.Columns[i].Name == "Einzelpreis" || dataGridView_Einkauf.Columns[i].Name == "Menge")
                 {
-                    for (int j = 0; j < dataGridView_Einkauf.RowCount; j++) 
+                    for (int j = 0; j < dataGridView_Einkauf.RowCount; j++)
                     {
                         if (j == row && dataGridView_Einkauf.Columns[i].Name == "Einzelpreis")
                         {
@@ -584,8 +597,8 @@ namespace Gartenausgaben
                             Menge = Convert.ToInt32(dataGridView_Einkauf.Rows[j].Cells[i].Value);
                         }
                     }
-                } 
-            } 
+                }
+            }
         }
 
         private int InsertArtikelHaendler()
@@ -655,7 +668,7 @@ namespace Gartenausgaben
 
         private void BtnEintragen_Click(object sender, EventArgs e)
         {
-            if(numericUpDown_Einzelpreis.Value != 0 && numericUpDown_Menge.Value != 0 && cb_Artikel.Text != "")
+            if (numericUpDown_Einzelpreis.Value != 0 && numericUpDown_Menge.Value != 0 && cb_Artikel.Text != "")
             {
                 DataRow row = einkauf.NewRow();
                 row["Haendler"] = cb_Haendler.Text;
@@ -688,7 +701,7 @@ namespace Gartenausgaben
                 LadeArtikelNeu("Artikelbezeichnung", "ASC");
                 listeSort = true;
             }
-                
+
         }
         private decimal Gesamtsumme()
         {
@@ -712,7 +725,7 @@ namespace Gartenausgaben
             }
             else
                 x = Convert.ToDecimal(tb_GesamtBetrag.Text);
-            
+
             lbl_SummeBetrag.Text = x.ToString() + " €";
             return x;
         }
@@ -773,13 +786,13 @@ namespace Gartenausgaben
 
         private void LadeEinzelpreis()
         {
-            
+
             //var haendler = cb_Haendler.Text;
             char[] charToTrim = { ',', ' ' };
             var haendler = cb_Haendler.Text;
 
             var ort = cb_Haendler.Text.Substring(cb_Haendler.Text.IndexOf(',')).TrimStart(charToTrim);
-            
+
             string[] subs = haendler.Split(',');
             haendler = subs[0];
 
@@ -846,7 +859,7 @@ namespace Gartenausgaben
         private void BtnDgvDeleteLastRow_Click(object sender, EventArgs e)
         {
             int count = dataGridView_Einkauf.Rows.Count;
-            dataGridView_Einkauf.Rows.RemoveAt(count-1);
+            dataGridView_Einkauf.Rows.RemoveAt(count - 1);
             Gesamtsumme();
         }
 
@@ -855,17 +868,18 @@ namespace Gartenausgaben
             dataGridView_Einkauf.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         }
 
-        private void DataGridView_Einkauf_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e) { 
-        
+        private void DataGridView_Einkauf_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+        {
+
             var row = 0;
             var count = dataGridView_Einkauf.Rows.Count;
             for (int i = 1; i <= count; i++)
             {
                 this.dataGridView_Einkauf.Rows[row].Cells["Position"].Value = i;
                 row++;
-                
+
             }
-            positionDataGridView = count+1;
+            positionDataGridView = count + 1;
             Gesamtsumme();
         }
 
@@ -880,7 +894,8 @@ namespace Gartenausgaben
         public void AddNewProjectControl()
         {
             okNewProject = new Button();
-            tbNewProject = new TextBox{
+            tbNewProject = new TextBox
+            {
                 Location = new Point(40, 470),
                 Size = new Size(224, 24)
             };
@@ -917,7 +932,7 @@ namespace Gartenausgaben
         {
             var projekt = tbNewProject.Text.Trim();
 
-            if(projekt == "")
+            if (projekt == "")
                 RemoveNewProjectControl();
             else
             {
@@ -930,7 +945,7 @@ namespace Gartenausgaben
                     MessageBox.Show("Das Projekt existiert schon", "Hinweis", MessageBoxButtons.OK);
             }
 
-            
+
 
             RemoveNewProjectControl();
         }
@@ -950,13 +965,13 @@ namespace Gartenausgaben
 
         private void BtnNewShopping_Click(object sender, EventArgs e)
         {
-            if (dataGridView_Einkauf.Rows.Count <1)
+            if (dataGridView_Einkauf.Rows.Count < 1)
             {
                 MessageBox.Show("Es sind keine Artikel zum löschen vorhanden!", "Hinweis", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
-                DialogResult result = 
+                DialogResult result =
                     MessageBox.Show("Wollen Sie wirklich alle Artikel aus der Liste löschen? Die vorhandenen Daten werden nicht gespeichert!", "ACHTUNG", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
                 if (result == DialogResult.OK)
                     dataGridView_Einkauf.Rows.Clear();
@@ -972,9 +987,9 @@ namespace Gartenausgaben
             Einkauf[] einkauf = null;
             var summe = Convert.ToDecimal(lbl_SummeBetrag.Text.Remove(lbl_SummeBetrag.Text.IndexOf(" ")));
             haendlerID.Id = GetId("Haendler", "Name", lbl_Haendler.Text.Remove(lbl_Haendler.Text.IndexOf(",")));
-            var datum = dateTimePickerDatum.Value.Date.ToString("yyyy-MM-dd");
+            var datum = dateTimePickerDatum.Value.Date.ToString("dd-MM-yyyy");
 
-            
+
             string querySql = "SELECT E.Einkauf_ID, E.Haendler_ID, SUM(AP.Artikelpreis * EP.Menge) AS Summe FROM Artikel_Preis AS AP " +
             "INNER JOIN Artikel_Haendler AS AH ON AH.ArtikelHaendler_ID = AP.ArtikelHaendler_ID " +
             "INNER JOIN Artikel AS A ON A.Artikel_ID = AH.Artikel_ID " +
@@ -1010,28 +1025,84 @@ namespace Gartenausgaben
                 }
                 sql_conn.Close();
             }
-            
-            if (einkauf.Length > 0)
+            if (einkauf != null)
+            //if (einkauf.Length > 0)
+            {
+                var count = 0;
+
+                foreach (var item in einkauf)
                 {
-                    var count = 0;
-                           
-                    foreach (var item in einkauf)
-                    {
-                        if (haendlerID.Id == item.HaendlerId && item.Summe == summe)
-                            count++;
-                    }
-                    if (count > 0)
-                    {
-                        var result = MessageBox.Show("Ein Kassenbon von diesem Händler und dem selben Tag existiert schon " + count + "x." + "\n" + "Möchten Sie diese Buchung erneut speichern?", "Achtung", MessageBoxButtons.YesNo);
-                        if (result == DialogResult.Yes)
-                        {
-                            return false;
-                        }
-                        else
-                            return true;
-                    }
+                    if (haendlerID.Id == item.HaendlerId && item.Summe == summe)
+                        count++;
                 }
+                if (count > 0)
+                {
+                    var result = MessageBox.Show("Ein Kassenbon von diesem Händler und dem selben Tag existiert schon " + count + "x." + "\n" + "Möchten Sie diese Buchung erneut speichern?", "Achtung", MessageBoxButtons.YesNo);
+                    if (result == DialogResult.Yes)
+                    {
+                        return false;
+                    }
+                    else
+                        return true;
+                }
+            }
             return false;
+        }
+
+        /// <summary>
+        /// Funktion für die Autosize Größe der Artikel-ComboBox
+        /// </summary>
+        private int DropDownWidth(ComboBox myCombo)
+        {
+            int maxWidth = 0, temp = 0;
+            foreach (var obj in myCombo.Items)
+            {
+                temp = TextRenderer.MeasureText(myCombo.GetItemText(obj), myCombo.Font).Width;
+                if (temp > maxWidth)
+                {
+                    maxWidth = temp;
+                }
+            }
+            return maxWidth + SystemInformation.VerticalScrollBarWidth;
+        }
+
+        private void Invoice_Load_1(object sender, EventArgs e)
+        {
+            cb_Artikel.DropDownWidth = DropDownWidth(cb_Artikel);
+        }
+
+        /// <summary>
+        /// Zentrierte Ausrichtung der Combo Box zulassen
+        /// </summary>
+        private void cbxDesign_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            // By using Sender, one method could handle multiple ComboBoxes
+            ComboBox cbx = sender as ComboBox;
+            if (cbx != null)
+            {
+                // Always draw the background
+                e.DrawBackground();
+
+                // Drawing one of the items?
+                if (e.Index >= 0)
+                {
+                    // Set the string alignment.  Choices are Center, Near and Far
+                    StringFormat sf = new StringFormat();
+                    sf.LineAlignment = StringAlignment.Far;
+                    sf.Alignment = StringAlignment.Far;
+
+                    // Set the Brush to ComboBox ForeColor to maintain any ComboBox color settings
+                    // Assumes Brush is solid
+                    Brush brush = new SolidBrush(cbx.ForeColor);
+
+                    // If drawing highlighted selection, change brush
+                    if ((e.State & DrawItemState.Selected) == DrawItemState.Selected)
+                        brush = SystemBrushes.HighlightText;
+
+                    // Draw the string
+                    e.Graphics.DrawString(cbx.Items[e.Index].ToString(), cbx.Font, brush, e.Bounds, sf);
+                }
+            }
         }
     }
 }

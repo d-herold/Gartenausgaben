@@ -441,6 +441,7 @@
             this.MaximizeBox = false;
             this.Name = "Invoice";
             this.Text = "Gartenausgaben";
+            this.Load += new System.EventHandler(this.Invoice_Load_1);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_Einkauf)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Menge)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Einzelpreis)).EndInit();

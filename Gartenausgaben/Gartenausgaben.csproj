@@ -103,6 +103,7 @@
     <Compile Include="Gartenausgaben.Designer.cs">
       <DependentUpon>Gartenausgaben.cs</DependentUpon>
     </Compile>
+    <Compile Include="Settings.cs" />
     <EmbeddedResource Include="Evaluation.resx">
       <DependentUpon>Evaluation.cs</DependentUpon>
     </EmbeddedResource>

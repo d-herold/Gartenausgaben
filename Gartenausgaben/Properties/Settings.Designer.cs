@@ -11,55 +11,37 @@
 namespace Gartenausgaben.Properties {
     
     
-    //[global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    //[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.7.0.0")]
-    //internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
-        
-    //    private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
-        
-    //    public static Settings Default {
-    //        get {
-    //            return defaultInstance;
-    //        }
-    //    }
-        
-    //    [global::System.Configuration.ApplicationScopedSettingAttribute()]
-    //    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-    //    [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-    //    [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\\Datenbank\\Gar" +
-    //        "tenProjekte.mdf;Integrated Security=True;Connect Timeout=30")]
-    //    public string GartenProjekteConnectionString {
-    //        get {
-    //            return ((string)(this["GartenProjekteConnectionString"]));
-    //        }
-    //    }
-    //}
-
-
-    //neu
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.7.0.0")]
-    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase
-    {
-
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.10.0.0")]
+    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
+        
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
-
-        public static Settings Default
-        {
-            get
-            {
+        
+        public static Settings Default {
+            get {
                 return defaultInstance;
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=E:\\Daniel\\Desktop\\Neuer Ordner (3)\\Datenbank\\GartenProjekte.mdf;Integrated Security=True;Connect Timeout=30")]
-        public string GartenDB
-        {
-            get
-            {
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\\Datenbank\\Gar" +
+            "tenProjekte.mdf;Integrated Security=True;Connect Timeout=30")]
+        public string GartenProjekteConnectionString {
+            get {
+                return ((string)(this["GartenProjekteConnectionString"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=E:\\Daniel\\Desktop\\Gartenproje" +
+            "kte\\Datenbank\\Datenbank_Gartenprojekte.mdf;Integrated Security=True;Connect Time" +
+            "out=30")]
+        public string GartenDB {
+            get {
                 return ((string)(this["GartenDB"]));
             }
         }
