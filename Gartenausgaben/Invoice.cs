@@ -38,7 +38,7 @@ namespace Gartenausgaben
         public int ArtikelHaendlerID { get; set; }
         public int EinkaufID { get; set; }
         public int EinkaufPositionID { get; set; }
-
+        string a = "";
         readonly Artikel artikelID = new Artikel();
         readonly Haendler haendlerID = new Haendler();
 
