@@ -19,6 +19,11 @@ namespace Gartenausgaben
 
         public bool VergleichPreis()
         {
+            Invoice test = new Invoice();
+            var x = test.ArtikelPreisID;
+
+
+
             using (SqlConnection sql_conn = new SqlConnection(conn))
             {
 
@@ -35,6 +40,13 @@ namespace Gartenausgaben
 
                 DataTable dt = new DataTable();
                 sql_conn.Open();
+
+                if (x != 0)
+                {
+
+                }
+
+
 
                 if (0==0)
                     return false;
