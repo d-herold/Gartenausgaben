@@ -37,7 +37,7 @@ namespace Gartenausgaben
         public int ArtikelHaendlerID { get; set; }
         public int EinkaufID { get; set; }
         public int EinkaufPositionID { get; set; }
-        readonly Artikel artikelID = new Artikel();
+        //readonly Artikel artikelID = new Artikel();
         readonly Haendler haendlerID = new Haendler();
 
         public Invoice()
@@ -285,6 +285,11 @@ namespace Gartenausgaben
         /// </summary>
         private void SaveInDB()
         {
+            Haendler haendler = new Haendler();
+            haendler.Name = lbl_Haendler.Text;
+            //Artikel artikel = new Artikel();
+            
+
             //Erstelle DataTables
             var dgvEinkauf = new DataTable();
             var dbEinkaufposition = new DataTable();
@@ -370,23 +375,42 @@ namespace Gartenausgaben
                 {
                     SetEinzelpreisUndMenge(row.Index);
 
+                    Artikel art = new Artikel();
 
-                    artikelID.ArtikelId = GetId("Artikel", "Artikelbezeichnung", "Artikel", row.Index);
+                    foreach (DataGridViewCell cell in row.Cells)
+                    {
+                        if(cell.ColumnIndex == 2)
+                        {
+                            art.Artikelbezeichnung = cell.Value.ToString();
+                            break;
+                        }
+                            
+                    }
+                    var artikelID1 = art.ID(art.Artikelbezeichnung);
+
+                    //artikelID.ArtikelId = GetId("Artikel", "Artikelbezeichnung", "Artikel", row.Index);obsolet da objektbildung Artikel
                     //ArtikelID = GetId("Artikel", "Artikelbezeichnung", "Artikel", row.Index); obsolet
                     ProjektID = GetId("Projekt", "Projektname", "Projekt", row.Index);
 
                     //ArtikelHaendlerID = GetId("Artikel_Haendler", ArtikelID, HaendlerID); obsolte
-                    ArtikelHaendlerID = GetId("Artikel_Haendler", artikelID.ArtikelId, haendlerID.Id);
+
+                    //(ArtikelHaendlerID = GetId("Artikel_Haendler", artikelID.ArtikelId, haendlerID.Id);
+                    ArtikelHaendlerID = GetId("Artikel_Haendler", artikelID1, haendlerID.Id);
+                    //Objekttest
+
 
                     if (ArtikelHaendlerID == 0)
-                        InsertArtikelHaendler();
+                        InsertArtikelHaendler(artikelID1);
+
+
+                    var x = 0;
 
                     ArtikelPreisID = GetId("Artikel_Preis", ArtikelHaendlerID, EinzelPreis);
 
                     if (ArtikelPreisID == 0)
                         InsertArtikelPreis();
 
-                    SetEinkaufsposition();
+                    SetEinkaufsposition(artikelID1);
                 }
                 dataGridView_Einkauf.Rows.Clear();
                 lbl_SummeBetrag.Text = "0,00 €";
@@ -402,7 +426,7 @@ namespace Gartenausgaben
             }
         }
 
-        private int SetEinkaufsposition()
+        private int SetEinkaufsposition(int artikelId)
         {
             string sql_Insert = "INSERT INTO Einkaufpositionen (Menge, Projekt_ID, Artikel_ID, Einkauf_ID, Preis_ID) " + "VALUES (@Menge,  @ProjektId, @ArtikelId, @EinkaufId, @PreisId); "
                 + "SELECT CAST(scope_identity() AS int)";
@@ -410,7 +434,7 @@ namespace Gartenausgaben
             using (SqlConnection sql_conn = new SqlConnection(conn))
             using (SqlCommand command = new SqlCommand(sql_Insert, sql_conn))
             {
-                command.Parameters.AddWithValue("@ArtikelId", artikelID.ArtikelId);
+                command.Parameters.AddWithValue("@ArtikelId", artikelId);
                 //command.Parameters.AddWithValue("@ArtikelId", ArtikelID); obsolete 1
                 command.Parameters.AddWithValue("@ProjektId", ProjektID);
                 command.Parameters.AddWithValue("@EinkaufId", EinkaufID);
@@ -465,11 +489,16 @@ namespace Gartenausgaben
         /// <param name="list"></param>
         /// <paramref>GetId(DbTable, DbColumnName, DgvColumnName, DgvRowIndex)</paramref>
         /// <returns>ID</returns>
-        private int GetId(params object[] list) 
+        public int GetId(params object[] list) 
         {
             int id = 0;
             char[] charToTrim = { ',', ' ' };
             string ort = lbl_Haendler.Text.Substring(lbl_Haendler.Text.IndexOf(',')).TrimStart(charToTrim);
+
+            int artikelId = 0;
+
+            if (list[0].ToString() == "Artikel_Haendler")
+                artikelId = (int)list[1];
 
             using (SqlConnection sql_conn = new SqlConnection(conn))
             {
@@ -484,7 +513,7 @@ namespace Gartenausgaben
                 SqlDataAdapter adapterArtikelPreis = new SqlDataAdapter(sql_Select_ArtikelPreis, sql_conn);
 
                 adapterHaendler.SelectCommand.Parameters.AddWithValue("@Ort", ort);
-                adapterArtikelHaendler.SelectCommand.Parameters.AddWithValue("@Artikel_ID", artikelID.ArtikelId);
+                adapterArtikelHaendler.SelectCommand.Parameters.AddWithValue("@Artikel_ID", artikelId);
                 //adapterArtikelHaendler.SelectCommand.Parameters.AddWithValue("@Artikel_ID", ArtikelID); obsolete 1
                 adapterArtikelHaendler.SelectCommand.Parameters.AddWithValue("@Haendler_ID", haendlerID.Id);
                 //adapterArtikelHaendler.SelectCommand.Parameters.AddWithValue("@Haendler_ID", HaendlerID);
@@ -601,14 +630,14 @@ namespace Gartenausgaben
             }
         }
 
-        private int InsertArtikelHaendler()
+        private int InsertArtikelHaendler(int artikelId)
         {
             string sql_Insert = "INSERT INTO Artikel_Haendler (Artikel_ID, Haendler_ID) " + "VALUES (@Artikel_ID, @Haendler_ID); " + "SELECT CAST(scope_identity() AS int)";
 
             using (SqlConnection sql_conn = new SqlConnection(conn))
             using (SqlCommand command = new SqlCommand(sql_Insert, sql_conn))
             {
-                command.Parameters.AddWithValue("@Artikel_ID", artikelID.ArtikelId);
+                command.Parameters.AddWithValue("@Artikel_ID", artikelId);
                 //command.Parameters.AddWithValue("@Artikel_ID", ArtikelID); obsolete 1
                 command.Parameters.AddWithValue("@Haendler_ID", haendlerID.Id);
                 //command.Parameters.AddWithValue("@Haendler_ID", HaendlerID);
