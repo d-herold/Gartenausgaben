@@ -285,11 +285,8 @@ namespace Gartenausgaben
         /// </summary>
         private void SaveInDB()
         {
-            Haendler haendler = new Haendler();
-            haendler.Name = lbl_Haendler.Text;
-            //Artikel artikel = new Artikel();
+            Haendler haendler = new Haendler(lbl_Haendler.Text);
             
-
             //Erstelle DataTables
             var dgvEinkauf = new DataTable();
             var dbEinkaufposition = new DataTable();
@@ -376,6 +373,7 @@ namespace Gartenausgaben
                     SetEinzelpreisUndMenge(row.Index);
 
                     Artikel art = new Artikel();
+                    ArtikelHaendler art_haend = new ArtikelHaendler();
 
                     foreach (DataGridViewCell cell in row.Cells)
                     {

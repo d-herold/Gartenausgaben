@@ -19,13 +19,17 @@ namespace Gartenausgaben
 
         string conn = Properties.Settings.Default.GartenDB; // Connection String aus der App.config
 
-        public int ID()
+        public Haendler () { }
+        public Haendler (string name )
+        {
+            Name = name;
+        }
+
+        public int ID(string name)
         {
             int id = 0;
 
-            string sql_Select_Haendler = "SELECT * FROM Artikel_Haendlers AS ah " +
-                    "JOIN Artikel AS a ON ah.Artikel_ID = a.Artikel_ID " +
-                    "WHERE a.Artikel_ID = @Artikel_ID";
+            string sql_Select_Haendler = "SELECT * FROM Haendlers WHERE a.Artikel_ID = @Artikel_ID";
 
             using (SqlConnection sql_conn = new SqlConnection(conn))
             using (SqlCommand command = new SqlCommand(sql_Select_Haendler, sql_conn))
