@@ -39,8 +39,6 @@ namespace Gartenausgaben
             } 
         }
 
-        string conn = Properties.Settings.Default.GartenDB; // Connection String aus der App.config
-
         public Artikel() 
         { }
         public Artikel (string artikelbezeichnung)
@@ -56,7 +54,7 @@ namespace Gartenausgaben
             string sql_Select_Artikel = "SELECT * FROM Artikel" +
                     " WHERE Artikelbezeichnung = @Artikelbezeichnung";
 
-            using (SqlConnection sql_conn = new SqlConnection(conn))
+            using (SqlConnection sql_conn = new SqlConnection(DbConnect.Conn)) // Connection String aus der App.config
             using (SqlCommand command = new SqlCommand(sql_Select_Artikel, sql_conn))
             {
                 command.Parameters.AddWithValue("@Artikelbezeichnung", Artikelbezeichnung);

@@ -88,15 +88,12 @@ namespace Gartenausgaben
                 this.menge = value;
             }
         }
-
-        
-
-        void x ()
-        {
-            var einkauf = new Einkauf
-            {
-                //Datum = 
-            };
-        }
+        //void x ()
+        //{
+        //    var einkauf = new Einkauf
+        //    {
+        //        //Datum = 
+        //    };
+        //}
     }
 }

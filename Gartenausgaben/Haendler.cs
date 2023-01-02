@@ -10,34 +10,38 @@ namespace Gartenausgaben
 {
     public class Haendler
     {
-        public int Id { get; set; }
+        public int HaendlerId { get; set; }
         public string Name { get; set; }
         public string Anschrift { get; set; }
         public string Plz { get; set; }
         public string Ort { get; set; }
         public string Telefon { get; set; }
 
-        string conn = Properties.Settings.Default.GartenDB; // Connection String aus der App.config
+        
 
         public Haendler () { }
-        public Haendler (string name )
+        public Haendler (string name, string ort )
         {
             Name = name;
+            Ort = ort;
+            ID();
         }
 
-        public int ID(string name)
+        private int ID()
         {
             int id = 0;
 
-            string sql_Select_Haendler = "SELECT * FROM Haendlers WHERE a.Artikel_ID = @Artikel_ID";
+            string sql_Select_Haendler = "SELECT * FROM Haendler WHERE Name = @Haendlername AND Ort = @Ort";
 
-            using (SqlConnection sql_conn = new SqlConnection(conn))
+            using (SqlConnection sql_conn = new SqlConnection(DbConnect.Conn))
             using (SqlCommand command = new SqlCommand(sql_Select_Haendler, sql_conn))
             {
-                command.Parameters.AddWithValue("@Artikel_ID", id);
+                command.Parameters.AddWithValue("@Haendlername", Name);
+                command.Parameters.AddWithValue("@Ort", Ort);
                 try
                 {
                     sql_conn.Open();
+                    this.HaendlerId = (Int32)command.ExecuteScalar();
                     id = (Int32)command.ExecuteScalar();
                 }
                 catch (Exception ex)

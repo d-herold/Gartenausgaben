@@ -11,14 +11,19 @@ namespace Gartenausgaben
 {
     public class ArtikelPreis
     {
-        //string conn = Properties.Settings.Default.GartenProjekteConnectionString; // Connection String aus der App.config
-        readonly string conn = Properties.Settings.Default.GartenDB;
-        public int PreisId { get; set; }
-        public int ArtikelHaendlerId { get; set; }
-        public int Preis { get; set; }
-        public DateTime Datum { get; set; }
-
-
+        int preisId;
+        int artikelHaendlerId;
+        public int PreisId
+        {
+            get { return preisId; }
+            private set { preisId = value; }
+        }
+        public int ArtikelHaendlerId
+        {
+            get { return artikelHaendlerId; }
+            private set { artikelHaendlerId = value; }
+        }
+        public decimal Preis { get; set; }
 
         public bool VergleichPreis()
         {
@@ -27,7 +32,7 @@ namespace Gartenausgaben
 
 
 
-            using (SqlConnection sql_conn = new SqlConnection(conn))
+            using (SqlConnection sql_conn = new SqlConnection(DbConnect.Conn))
             {
 
                 string sql_Select = "SELECT * FROM ";
@@ -65,47 +70,49 @@ namespace Gartenausgaben
         /// <param name="datum"></param>
         /// <param name="list"></param>
         /// <returns></returns>
-        public int ID(int artikelHaendler_ID, decimal preis, string datum, params object[] list)
+        public int ID(int artikelhaendler_id, decimal preis)
         {
-            var _preis = preis;
-            var _datum = datum;
-            var ahID = artikelHaendler_ID;
+            this.Preis = preis;
+            ArtikelHaendlerId = artikelhaendler_id;
             int id = 0;
+            var count = Count_Ergebnis();
 
-            string sql_Select_ArtikelPreis = "SELECT * FROM Artikel_Preis AS ap " +
+            string sql_Select_ArtikelPreis = "SELECT ap.Preis_ID, ap.Artikelpreis FROM Artikel_Preis AS ap " +
                     "JOIN Einkaufpositionen ep ON ep.Preis_ID = ap.Preis_ID " +
                     "WHERE ArtikelHaendler_ID = @ArtikelHaendler_ID";
 
-            using (SqlConnection sql_conn = new SqlConnection(conn))
+            using (SqlConnection sql_conn = new SqlConnection(DbConnect.Conn))
             using (SqlCommand command = new SqlCommand(sql_Select_ArtikelPreis, sql_conn))
+            using (SqlDataAdapter adapterArtikelPreis = new SqlDataAdapter(sql_Select_ArtikelPreis, sql_conn))
             {
-
-                SqlDataAdapter adapterArtikelPreis = new SqlDataAdapter(sql_Select_ArtikelPreis, sql_conn);
-
-                adapterArtikelPreis.SelectCommand.Parameters.AddWithValue("@ArtikelHaendler_ID", ahID);
-                adapterArtikelPreis.SelectCommand.Parameters.AddWithValue("@Artikelpreis", _preis);
+                adapterArtikelPreis.SelectCommand.Parameters.AddWithValue("@ArtikelHaendler_ID", ArtikelHaendlerId);
+                adapterArtikelPreis.SelectCommand.Parameters.AddWithValue("@Artikelpreis", Preis);
+                command.Parameters.AddWithValue("@ArtikelHaendler_ID", ArtikelHaendlerId);
+                command.Parameters.AddWithValue("@Artikelpreis", Preis);
 
                 DataTable dt = new DataTable();
 
                 try
                 {
                     sql_conn.Open();
-
-                    /// <value>Gibt die ArtikelPreisID zuück</value>
-                    if (list[0].ToString() == "Artikel_Preis")
+                    if (count == 0)
+                        id = InsertArtikelPreis();
+                    else if (count == 1)
+                        PreisId = (Int32)command.ExecuteScalar();
+                    else
                     {
                         adapterArtikelPreis.Fill(dt);
 
                         foreach (DataRow row in dt.Rows)
                         {
-                            if (row.ItemArray[1].ToString() == list[1].ToString() && row.ItemArray[2].ToString() == list[2].ToString())
+                            if ((decimal)row.ItemArray[1] == Preis)
                             {
                                 id = (int)row.ItemArray[0];
                                 return id;
                             }
-                            else
-                                id = 0;
                         }
+                        if (id == 0)
+                            id = InsertArtikelPreis();
                     }
                 }
                 catch (Exception ex)
@@ -117,16 +124,18 @@ namespace Gartenausgaben
             return id;
         }
 
-        public int Count_Ergebnis(int artikelhaendlerId)
+        private int Count_Ergebnis()
         {
             int count = 0;
             string sql_Select_ArtikelPreis_Count = "SELECT COUNT (ap.Preis_ID) FROM Artikel_Preis AS ap " +
                 "JOIN Einkaufpositionen ep ON ep.Preis_ID = ap.Preis_ID " +
                 "WHERE ArtikelHaendler_ID = @ArtikelHaendler_ID";
 
-            using (SqlConnection sql_conn = new SqlConnection(conn))
+            using (SqlConnection sql_conn = new SqlConnection(DbConnect.Conn))
             using (SqlCommand command = new SqlCommand(sql_Select_ArtikelPreis_Count, sql_conn))
             {
+                
+                command.Parameters.AddWithValue("@ArtikelHaendler_ID", artikelHaendlerId);
                 try
                 {
                     sql_conn.Open();
@@ -138,6 +147,28 @@ namespace Gartenausgaben
                 }
             }
             return count;
+        }
+        private int InsertArtikelPreis()
+        {
+            string sql_Insert = "INSERT INTO Artikel_Preis (ArtikelHaendler_ID, Artikelpreis) " + "VALUES (@ArtikelHaendler_ID, @Artikelpreis); " + "SELECT CAST(scope_identity() AS int)";
+
+            using (SqlConnection sql_conn = new SqlConnection(DbConnect.Conn))
+            using (SqlCommand command = new SqlCommand(sql_Insert, sql_conn))
+            {
+                command.Parameters.AddWithValue("@ArtikelHaendler_ID", artikelHaendlerId);
+                command.Parameters.AddWithValue("@Artikelpreis", Preis);
+                try
+                {
+                    sql_conn.Open();
+                    preisId = (Int32)command.ExecuteScalar();
+                    sql_conn.Close();
+                }
+                catch
+                {
+                    MessageBox.Show("Es ist ein Fehler, beim Eintragen der Artikel_Preis_ID aufgetreten", "Achtung", MessageBoxButtons.OK);
+                }
+            }
+            return preisId;
         }
     }
 }

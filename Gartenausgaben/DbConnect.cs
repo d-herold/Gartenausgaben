@@ -13,7 +13,11 @@ namespace Gartenausgaben
     internal static class DbConnect
     {
         static readonly string conn = Properties.Settings.Default.GartenDB;
-        //static string conn = Properties.Settings.Default.GartenProjekteConnectionString;
+
+        public static string Conn
+        {
+            get { return conn; }
+        }
 
         //obsolete?
         internal static int Db_execute(string sql_Insert)
@@ -40,77 +44,6 @@ namespace Gartenausgaben
             {
                 SqlCommand command = new SqlCommand(querySql, sql_conn);
                 command.Parameters.AddWithValue("@Artikelbezeichnung", artikel);
-                try
-                {
-                    if (sql_conn.State != ConnectionState.Open)
-                        sql_conn.Open();
-                    SqlDataReader reader = command.ExecuteReader();
-
-                    if (reader.HasRows)
-                    {
-                        reader.Close();
-                        return true;
-                    }
-                    else
-                    {
-                        reader.Close();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-                sql_conn.Close();
-                return false;
-            }
-        }
-
-        internal static bool EqualsProject(string project)
-        {
-            string querySql = "SELECT Projekt_ID FROM Projekt " + "Where Projektname = @NewProjcetName";
-
-            // Connection String aus der App.config 
-            //Erstellt eine neue Verbindund zur übergebenen Datenbank
-            using (SqlConnection sql_conn = new SqlConnection(conn))
-            {
-                SqlCommand command = new SqlCommand(querySql, sql_conn);
-                command.Parameters.AddWithValue("@NewProjcetName", project);
-                try
-                {
-                    if (sql_conn.State != ConnectionState.Open)
-                        sql_conn.Open();
-                    SqlDataReader reader = command.ExecuteReader();
-
-                    if (reader.HasRows)
-                    {
-                        reader.Close();
-                        return true;
-                    }
-                    else
-                    {
-                        reader.Close();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-                sql_conn.Close();
-                return false;
-            }
-        }
-
-        /* Überarbeiten !!!!!!! */
-        internal static bool EqualsDBEinträge(string select, string from)
-        {
-            string querySql = "SELECT " + select + " FROM Projekt " + "Where Projektname = @NewProjcetName";
-
-            // Connection String aus der App.config 
-            //Erstellt eine neue Verbindund zur übergebenen Datenbank
-            using (SqlConnection sql_conn = new SqlConnection(conn))
-            {
-                SqlCommand command = new SqlCommand(querySql, sql_conn);
-                command.Parameters.AddWithValue("@NewProjcetName", from);
                 try
                 {
                     if (sql_conn.State != ConnectionState.Open)
@@ -185,29 +118,5 @@ namespace Gartenausgaben
             }
             return newProjectID;
         }
-
-        //internal static int InsertArtikelHaendler()
-        //{
-        //    var a = new Invoice();
-        //    string sql_Insert = "INSERT INTO Artikel_Haendler (Artikel_ID, Haendler_ID) " + "VALUES (@Artikel_ID, @Haendler_ID); " + "SELECT CAST(scope_identity() AS int)";
-
-        //    using (SqlConnection sql_conn = new SqlConnection(conn))
-        //    using (SqlCommand command = new SqlCommand(sql_Insert, sql_conn))
-        //    {
-        //        command.Parameters.AddWithValue("@Artikel_ID", a.ArtikelID);
-        //        command.Parameters.AddWithValue("@Haendler_ID", a.HaendlerID);
-        //        try
-        //        {
-        //            sql_conn.Open();
-        //            a.ArtikelHaendlerID = (Int32)command.ExecuteScalar();
-        //            sql_conn.Close();
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Console.WriteLine(ex.Message); //MessageBox.Show("Es ist ein Fehler, beim Eintragen der Artikel_Händler_ID aufgetreten", "Achtung", MessageBoxButtons.OK);
-        //        }
-        //    }
-        //    return a.ArtikelHaendlerID;
-        //}
     }
 }

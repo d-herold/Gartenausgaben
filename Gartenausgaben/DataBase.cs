@@ -11,7 +11,7 @@ namespace Gartenausgaben
 {
     class DataBase
     {
-        static readonly string conn = Properties.Settings.Default.GartenDB;
+        
         public List<string> ArtikelPreis { get; private set; }
 
         public void LoadTableArtikelPreis()
@@ -22,7 +22,7 @@ namespace Gartenausgaben
             var dataset = new DataSet();
 
             //Holen der Daten aus der Datenbank
-            using (SqlConnection sql_conn = new SqlConnection(conn))
+            using (SqlConnection sql_conn = new SqlConnection(DbConnect.Conn))
             {
                 string querySql = "SELECT * FROM Artikel_Preis";
 
