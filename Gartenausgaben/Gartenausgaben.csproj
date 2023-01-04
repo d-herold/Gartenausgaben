@@ -85,7 +85,6 @@
       <DependentUpon>GartenProjekteDataSet.xsd</DependentUpon>
     </Compile>
     <Compile Include="Haendler.cs" />
-    <Compile Include="Interface1.cs" />
     <Compile Include="Invoice.cs">
       <SubType>Form</SubType>
     </Compile>

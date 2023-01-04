@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -8,11 +9,13 @@ using System.Windows.Forms;
 
 namespace Gartenausgaben
 {
-    public class Artikel : Interface1
+    public class Artikel
     {
         string artikelbezeichnung;
         int artikelId;
-
+        
+        public List<string> Artikelliste{ get; set ; }
+        
         internal int ArtikelId
         { 
             get
@@ -25,7 +28,6 @@ namespace Gartenausgaben
             }
                  
         }
-
         internal string Artikelbezeichnung
         { 
             get
@@ -73,9 +75,34 @@ namespace Gartenausgaben
             return id;
         }
 
-        public int IGetId(params object[] list)
+        public void GetArtikelliste()
         {
-            throw new NotImplementedException();
+            List<string> artikelliste = new List<string>();
+            DataTable dt = new DataTable();
+            string sql_Select_Artikel = "SELECT Artikelbezeichnung FROM Artikel ORDER BY Artikelbezeichnung ASC";
+
+            using (SqlConnection sql_conn = new SqlConnection(DbConnect.Conn))
+            using (SqlDataAdapter adapterArtikel = new SqlDataAdapter(sql_Select_Artikel, sql_conn))
+            {
+                try
+                {
+                    sql_conn.Open();
+
+                    //Artikelliste laden
+                    adapterArtikel.Fill(dt);
+
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        artikelliste.Add(row.ItemArray[0].ToString().Trim());
+                    }
+                    Artikelliste = artikelliste;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Achtung: " + ex.Message);
+                }
+                sql_conn.Close();
+            }
         }
     }
 }

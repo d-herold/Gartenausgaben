@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,7 @@ namespace Gartenausgaben
         public string Ort { get; set; }
         public string Telefon { get; set; }
 
+        public List<(string, string)> HaendlerListe { get; set; }
         
 
         public Haendler () { }
@@ -51,6 +53,35 @@ namespace Gartenausgaben
                 sql_conn.Close();
             }
             return id;
+        }
+        public void GetHaendlerListe()
+        {
+            List<(string, string)> haendler = new List<(string, string)>() ;
+            DataTable dt = new DataTable();
+            string sql_Select_Haendler = "SELECT Name, Ort FROM Haendler ORDER BY Name ASC";
+
+            using (SqlConnection sql_conn = new SqlConnection(DbConnect.Conn))
+            using (SqlDataAdapter adapterHaendler = new SqlDataAdapter(sql_Select_Haendler, sql_conn))
+            {
+                try
+                {
+                    sql_conn.Open();
+
+                    //Artikelliste laden
+                    adapterHaendler.Fill(dt);
+
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        haendler.Add((row.ItemArray[0].ToString().Trim(), row.ItemArray[1].ToString()));
+                    }
+                    HaendlerListe = haendler;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Achtung: " + ex.Message);
+                }
+                sql_conn.Close();
+            }
         }
     }
 }
