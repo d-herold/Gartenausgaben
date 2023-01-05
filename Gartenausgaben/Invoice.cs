@@ -10,14 +10,9 @@ namespace Gartenausgaben
     {
         DataTable einkauf;
         bool listeSort = true;
-        int countSelectedIndexChanged = 0;
         int positionDataGridView = 1;
-        public int Menge { get; set; }
         public decimal GesamtBetrag { get; set; }
-        public int ArtikelPreisID { get; set; }
         public int EinkaufPositionID { get; set; }
-
-        Artikel artik = new Artikel();
 
         public Invoice()
         {
@@ -25,9 +20,6 @@ namespace Gartenausgaben
             // ComboBox-Inhalte Rechtsbündig darstellen
             this.cb_Artikel.DropDownStyle = ComboBoxStyle.DropDownList;
             SetMyCustomFormat();
-
-            artik.GetArtikelliste();
-
             LadeStartDaten();
             ErstelleDataTable();
             SetDataGrid_Tabelle();
@@ -118,36 +110,8 @@ namespace Gartenausgaben
             cb_Projekt.DisplayMember = cb_Projekt.Text;
             cb_Projekt.ValueMember = 0.ToString();
 
-            ////Erstellt eine neue Verbindund zur übergebenen Datenbank
-            //using (SqlConnection sql_con = new SqlConnection(DbConnect.Conn))
-            //{
-            //    string querySql_Projekt = "SELECT Projektname FROM Projekt ORDER BY Projektname ASC";
-
-            //    try
-            //    {
-            //        sql_con.Open();
-            //        //Erstellt einen Adapter um die Daten aus der DB-Tabelle in eine Tabelle zu laden
-            //        SqlDataAdapter sql_adapt_Projekt = new SqlDataAdapter(querySql_Projekt, sql_con);
-
-                    
-
-            //        //Projektdaten laden
-            //        DataTable tblData_Projekt = new DataTable();
-            //        sql_adapt_Projekt.Fill(tblData_Projekt);
-
-            //        cb_Projekt.DisplayMember = "Projektname";
-            //        cb_Projekt.ValueMember = "[Projekt_ID]";
-            //        cb_Projekt.DataSource = tblData_Projekt;
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        MessageBox.Show("Achtung: " + ex.Message);
-            //    }
-            //    sql_con.Close();
-            //}
             lbl_Haendler.Text = cb_Haendler.Text;
             lbl_Datum.Text = dateTimePickerDatum.Value.ToString("dd. MMMM yyyy");
-            countSelectedIndexChanged = 1;
         }
 
         /// <summary>

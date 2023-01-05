@@ -25,42 +25,37 @@ namespace Gartenausgaben
         }
         public decimal Preis { get; set; }
 
-        public bool VergleichPreis()
-        {
-            Invoice test = new Invoice();
-            var x = test.ArtikelPreisID;
+        /// <summary>
+        /// Obsolete
+        /// </summary>
+        /// <returns></returns>
+        //public bool VergleichPreis()
+        //{
+        //    Invoice test = new Invoice();
+        //    var x = test.ArtikelPreisID;
 
+        //    using (SqlConnection sql_conn = new SqlConnection(DbConnect.Conn))
+        //    {
+        //        string sql_Select = "SELECT * FROM ";
+        //        string sql_Select_Haendler = "SELECT * FROM ";
+        //        //string sql_Select_ArtikelHaendler = "SELECT * FROM " + list[0] + " WHERE Artikel_ID = @Artikel_ID AND Haendler_ID = @Haendler_ID";
 
+        //        SqlDataAdapter adapterArtikel = new SqlDataAdapter(sql_Select, sql_conn);
+        //        SqlDataAdapter adapterHaendler = new SqlDataAdapter(sql_Select_Haendler, sql_conn);
+        //        //SqlDataAdapter adapterArtikelHaendler = new SqlDataAdapter(sql_Select_ArtikelHaendler, sql_conn);
+        //        //adapterHaendler.SelectCommand.Parameters.AddWithValue("@Ort", SqlDbType.VarChar).Value = ort;
+        //        //adapterArtikelHaendler.SelectCommand.Parameters.AddWithValue("@Artikel_ID", SqlDbType.Int).Value = artikelId;
+        //        //adapterArtikelHaendler.SelectCommand.Parameters.AddWithValue("@Haendler_ID", SqlDbType.Int).Value = haendlerId;
 
-            using (SqlConnection sql_conn = new SqlConnection(DbConnect.Conn))
-            {
+        //        DataTable dt = new DataTable();
+        //        sql_conn.Open();
 
-                string sql_Select = "SELECT * FROM ";
-                string sql_Select_Haendler = "SELECT * FROM ";
-                //string sql_Select_ArtikelHaendler = "SELECT * FROM " + list[0] + " WHERE Artikel_ID = @Artikel_ID AND Haendler_ID = @Haendler_ID";
-
-                SqlDataAdapter adapterArtikel = new SqlDataAdapter(sql_Select, sql_conn);
-                SqlDataAdapter adapterHaendler = new SqlDataAdapter(sql_Select_Haendler, sql_conn);
-                //SqlDataAdapter adapterArtikelHaendler = new SqlDataAdapter(sql_Select_ArtikelHaendler, sql_conn);
-                //adapterHaendler.SelectCommand.Parameters.AddWithValue("@Ort", SqlDbType.VarChar).Value = ort;
-                //adapterArtikelHaendler.SelectCommand.Parameters.AddWithValue("@Artikel_ID", SqlDbType.Int).Value = artikelId;
-                //adapterArtikelHaendler.SelectCommand.Parameters.AddWithValue("@Haendler_ID", SqlDbType.Int).Value = haendlerId;
-
-                DataTable dt = new DataTable();
-                sql_conn.Open();
-
-                if (x != 0)
-                {
-
-                }
-
-
-
-                if (0==0)
-                    return false;
-
-            }
-        }
+        //        if (x != 0)
+        //        { }
+        //        if (0 == 0)
+        //            return false;
+        //    }
+        //}
 
         /// <summary>
         /// Gibt die Artikelpreis_ID zurück
