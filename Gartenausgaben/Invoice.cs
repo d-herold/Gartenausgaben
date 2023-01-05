@@ -61,36 +61,26 @@ namespace Gartenausgaben
             dateTimePickerDatum.CustomFormat = "dd. MMMM yyyy"; //MMMM dd, yyyy";
         }
 
-        private void CalculateAmount()
-        {
-            GesamtBetrag = numericUpDown_Einzelpreis.Value * numericUpDown_Menge.Value;
-            tb_GesamtBetrag.Text = GesamtBetrag.ToString("0.00");
-        }
-
         /// <summary>
         /// Lädt beim Start alle verfügbaren Händler und Artikel. Sortierung ASC
         /// </summary>
         public void LadeStartDaten()
         {
             Artikel artikel = new Artikel();
+            Haendler haendler = new Haendler();
+            Projekt projekt = new Projekt();
             artikel.GetArtikelliste();
+            haendler.GetHaendlerListe();
+            projekt.GetProjektListe();
 
             foreach (var item in artikel.Artikelliste)
             {
                 cb_Artikel.Items.Add(item);
             }
-
-            Haendler haendler = new Haendler();
-            haendler.GetHaendlerListe();
-
             foreach (var item in haendler.HaendlerListe)
             {
                 cb_Haendler.Items.Add(item.Item1.TrimStart('(')+ ", " + item.Item2.TrimEnd(')'));
             }
-
-            Projekt projekt = new Projekt();
-            projekt.GetProjektListe();
-
             foreach (var item in projekt.ProjektListe)
             {
                 cb_Projekt.Items.Add(item);
@@ -98,17 +88,10 @@ namespace Gartenausgaben
 
             cb_Artikel.SelectedIndex = 0;
             cb_Haendler.SelectedIndex = 0;
-            cb_Haendler.DisplayMember = cb_Haendler.Text;
-            cb_Haendler.ValueMember = 0.ToString();
-
-            cb_Artikel.DisplayMember = cb_Artikel.Text;
-            cb_Artikel.ValueMember = 0.ToString();
 
             LadeEinzelpreis(artikel.Artikelliste[0], cb_Haendler.Items[0].ToString());
 
             cb_Projekt.SelectedIndex = 0;
-            cb_Projekt.DisplayMember = cb_Projekt.Text;
-            cb_Projekt.ValueMember = 0.ToString();
 
             lbl_Haendler.Text = cb_Haendler.Text;
             lbl_Datum.Text = dateTimePickerDatum.Value.ToString("dd. MMMM yyyy");
@@ -435,7 +418,7 @@ namespace Gartenausgaben
             this.LadeHaendlerNeu("Haendler_ID");
         }
 
-        private void BtnEintragen_Click(object sender, EventArgs e)
+        private void BtnCopyToList_Click(object sender, EventArgs e)
         {
             if (numericUpDown_Einzelpreis.Value != 0 && numericUpDown_Menge.Value != 0 && cb_Artikel.Text != "")
             {
@@ -467,11 +450,12 @@ namespace Gartenausgaben
             }
             if (!listeSort)
             {
+
                 LadeArtikelNeu("Artikelbezeichnung", "ASC");
                 listeSort = true;
             }
-
         }
+
         private decimal Gesamtsumme()
         {
             //Summe aller Gesamtpreise - Zur Kontrolle des Kassenbons
@@ -558,7 +542,7 @@ namespace Gartenausgaben
             var haendler = _haendler;
             var artikel = _artikel;
             char[] charToTrim = { ',', ' ' };
-            var ort = haendler.Substring(cb_Haendler.Text.IndexOf(',')).TrimStart(charToTrim); //.TrimEnd(')');
+            var ort = haendler.Substring(cb_Haendler.Text.IndexOf(',')).TrimStart(charToTrim);
 
             string[] subs = haendler.Split(',');
             haendler = subs[0];
@@ -626,7 +610,7 @@ namespace Gartenausgaben
             }
             if (numericUpDown_Menge.Value > 0)
             {
-                CalculateAmount();
+                tb_GesamtBetrag.Text = Calculate.CalculateAmount(numericUpDown_Einzelpreis.Value, numericUpDown_Menge.Value);
             }
         }
 
@@ -643,12 +627,12 @@ namespace Gartenausgaben
 
         private void NumericUpDown_Menge_ValueChanged(object sender, EventArgs e)
         {
-            CalculateAmount();
+            tb_GesamtBetrag.Text = Calculate.CalculateAmount(numericUpDown_Einzelpreis.Value, numericUpDown_Menge.Value);
         }
 
         private void NumericUpDown_Einzelpreis_ValueChanged(object sender, EventArgs e)
         {
-            CalculateAmount();
+            tb_GesamtBetrag.Text = Calculate.CalculateAmount(numericUpDown_Einzelpreis.Value, numericUpDown_Menge.Value);
         }
 
         private void BtnDgvDeleteLastRow_Click(object sender, EventArgs e)
@@ -683,8 +667,8 @@ namespace Gartenausgaben
             AddNewProjectControl();
         }
 
-        public Button okNewProject = new Button();
-        public TextBox tbNewProject = new TextBox();
+        private Button okNewProject = new Button();
+        private TextBox tbNewProject = new TextBox();
 
         public void AddNewProjectControl()
         {

@@ -218,7 +218,7 @@
             this.BtnCopyToList.TabIndex = 7;
             this.BtnCopyToList.Text = "In Liste übernehmen";
             this.BtnCopyToList.UseVisualStyleBackColor = true;
-            this.BtnCopyToList.Click += new System.EventHandler(this.BtnEintragen_Click);
+            this.BtnCopyToList.Click += new System.EventHandler(this.BtnCopyToList_Click);
             // 
             // label8
             // 
