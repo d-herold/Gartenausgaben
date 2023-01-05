@@ -628,29 +628,55 @@ namespace Gartenausgaben
             var haendler = _haendler;
             var artikel = _artikel;
             char[] charToTrim = { ',', ' ' };
-            //var haendler = cb_Haendler.Text;
             var ort = haendler.Substring(cb_Haendler.Text.IndexOf(',')).TrimStart(charToTrim); //.TrimEnd(')');
-            //var artikel = cb_Artikel.Text;
 
             string[] subs = haendler.Split(',');
             haendler = subs[0];
-            //haendler = haendler.TrimStart('(');
 
-            if (cb_Haendler.Text != "" && cb_Artikel.Text != "")
+            if (cb_Haendler.Text != "" && cb_Artikel.Text != "" && ort !="")
             {
                 using (SqlConnection sql_conn = new SqlConnection(DbConnect.Conn))
                 {
-                    string artikelPreis = "SELECT Artikelpreis FROM Artikel_Preis " +
-                            "JOIN Artikel_Haendler ON Artikel_Haendler.ArtikelHaendler_ID = Artikel_Preis.ArtikelHaendler_ID " +
-                            "JOIN Artikel ON Artikel.Artikel_ID = Artikel_Haendler.Artikel_ID " +
-                            "JOIN Haendler ON Haendler.Haendler_ID = Artikel_Haendler.Haendler_ID " +
-                            "WHERE Haendler.Name = @Name AND Haendler.Ort = @Ort AND Artikel.Artikelbezeichnung = @Artikelbezeichnung " +
-                            "ORDER BY Artikelpreis DESC";
-
+                    string artikelPreis = "SELECT ap.Artikelpreis FROM Artikel_Preis AS ap " +
+                            "JOIN Artikel_Haendler AS ah ON ah.ArtikelHaendler_ID = ap.ArtikelHaendler_ID " +
+                            "JOIN Artikel AS a ON a.Artikel_ID = ah.Artikel_ID " +
+                            "JOIN Haendler AS h ON h.Haendler_ID = ah.Haendler_ID " +
+                            "WHERE h.Name = @Name AND h.Ort = @Ort AND a.Artikelbezeichnung = @Artikelbezeichnung " +
+                            "ORDER BY ap.Artikelpreis DESC";
+                    
                     SqlCommand sql_command = new SqlCommand(artikelPreis, sql_conn);
-                    // Setzten der Paramter für WHERE
                     sql_command.Parameters.AddWithValue("@Name", haendler);
                     sql_command.Parameters.AddWithValue("@Ort", ort);
+                    sql_command.Parameters.AddWithValue("@Artikelbezeichnung", artikel);
+
+                    try
+                    {
+                        sql_conn.Open();
+                        if (sql_command.ExecuteScalar() != null)
+                            numericUpDown_Einzelpreis.Value = Convert.ToDecimal(sql_command.ExecuteScalar());
+                        else
+                            numericUpDown_Einzelpreis.Value = 0;
+                        sql_conn.Close();
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Es ist ein Fehler, beim Eintragen in der Tabelle \"Einzelpreis\" aufgetreten", "Achtung", MessageBoxButtons.OK);
+                    }
+                }
+            }
+            if (cb_Haendler.Text != "" && cb_Artikel.Text != "" && ort == "")
+            {
+                using (SqlConnection sql_conn = new SqlConnection(DbConnect.Conn))
+                {
+                    string artikelPreis = "SELECT ap.Artikelpreis FROM Artikel_Preis AS ap " +
+                            "JOIN Artikel_Haendler AS ah ON ah.ArtikelHaendler_ID = ap.ArtikelHaendler_ID " +
+                            "JOIN Artikel AS a ON a.Artikel_ID = ah.Artikel_ID " +
+                            "JOIN Haendler AS h ON h.Haendler_ID = ah.Haendler_ID " +
+                            "WHERE h.Name = @Name AND a.Artikelbezeichnung = @Artikelbezeichnung " +
+                            "ORDER BY ap.Artikelpreis DESC";
+
+                    SqlCommand sql_command = new SqlCommand(artikelPreis, sql_conn);
+                    sql_command.Parameters.AddWithValue("@Name", haendler);
                     sql_command.Parameters.AddWithValue("@Artikelbezeichnung", artikel);
 
                     try
@@ -676,13 +702,12 @@ namespace Gartenausgaben
 
         private void Cb_Artikel_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (countSelectedIndexChanged != 0)
+            if (cb_Haendler.Text != "")
                 LadeEinzelpreis(cb_Artikel.Text, cb_Haendler.Text);
         }
 
         private void Cb_Haendler_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (countSelectedIndexChanged != 0)
                 LadeEinzelpreis(cb_Artikel.Text, cb_Haendler.Text);
         }
 
