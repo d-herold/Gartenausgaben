@@ -221,14 +221,7 @@ namespace Gartenausgaben
 
             //Erstelle DataTables
             var dgvEinkauf = new DataTable();
-            var dbEinkaufposition = new DataTable();
-            var dbArtikel = new DataTable();
-            var dbHaendler = new DataTable();
-            var dbArtikelHaendler = new DataTable();
-            var dbArtikelPreis = new DataTable();
-            var dbProjekt = new DataTable();
-            var dbEinkauf = new DataTable();
-
+            
             //Hinzufügen der Spalten
             foreach (DataGridViewColumn column in dataGridView_Einkauf.Columns)
             {
@@ -249,52 +242,6 @@ namespace Gartenausgaben
 
             var dataset = new DataSet();
             dataset.Tables.Add(dgvEinkauf);
-
-            //Holen der Daten aus der Datenbank
-            using (SqlConnection sql_conn = new SqlConnection(DbConnect.Conn))
-            {
-                string querySql1 = "SELECT * FROM Einkaufpositionen";
-                string querySql2 = "SELECT * FROM Artikel";
-                string querySql3 = "SELECT * FROM Haendler";
-                string querySql4 = "SELECT * FROM Artikel_Haendler";
-                string querySql5 = "SELECT * FROM Artikel_Preis";
-                string querySql6 = "SELECT * FROM Projekt";
-                string querySql7 = "SELECT * FROM Einkauf";
-
-                try
-                {
-                    sql_conn.Open();
-                    //Erstellt einen Adapter um die Daten aus der DB-Tabelle in eine Tabelle zu laden
-                    SqlDataAdapter sql_adapt1 = new SqlDataAdapter(querySql1, sql_conn);
-                    SqlDataAdapter sql_adapt2 = new SqlDataAdapter(querySql2, sql_conn);
-                    SqlDataAdapter sql_adapt3 = new SqlDataAdapter(querySql3, sql_conn);
-                    SqlDataAdapter sql_adapt4 = new SqlDataAdapter(querySql4, sql_conn);
-                    SqlDataAdapter sql_adapt5 = new SqlDataAdapter(querySql5, sql_conn);
-                    SqlDataAdapter sql_adapt6 = new SqlDataAdapter(querySql6, sql_conn);
-                    SqlDataAdapter sql_adapt7 = new SqlDataAdapter(querySql7, sql_conn);
-
-                    sql_adapt1.Fill(dbEinkaufposition);
-                    sql_adapt2.Fill(dbArtikel);
-                    sql_adapt3.Fill(dbHaendler);
-                    sql_adapt4.Fill(dbArtikelHaendler);
-                    sql_adapt5.Fill(dbArtikelPreis);
-                    sql_adapt6.Fill(dbProjekt);
-                    sql_adapt7.Fill(dbEinkauf);
-
-                    dataset.Tables.Add(dbEinkaufposition);
-                    dataset.Tables.Add(dbArtikel);
-                    dataset.Tables.Add(dbHaendler);
-                    dataset.Tables.Add(dbArtikelHaendler);
-                    dataset.Tables.Add(dbArtikelPreis);
-                    dataset.Tables.Add(dbProjekt);
-                    dataset.Tables.Add(dbEinkauf);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Achtung: " + ex.Message);
-                }
-                sql_conn.Close();
-            }
 
             Einkauf einkauf = new Einkauf();
             var summe = Convert.ToDecimal(lbl_SummeBetrag.Text.Remove(lbl_SummeBetrag.Text.IndexOf(" ")));
