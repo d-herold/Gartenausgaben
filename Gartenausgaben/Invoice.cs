@@ -1,23 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Drawing;
-using System.Globalization;
-using System.Linq;
-using System.Data.SqlTypes;
-using System.Runtime.Remoting.Channels;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.SqlServer.Server;
 using System.Windows.Forms;
-using System.Threading;
-using System.Text.RegularExpressions;
-using Gartenausgaben.Datenbank;
-using Gartenausgaben.Datenbank.GartenProjekteDataSetTableAdapters;
-using System.Data.Linq;
 
 namespace Gartenausgaben
 {
@@ -111,74 +96,55 @@ namespace Gartenausgaben
                 cb_Haendler.Items.Add(item.Item1.TrimStart('(')+ ", " + item.Item2.TrimEnd(')'));
             }
 
-            //Erstellt eine neue Verbindund zur übergebenen Datenbank
-            using (SqlConnection sql_con = new SqlConnection(DbConnect.Conn))
+            Projekt projekt = new Projekt();
+            projekt.GetProjektListe();
+
+            foreach (var item in projekt.ProjektListe)
             {
-
-                //Abfrage-String für alle Namen aus der Händler Tabelle
-                //string querySql_Haendler = "SELECT Name, Ort FROM Haendler ORDER BY Name ASC";
-
-                //string querySql_Artikel = "SELECT Artikelbezeichnung FROM Artikel ORDER BY Artikelbezeichnung ASC";
-
-                string querySql_Projekt = "SELECT Projektname FROM Projekt ORDER BY Projektname ASC";
-
-                try
-                {
-                    sql_con.Open();
-                    //Erstellt einen Adapter um die Daten aus der DB-Tabelle in eine Tabelle zu laden
-                    //SqlDataAdapter sql_adapt_Haendler = new SqlDataAdapter(querySql_Haendler, sql_con);
-                    //SqlDataAdapter sql_adapt_Artikel = new SqlDataAdapter(querySql_Artikel, sql_con);
-                    SqlDataAdapter sql_adapt_Projekt = new SqlDataAdapter(querySql_Projekt, sql_con);
-
-                    //Händlerliste laden
-                    //Erstellt eine neue Tabelle im Arbeitsspeicher
-                    //DataTable tblData_Haendler = new DataTable();
-                    ////Befüllt die DataTable
-                    //sql_adapt_Haendler.Fill(tblData_Haendler);
-                    ////Anzeige in der ComboBox alle Namen der vorhanden Ids
-                    //tblData_Haendler.Columns.Add("NameOrt", typeof(string), "Name + ', ' + Ort");
-                    //cb_Haendler.DisplayMember = "NameOrt";
-                    //cb_Haendler.ValueMember = "[Haendler_ID]";
-                    cb_Artikel.SelectedIndex = 0;
-                    cb_Haendler.SelectedIndex = 0;
-                    cb_Haendler.DisplayMember = cb_Haendler.Text;
-                    cb_Haendler.ValueMember = 0.ToString();
-
-                    //Zuweisen der Datentabelle zur Datenquelle
-                    //cb_Haendler.DataSource = tblData_Haendler;
-
-                    //Artikelliste laden
-                    //DataTable tblData_Artikel = new DataTable();
-                    //sql_adapt_Artikel.Fill(tblData_Artikel);
-                    //cb_Artikel.DisplayMember = "Artikelbezeichnung";
-                    //cb_Artikel.ValueMember = ["Artikel_ID"];
-                    //cb_Artikel.DataSource = tblData_Artikel;
-
-                    // NEU ARTIKELLISTE AUS LISTE von ARTIKEL
-                    //cb_Artikel.SelectedIndex = 0;
-                    //cb_Artikel.SelectedText = cb_Artikel.Text;
-                    cb_Artikel.DisplayMember = cb_Artikel.Text;
-                    cb_Artikel.ValueMember = 0.ToString();
-
-                    LadeEinzelpreis(artikel.Artikelliste[0], cb_Haendler.Items[0].ToString() );
-                    //nochmaliges zuweisen, da Artikel am Anfang noch nicht geladen wurden und der Einzelpreis sonst leer bleibt
-                    //cb_Haendler.DataSource = tblData_Haendler;
-
-
-                    //Projektdaten laden
-                    DataTable tblData_Projekt = new DataTable();
-                    sql_adapt_Projekt.Fill(tblData_Projekt);
-
-                    cb_Projekt.DisplayMember = "Projektname";
-                    cb_Projekt.ValueMember = "[Projekt_ID]";
-                    cb_Projekt.DataSource = tblData_Projekt;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Achtung: " + ex.Message);
-                }
-                sql_con.Close();
+                cb_Projekt.Items.Add(item);
             }
+
+            cb_Artikel.SelectedIndex = 0;
+            cb_Haendler.SelectedIndex = 0;
+            cb_Haendler.DisplayMember = cb_Haendler.Text;
+            cb_Haendler.ValueMember = 0.ToString();
+
+            cb_Artikel.DisplayMember = cb_Artikel.Text;
+            cb_Artikel.ValueMember = 0.ToString();
+
+            LadeEinzelpreis(artikel.Artikelliste[0], cb_Haendler.Items[0].ToString());
+
+            cb_Projekt.SelectedIndex = 0;
+            cb_Projekt.DisplayMember = cb_Projekt.Text;
+            cb_Projekt.ValueMember = 0.ToString();
+
+            ////Erstellt eine neue Verbindund zur übergebenen Datenbank
+            //using (SqlConnection sql_con = new SqlConnection(DbConnect.Conn))
+            //{
+            //    string querySql_Projekt = "SELECT Projektname FROM Projekt ORDER BY Projektname ASC";
+
+            //    try
+            //    {
+            //        sql_con.Open();
+            //        //Erstellt einen Adapter um die Daten aus der DB-Tabelle in eine Tabelle zu laden
+            //        SqlDataAdapter sql_adapt_Projekt = new SqlDataAdapter(querySql_Projekt, sql_con);
+
+                    
+
+            //        //Projektdaten laden
+            //        DataTable tblData_Projekt = new DataTable();
+            //        sql_adapt_Projekt.Fill(tblData_Projekt);
+
+            //        cb_Projekt.DisplayMember = "Projektname";
+            //        cb_Projekt.ValueMember = "[Projekt_ID]";
+            //        cb_Projekt.DataSource = tblData_Projekt;
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        MessageBox.Show("Achtung: " + ex.Message);
+            //    }
+            //    sql_con.Close();
+            //}
             lbl_Haendler.Text = cb_Haendler.Text;
             lbl_Datum.Text = dateTimePickerDatum.Value.ToString("dd. MMMM yyyy");
             countSelectedIndexChanged = 1;
@@ -842,6 +808,66 @@ namespace Gartenausgaben
         }
 
         /// <summary>
+        /// Funktion für die Autosize Größe der Artikel-ComboBox
+        /// </summary>
+        private int DropDownWidth(ComboBox myCombo)
+        {
+            int maxWidth = 0, temp = 0;
+            foreach (var obj in myCombo.Items)
+            {
+                temp = TextRenderer.MeasureText(myCombo.GetItemText(obj), myCombo.Font).Width;
+                if (temp > maxWidth)
+                {
+                    maxWidth = temp;
+                }
+            }
+            return maxWidth + SystemInformation.VerticalScrollBarWidth;
+        }
+
+        /// <summary>
+        /// Funktion für die Autosize Größe der Artikel-ComboBox
+        /// </summary>
+        private void Invoice_Load(object sender, EventArgs e)
+        {
+            //LadeStartDaten();
+            cb_Artikel.DropDownWidth = DropDownWidth(cb_Artikel);
+        }
+
+        /// <summary>
+        /// Zentrierte Ausrichtung der Combo Box zulassen
+        /// </summary>
+        private void cbxDesign_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            // By using Sender, one method could handle multiple ComboBoxes
+            ComboBox cbx = sender as ComboBox;
+            if (cbx != null)
+            {
+                // Always draw the background
+                e.DrawBackground();
+
+                // Drawing one of the items?
+                if (e.Index >= 0)
+                {
+                    // Set the string alignment.  Choices are Center, Near and Far
+                    StringFormat sf = new StringFormat();
+                    sf.LineAlignment = StringAlignment.Far;
+                    sf.Alignment = StringAlignment.Far;
+
+                    // Set the Brush to ComboBox ForeColor to maintain any ComboBox color settings
+                    // Assumes Brush is solid
+                    Brush brush = new SolidBrush(cbx.ForeColor);
+
+                    // If drawing highlighted selection, change brush
+                    if ((e.State & DrawItemState.Selected) == DrawItemState.Selected)
+                        brush = SystemBrushes.HighlightText;
+
+                    // Draw the string
+                    e.Graphics.DrawString(cbx.Items[e.Index].ToString(), cbx.Font, brush, e.Bounds, sf);
+                }
+            }
+        }
+
+        /// <summary>
         /// Funktion zum Prüfen, ob der aktuelle Bon/Kassenzettel schon einmal eingegeben wurde
         /// </summary>
         /// <returns>true -> Bon existiert</returns>
@@ -910,65 +936,66 @@ namespace Gartenausgaben
         //    }
         //    return false;
         //}
-
         /// <summary>
-        /// Funktion für die Autosize Größe der Artikel-ComboBox
+        /// Obsolete Funktion zum Laden der Startdaten
         /// </summary>
-        private int DropDownWidth(ComboBox myCombo)
-        {
-            int maxWidth = 0, temp = 0;
-            foreach (var obj in myCombo.Items)
-            {
-                temp = TextRenderer.MeasureText(myCombo.GetItemText(obj), myCombo.Font).Width;
-                if (temp > maxWidth)
-                {
-                    maxWidth = temp;
-                }
-            }
-            return maxWidth + SystemInformation.VerticalScrollBarWidth;
-        }
+        //public void LadeStartDaten()
+        //{
+        //    //Erstellt eine neue Verbindund zur übergebenen Datenbank
+        //    using (SqlConnection sql_con = new SqlConnection(DbConnect.Conn))
+        //    {
+        //        //Abfrage-String für alle Namen aus der Händler Tabelle
+        //        string querySql_Haendler = "SELECT Name, Ort FROM Haendler ORDER BY Name ASC";
+        //        string querySql_Artikel = "SELECT Artikelbezeichnung FROM Artikel ORDER BY Artikelbezeichnung ASC";
+        //        string querySql_Projekt = "SELECT Projektname FROM Projekt ORDER BY Projektname ASC";
 
-        /// <summary>
-        /// Funktion für die Autosize Größe der Artikel-ComboBox
-        /// </summary>
-        private void Invoice_Load(object sender, EventArgs e)
-        {
-            //LadeStartDaten();
-            cb_Artikel.DropDownWidth = DropDownWidth(cb_Artikel);
-        }
+        //        try
+        //        {
+        //            sql_con.Open();
+        //            //Erstellt einen Adapter um die Daten aus der DB-Tabelle in eine Tabelle zu laden
+        //            SqlDataAdapter sql_adapt_Haendler = new SqlDataAdapter(querySql_Haendler, sql_con);
+        //            SqlDataAdapter sql_adapt_Artikel = new SqlDataAdapter(querySql_Artikel, sql_con);
+        //            SqlDataAdapter sql_adapt_Projekt = new SqlDataAdapter(querySql_Projekt, sql_con);
 
-        /// <summary>
-        /// Zentrierte Ausrichtung der Combo Box zulassen
-        /// </summary>
-        private void cbxDesign_DrawItem(object sender, DrawItemEventArgs e)
-        {
-            // By using Sender, one method could handle multiple ComboBoxes
-            ComboBox cbx = sender as ComboBox;
-            if (cbx != null)
-            {
-                // Always draw the background
-                e.DrawBackground();
+        //            //Händlerliste laden
+        //            //Erstellt eine neue Tabelle im Arbeitsspeicher
+        //            DataTable tblData_Haendler = new DataTable();
+        //            //Befüllt die DataTable
+        //            sql_adapt_Haendler.Fill(tblData_Haendler);
+        //            //Anzeige in der ComboBox alle Namen der vorhanden Ids
+        //            tblData_Haendler.Columns.Add("NameOrt", typeof(string), "Name + ', ' + Ort");
+        //            cb_Haendler.DisplayMember = "NameOrt";
+        //            cb_Haendler.ValueMember = "[Haendler_ID]";
 
-                // Drawing one of the items?
-                if (e.Index >= 0)
-                {
-                    // Set the string alignment.  Choices are Center, Near and Far
-                    StringFormat sf = new StringFormat();
-                    sf.LineAlignment = StringAlignment.Far;
-                    sf.Alignment = StringAlignment.Far;
+        //            //Zuweisen der Datentabelle zur Datenquelle
+        //            cb_Haendler.DataSource = tblData_Haendler;
 
-                    // Set the Brush to ComboBox ForeColor to maintain any ComboBox color settings
-                    // Assumes Brush is solid
-                    Brush brush = new SolidBrush(cbx.ForeColor);
+        //            //Artikelliste laden
+        //            DataTable tblData_Artikel = new DataTable();
+        //            sql_adapt_Artikel.Fill(tblData_Artikel);
+        //            cb_Artikel.DisplayMember = "Artikelbezeichnung";
+        //            cb_Artikel.ValueMember = "[Artikel_ID]";
+        //            cb_Artikel.DataSource = tblData_Artikel;
 
-                    // If drawing highlighted selection, change brush
-                    if ((e.State & DrawItemState.Selected) == DrawItemState.Selected)
-                        brush = SystemBrushes.HighlightText;
+        //            //nochmaliges zuweisen, da Artikel am Anfang noch nicht geladen wurden und der Einzelpreis sonst leer bleibt
+        //            cb_Haendler.DataSource = tblData_Haendler;
 
-                    // Draw the string
-                    e.Graphics.DrawString(cbx.Items[e.Index].ToString(), cbx.Font, brush, e.Bounds, sf);
-                }
-            }
-        }
+        //            //Projektdaten laden
+        //            DataTable tblData_Projekt = new DataTable();
+        //            sql_adapt_Projekt.Fill(tblData_Projekt);
+        //            cb_Projekt.DisplayMember = "Projektname";
+        //            cb_Projekt.ValueMember = "[Projekt_ID]";
+        //            cb_Projekt.DataSource = tblData_Projekt;
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show("Achtung: " + ex.Message);
+        //        }
+        //        sql_con.Close();
+        //    }
+        //    lbl_Haendler.Text = cb_Haendler.Text;
+        //    lbl_Datum.Text = dateTimePickerDatum.Value.ToString("dd. MMMM yyyy");
+        //    countSelectedIndexChanged = 1;
+        //}
     }
 }

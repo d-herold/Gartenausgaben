@@ -14,6 +14,7 @@ namespace Gartenausgaben
         readonly string conn = Properties.Settings.Default.GartenDB; // Connection String aus der App.config
         public int Id { get; set; }
         public string Projektname { get; set; }
+        public List<string> ProjektListe { get; set; }
 
         public Projekt() { }
 
@@ -101,6 +102,36 @@ namespace Gartenausgaben
                 }
                 sql_conn.Close();
                 return false;
+            }
+        }
+
+        public void GetProjektListe()
+        {
+            List<string> projekt = new List<string>();
+            DataTable dt = new DataTable();
+            string sql_Select_Projekt = "SELECT Projektname FROM Projekt ORDER BY Projektname ASC";
+
+            using (SqlConnection sql_conn = new SqlConnection(DbConnect.Conn))
+            using (SqlDataAdapter adapterHaendler = new SqlDataAdapter(sql_Select_Projekt, sql_conn))
+            {
+                try
+                {
+                    sql_conn.Open();
+
+                    //Artikelliste laden
+                    adapterHaendler.Fill(dt);
+
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        projekt.Add(row.ItemArray[0].ToString());
+                    }
+                    ProjektListe = projekt;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Achtung: " + ex.Message);
+                }
+                sql_conn.Close();
             }
         }
     }

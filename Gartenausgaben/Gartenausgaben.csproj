@@ -79,11 +79,6 @@
     <Compile Include="Evaluation.Designer.cs">
       <DependentUpon>Evaluation.cs</DependentUpon>
     </Compile>
-    <Compile Include="Datenbank\GartenProjekteDataSet.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>GartenProjekteDataSet.xsd</DependentUpon>
-    </Compile>
     <Compile Include="Haendler.cs" />
     <Compile Include="Invoice.cs">
       <SubType>Form</SubType>
@@ -128,17 +123,6 @@
     <EmbeddedResource Include="Gartenausgaben.resx">
       <DependentUpon>Gartenausgaben.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="Datenbank\GartenProjekteDataSet.xsc">
-      <DependentUpon>GartenProjekteDataSet.xsd</DependentUpon>
-    </None>
-    <None Include="Datenbank\GartenProjekteDataSet.xsd">
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>GartenProjekteDataSet.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Datenbank\GartenProjekteDataSet.xss">
-      <DependentUpon>GartenProjekteDataSet.xsd</DependentUpon>
-    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -151,15 +135,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Datenbank\GartenProjekte.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Datenbank\GartenProjekte_log.ldf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <DependentUpon>GartenProjekte.mdf</DependentUpon>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
