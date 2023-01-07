@@ -24,6 +24,8 @@ namespace Gartenausgaben
             ErstelleDataTable();
             SetDataGrid_Tabelle();
             BtnNewItem.Enabled = false;
+            BtnDeleteItem.Visible = false;
+            BtnEditItem.Visible = false;
             
         }
 
@@ -762,135 +764,12 @@ namespace Gartenausgaben
             }
         }
 
-        /// <summary>
-        /// Funktion zum Prüfen, ob der aktuelle Bon/Kassenzettel schon einmal eingegeben wurde
-        /// </summary>
-        /// <returns>true -> Bon existiert</returns>
-        //private bool EinkaufIstVorhanden(int haendler_id)
-        //{
-        //    Einkauf[] einkauf = null;
-        //    var summe = Convert.ToDecimal(lbl_SummeBetrag.Text.Remove(lbl_SummeBetrag.Text.IndexOf(" ")));
-        //    var datum = dateTimePickerDatum.Value.Date.ToString("dd-MM-yyyy");
-
-
-        //    string querySql = "SELECT e.Einkauf_ID, e.Haendler_ID, SUM(AP.Artikelpreis * EP.Menge) AS Summe FROM Artikel_Preis AS ap " +
-        //    "INNER JOIN Artikel_Haendler AS ah ON ah.ArtikelHaendler_ID = ap.ArtikelHaendler_ID " +
-        //    "INNER JOIN Artikel AS a ON a.Artikel_ID = ah.Artikel_ID " +
-        //    "INNER JOIN Einkaufpositionen AS ep ON ep.Artikel_ID = a.Artikel_ID " +
-        //    "INNER JOIN Einkauf AS e ON e.Einkauf_ID = ep.Einkauf_ID " +
-        //    "WHERE e.Datum = @Datum " +
-        //    "GROUP BY e.Einkauf_ID, e.Haendler_ID ";
-
-        //    using (SqlConnection sql_conn = new SqlConnection(DbConnect.Conn))
-        //    {
-        //        SqlCommand command = new SqlCommand(querySql, sql_conn);
-        //        command.Parameters.AddWithValue("@Haendler", haendler_id);
-        //        command.Parameters.AddWithValue("@Datum", datum);
-
-        //        try
-        //        {
-        //            if (sql_conn.State != ConnectionState.Open)
-        //                sql_conn.Open();
-        //            using (SqlDataReader reader = command.ExecuteReader())
-        //            {
-        //                var list = new List<Einkauf>();
-        //                while (reader.Read())
-        //                {
-        //                    list.Add(new Einkauf { Id = reader.GetInt32(0), HaendlerId = reader.GetInt32(1), Summe = reader.GetDecimal(2) });
-        //                    einkauf = list.ToArray();
-        //                }
-        //                reader.Close();
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Console.WriteLine(ex.Message);
-        //        }
-        //        sql_conn.Close();
-        //    }
-        //    if (einkauf != null)
-        //    //if (einkauf.Length > 0)
-        //    {
-        //        var count = 0;
-
-        //        foreach (var item in einkauf)
-        //        {
-        //            if (haendler_id == item.HaendlerId && item.Summe == summe)
-        //                count++;
-        //        }
-        //        if (count > 0)
-        //        {
-        //            var result = MessageBox.Show("Ein Kassenbon von diesem Händler und dem selben Tag existiert schon " + count + "x." + "\n" + "Möchten Sie diese Buchung erneut speichern?", "Achtung", MessageBoxButtons.YesNo);
-        //            if (result == DialogResult.Yes)
-        //            {
-        //                return false;
-        //            }
-        //            else
-        //                return true;
-        //        }
-        //    }
-        //    return false;
-        //}
-        /// <summary>
-        /// Obsolete Funktion zum Laden der Startdaten
-        /// </summary>
-        //public void LadeStartDaten()
-        //{
-        //    //Erstellt eine neue Verbindund zur übergebenen Datenbank
-        //    using (SqlConnection sql_con = new SqlConnection(DbConnect.Conn))
-        //    {
-        //        //Abfrage-String für alle Namen aus der Händler Tabelle
-        //        string querySql_Haendler = "SELECT Name, Ort FROM Haendler ORDER BY Name ASC";
-        //        string querySql_Artikel = "SELECT Artikelbezeichnung FROM Artikel ORDER BY Artikelbezeichnung ASC";
-        //        string querySql_Projekt = "SELECT Projektname FROM Projekt ORDER BY Projektname ASC";
-
-        //        try
-        //        {
-        //            sql_con.Open();
-        //            //Erstellt einen Adapter um die Daten aus der DB-Tabelle in eine Tabelle zu laden
-        //            SqlDataAdapter sql_adapt_Haendler = new SqlDataAdapter(querySql_Haendler, sql_con);
-        //            SqlDataAdapter sql_adapt_Artikel = new SqlDataAdapter(querySql_Artikel, sql_con);
-        //            SqlDataAdapter sql_adapt_Projekt = new SqlDataAdapter(querySql_Projekt, sql_con);
-
-        //            //Händlerliste laden
-        //            //Erstellt eine neue Tabelle im Arbeitsspeicher
-        //            DataTable tblData_Haendler = new DataTable();
-        //            //Befüllt die DataTable
-        //            sql_adapt_Haendler.Fill(tblData_Haendler);
-        //            //Anzeige in der ComboBox alle Namen der vorhanden Ids
-        //            tblData_Haendler.Columns.Add("NameOrt", typeof(string), "Name + ', ' + Ort");
-        //            cb_Haendler.DisplayMember = "NameOrt";
-        //            cb_Haendler.ValueMember = "[Haendler_ID]";
-
-        //            //Zuweisen der Datentabelle zur Datenquelle
-        //            cb_Haendler.DataSource = tblData_Haendler;
-
-        //            //Artikelliste laden
-        //            DataTable tblData_Artikel = new DataTable();
-        //            sql_adapt_Artikel.Fill(tblData_Artikel);
-        //            cb_Artikel.DisplayMember = "Artikelbezeichnung";
-        //            cb_Artikel.ValueMember = "[Artikel_ID]";
-        //            cb_Artikel.DataSource = tblData_Artikel;
-
-        //            //nochmaliges zuweisen, da Artikel am Anfang noch nicht geladen wurden und der Einzelpreis sonst leer bleibt
-        //            cb_Haendler.DataSource = tblData_Haendler;
-
-        //            //Projektdaten laden
-        //            DataTable tblData_Projekt = new DataTable();
-        //            sql_adapt_Projekt.Fill(tblData_Projekt);
-        //            cb_Projekt.DisplayMember = "Projektname";
-        //            cb_Projekt.ValueMember = "[Projekt_ID]";
-        //            cb_Projekt.DataSource = tblData_Projekt;
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            MessageBox.Show("Achtung: " + ex.Message);
-        //        }
-        //        sql_con.Close();
-        //    }
-        //    lbl_Haendler.Text = cb_Haendler.Text;
-        //    lbl_Datum.Text = dateTimePickerDatum.Value.ToString("dd. MMMM yyyy");
-        //    countSelectedIndexChanged = 1;
-        //}
+        private void BtnModifyItem_Click(object sender, EventArgs e)
+        {
+            tb_NeuerArtikel.Text = cb_Artikel.Text;
+            BtnEditItem.Visible = true;
+            BtnDeleteItem.Visible = true;
+            BtnNewItem.Enabled = false;
+        }
     }
 }
