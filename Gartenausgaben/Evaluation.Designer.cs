@@ -49,7 +49,7 @@
             // cmd_Close
             // 
             this.cmd_Close.Location = new System.Drawing.Point(328, 407);
-            this.cmd_Close.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cmd_Close.Margin = new System.Windows.Forms.Padding(2);
             this.cmd_Close.Name = "cmd_Close";
             this.cmd_Close.Size = new System.Drawing.Size(143, 41);
             this.cmd_Close.TabIndex = 19;
@@ -78,7 +78,7 @@
             // Btn_Auswerten
             // 
             this.Btn_Auswerten.Location = new System.Drawing.Point(12, 407);
-            this.Btn_Auswerten.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Btn_Auswerten.Margin = new System.Windows.Forms.Padding(2);
             this.Btn_Auswerten.Name = "Btn_Auswerten";
             this.Btn_Auswerten.Size = new System.Drawing.Size(143, 41);
             this.Btn_Auswerten.TabIndex = 22;
@@ -131,16 +131,16 @@
             // monthCalendar_StartDate
             // 
             this.monthCalendar_StartDate.Location = new System.Drawing.Point(58, 219);
-            this.monthCalendar_StartDate.Margin = new System.Windows.Forms.Padding(7, 7, 7, 7);
+            this.monthCalendar_StartDate.Margin = new System.Windows.Forms.Padding(7);
             this.monthCalendar_StartDate.Name = "monthCalendar_StartDate";
             this.monthCalendar_StartDate.TabIndex = 27;
-            this.monthCalendar_StartDate.DateSelected += new System.Windows.Forms.DateRangeEventHandler(this.monthCalendar_StartDate_DateSelected);
+            this.monthCalendar_StartDate.DateSelected += new System.Windows.Forms.DateRangeEventHandler(this.MonthCalendar_StartDate_DateSelected);
             // 
             // Rb_GanzesJahr
             // 
             this.Rb_GanzesJahr.AutoSize = true;
             this.Rb_GanzesJahr.Location = new System.Drawing.Point(328, 82);
-            this.Rb_GanzesJahr.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Rb_GanzesJahr.Margin = new System.Windows.Forms.Padding(2);
             this.Rb_GanzesJahr.Name = "Rb_GanzesJahr";
             this.Rb_GanzesJahr.Size = new System.Drawing.Size(84, 17);
             this.Rb_GanzesJahr.TabIndex = 28;
@@ -153,7 +153,7 @@
             // 
             this.Rb_Zeitraum.AutoSize = true;
             this.Rb_Zeitraum.Location = new System.Drawing.Point(447, 82);
-            this.Rb_Zeitraum.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Rb_Zeitraum.Margin = new System.Windows.Forms.Padding(2);
             this.Rb_Zeitraum.Name = "Rb_Zeitraum";
             this.Rb_Zeitraum.Size = new System.Drawing.Size(66, 17);
             this.Rb_Zeitraum.TabIndex = 29;
@@ -185,7 +185,7 @@
             // Tb_Auswertung_von
             // 
             this.Tb_Auswertung_von.Location = new System.Drawing.Point(327, 134);
-            this.Tb_Auswertung_von.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Tb_Auswertung_von.Margin = new System.Windows.Forms.Padding(2);
             this.Tb_Auswertung_von.Name = "Tb_Auswertung_von";
             this.Tb_Auswertung_von.Size = new System.Drawing.Size(76, 20);
             this.Tb_Auswertung_von.TabIndex = 32;
@@ -195,7 +195,7 @@
             // Tb_Auswertung_bis
             // 
             this.Tb_Auswertung_bis.Location = new System.Drawing.Point(447, 132);
-            this.Tb_Auswertung_bis.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Tb_Auswertung_bis.Margin = new System.Windows.Forms.Padding(2);
             this.Tb_Auswertung_bis.Name = "Tb_Auswertung_bis";
             this.Tb_Auswertung_bis.Size = new System.Drawing.Size(76, 20);
             this.Tb_Auswertung_bis.TabIndex = 33;
@@ -204,10 +204,10 @@
             // monthCalendar_EndDate
             // 
             this.monthCalendar_EndDate.Location = new System.Drawing.Point(328, 219);
-            this.monthCalendar_EndDate.Margin = new System.Windows.Forms.Padding(7, 7, 7, 7);
+            this.monthCalendar_EndDate.Margin = new System.Windows.Forms.Padding(7);
             this.monthCalendar_EndDate.Name = "monthCalendar_EndDate";
             this.monthCalendar_EndDate.TabIndex = 34;
-            this.monthCalendar_EndDate.DateSelected += new System.Windows.Forms.DateRangeEventHandler(this.monthCalendar_EndDate_DateSelected);
+            this.monthCalendar_EndDate.DateSelected += new System.Windows.Forms.DateRangeEventHandler(this.MonthCalendar_EndDate_DateSelected);
             // 
             // Evaluation
             // 
@@ -230,7 +230,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.Cb_Projekt);
             this.Controls.Add(this.cmd_Close);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Evaluation";
             this.Text = "Evaluation";
             this.ResumeLayout(false);

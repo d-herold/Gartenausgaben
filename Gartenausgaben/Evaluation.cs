@@ -50,13 +50,11 @@ namespace Gartenausgaben
         }
         private string AddAusgabenProjket(string name)
         {
-            decimal summe = 0;
-            string sql_Select = "SELECT SUM(ap.Artikelpreis*ep.Menge) AS Summe FROM Artikel_Preis AS ap " +
-            "INNER JOIN Artikel_Haendler AS ah ON ah.ArtikelHaendler_ID = ap.ArtikelHaendler_ID " +
-            "INNER JOIN Artikel AS a ON a.Artikel_ID = ah.Artikel_ID " +
-            "INNER JOIN Einkaufpositionen AS ep ON ep.Artikel_ID = a.Artikel_ID " +
+            string sql_Select = "SELECT CAST (SUM (Menge * Artikelpreis) as DECIMAL (7,2)) AS Summe FROM Einkauf AS e " +
+            "INNER JOIN Einkaufpositionen AS ep ON e.Einkauf_ID = ep.Einkauf_ID " +
+            "INNER JOIN Artikel AS a ON a.Artikel_ID = ep.Artikel_ID " +
             "INNER JOIN Projekt AS p ON p.Projekt_ID = ep.Projekt_ID " +
-            "INNER JOIN Einkauf AS e ON e.Einkauf_ID = ep.Einkauf_ID " +
+            "INNER JOIN Artikel_Preis AS ap ON ap.Preis_ID = ep.Preis_ID " +
             "WHERE Projektname = @ProjektName";
 
             using (SqlConnection sql_conn = new SqlConnection(conn))
@@ -67,7 +65,7 @@ namespace Gartenausgaben
                 try
                 {
                     sql_conn.Open();
-                    summe = (decimal)command.ExecuteScalar();
+                    decimal summe = (decimal)command.ExecuteScalar();
                     sql_conn.Close();
                     return summe.ToString("0.00") + " €";
                 }
@@ -75,7 +73,6 @@ namespace Gartenausgaben
                 {
                     MessageBox.Show("Dieses Projekt hat noch keine Ausgaben!", "Hinweis", MessageBoxButtons.OK);
                     LblBetrag.Enabled = false;
-                    ;
                     return LblBetrag.Text = "";
                 }
             }
@@ -151,7 +148,7 @@ namespace Gartenausgaben
             }
         }
 
-        private void monthCalendar_StartDate_DateSelected(object sender, DateRangeEventArgs e)
+        private void MonthCalendar_StartDate_DateSelected(object sender, DateRangeEventArgs e)
         {
             Tb_Auswertung_von.Text = e.Start.ToShortDateString();
             monthCalendar_StartDate.Visible = false;
@@ -164,7 +161,7 @@ namespace Gartenausgaben
             monthCalendar_EndDate.Visible = true;
         }
 
-        private void monthCalendar_EndDate_DateSelected(object sender, DateRangeEventArgs e)
+        private void MonthCalendar_EndDate_DateSelected(object sender, DateRangeEventArgs e)
         {
             if (Convert.ToDateTime(Tb_Auswertung_von.Text) <= Convert.ToDateTime(e.End.ToShortDateString()))
                 Tb_Auswertung_bis.Text = e.End.ToShortDateString();

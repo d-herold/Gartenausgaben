@@ -69,12 +69,11 @@ namespace Gartenausgaben
         {
             this.Preis = preis;
             ArtikelHaendlerId = artikelhaendler_id;
-            int id = 0;
+            this.preisId = 0;
             var count = Count_Ergebnis();
 
-            string sql_Select_ArtikelPreis = "SELECT ap.Preis_ID, ap.Artikelpreis FROM Artikel_Preis AS ap " +
-                    "JOIN Einkaufpositionen ep ON ep.Preis_ID = ap.Preis_ID " +
-                    "WHERE ArtikelHaendler_ID = @ArtikelHaendler_ID";
+            string sql_Select_ArtikelPreis = "SELECT Preis_ID, Artikelpreis FROM Artikel_Preis " +
+                "WHERE ArtikelHaendler_ID = @ArtikelHaendler_ID";
 
             using (SqlConnection sql_conn = new SqlConnection(DbConnect.Conn))
             using (SqlCommand command = new SqlCommand(sql_Select_ArtikelPreis, sql_conn))
@@ -91,9 +90,7 @@ namespace Gartenausgaben
                 {
                     sql_conn.Open();
                     if (count == 0)
-                        id = InsertArtikelPreis();
-                    else if (count == 1)
-                        PreisId = (Int32)command.ExecuteScalar();
+                        preisId = InsertArtikelPreis();
                     else
                     {
                         adapterArtikelPreis.Fill(dt);
@@ -102,12 +99,12 @@ namespace Gartenausgaben
                         {
                             if ((decimal)row.ItemArray[1] == Preis)
                             {
-                                id = (int)row.ItemArray[0];
-                                return id;
+                                preisId = (int)row.ItemArray[0];
+                                return preisId;
                             }
                         }
-                        if (id == 0)
-                            id = InsertArtikelPreis();
+                        if (preisId == 0)
+                            preisId = InsertArtikelPreis();
                     }
                 }
                 catch (Exception ex)
@@ -116,14 +113,13 @@ namespace Gartenausgaben
                 }
                 sql_conn.Close();
             }
-            return id;
+            return preisId;
         }
 
         private int Count_Ergebnis()
         {
             int count = 0;
-            string sql_Select_ArtikelPreis_Count = "SELECT COUNT (ap.Preis_ID) FROM Artikel_Preis AS ap " +
-                "JOIN Einkaufpositionen ep ON ep.Preis_ID = ap.Preis_ID " +
+            string sql_Select_ArtikelPreis_Count = "SELECT COUNT (Preis_ID) FROM Artikel_Preis " +
                 "WHERE ArtikelHaendler_ID = @ArtikelHaendler_ID";
 
             using (SqlConnection sql_conn = new SqlConnection(DbConnect.Conn))
@@ -145,7 +141,9 @@ namespace Gartenausgaben
         }
         private int InsertArtikelPreis()
         {
-            string sql_Insert = "INSERT INTO Artikel_Preis (ArtikelHaendler_ID, Artikelpreis) " + "VALUES (@ArtikelHaendler_ID, @Artikelpreis); " + "SELECT CAST(scope_identity() AS int)";
+            string sql_Insert = "INSERT INTO Artikel_Preis (ArtikelHaendler_ID, Artikelpreis) " +
+                "VALUES (@ArtikelHaendler_ID, @Artikelpreis); " +
+                "SELECT CAST(scope_identity() AS int)";
 
             using (SqlConnection sql_conn = new SqlConnection(DbConnect.Conn))
             using (SqlCommand command = new SqlCommand(sql_Insert, sql_conn))

@@ -64,6 +64,7 @@
             this.BtnDeleteItem = new System.Windows.Forms.Button();
             this.BtnEditStore = new System.Windows.Forms.Button();
             this.BtnDeleteStore = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_Einkauf)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Menge)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Einzelpreis)).BeginInit();
@@ -453,12 +454,22 @@
             this.BtnDeleteStore.Text = "Händler löschen";
             this.BtnDeleteStore.UseVisualStyleBackColor = true;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(603, 216);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(20, 20);
+            this.button1.TabIndex = 138;
+            this.button1.Text = "x";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
             // Invoice
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1367, 654);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.BtnDeleteStore);
             this.Controls.Add(this.BtnEditStore);
             this.Controls.Add(this.BtnDeleteItem);
@@ -546,6 +557,7 @@
         private System.Windows.Forms.Button BtnDeleteItem;
         private System.Windows.Forms.Button BtnEditStore;
         private System.Windows.Forms.Button BtnDeleteStore;
+        private System.Windows.Forms.Button button1;
     }
 }
 

@@ -29,7 +29,7 @@ namespace Gartenausgaben
             
         }
 
-        void comboBox_DrawItem(object sender, DrawItemEventArgs e)
+        void ComboBox_DrawItem(object sender, DrawItemEventArgs e)
         {
             e.DrawBackground();
 
@@ -302,8 +302,6 @@ namespace Gartenausgaben
                     var projekt_id = proj.ID();
 
                     art_preis.ID(art_haend.Artikel_HaendlerID, art_preis.Preis);
-
-                    var x = 0; // Breakpoint vor speichern von Einkaufpositionen
 
                     SetEinkaufsposition(art.ArtikelId, projekt_id, einkauf.Id, art_preis.PreisId, Menge);
                 }
@@ -709,10 +707,10 @@ namespace Gartenausgaben
         /// </summary>
         private int DropDownWidth(ComboBox myCombo)
         {
-            int maxWidth = 0, temp = 0;
+            int maxWidth = 0;
             foreach (var obj in myCombo.Items)
             {
-                temp = TextRenderer.MeasureText(myCombo.GetItemText(obj), myCombo.Font).Width;
+                int temp = TextRenderer.MeasureText(myCombo.GetItemText(obj), myCombo.Font).Width;
                 if (temp > maxWidth)
                 {
                     maxWidth = temp;
@@ -733,11 +731,12 @@ namespace Gartenausgaben
         /// <summary>
         /// Zentrierte Ausrichtung der Combo Box zulassen
         /// </summary>
-        private void cbxDesign_DrawItem(object sender, DrawItemEventArgs e)
+        private void CbxDesign_DrawItem(object sender, DrawItemEventArgs e)
         {
             // By using Sender, one method could handle multiple ComboBoxes
-            ComboBox cbx = sender as ComboBox;
-            if (cbx != null)
+            //ComboBox cbx = sender as ComboBox;
+            //if (cbx != null)
+            if (sender is ComboBox cbx)
             {
                 // Always draw the background
                 e.DrawBackground();
@@ -746,9 +745,11 @@ namespace Gartenausgaben
                 if (e.Index >= 0)
                 {
                     // Set the string alignment.  Choices are Center, Near and Far
-                    StringFormat sf = new StringFormat();
-                    sf.LineAlignment = StringAlignment.Far;
-                    sf.Alignment = StringAlignment.Far;
+                    StringFormat sf = new StringFormat
+                    {
+                        LineAlignment = StringAlignment.Far,
+                        Alignment = StringAlignment.Far
+                    };
 
                     // Set the Brush to ComboBox ForeColor to maintain any ComboBox color settings
                     // Assumes Brush is solid

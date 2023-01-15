@@ -89,35 +89,32 @@ namespace Gartenausgaben
                 this.menge = value;
             }
         }
-        private int SetEinkaufsposition(int artikel_id, int projekt_id, int einkauf_id, int artikelpreis_id, int menge)
-        {
-            string sql_Insert = "INSERT INTO Einkaufpositionen (Menge, Projekt_ID, Artikel_ID, Einkauf_ID, Preis_ID) " + "VALUES (@Menge,  @ProjektId, @ArtikelId, @EinkaufId, @PreisId); "
-                + "SELECT CAST(scope_identity() AS int)";
+        //private int SetEinkaufsposition(int artikel_id, int projekt_id, int einkauf_id, int artikelpreis_id, int menge)
+        //{
+        //    string sql_Insert = "INSERT INTO Einkaufpositionen (Menge, Projekt_ID, Artikel_ID, Einkauf_ID, Preis_ID) " + "VALUES (@Menge,  @ProjektId, @ArtikelId, @EinkaufId, @PreisId); "
+        //        + "SELECT CAST(scope_identity() AS int)";
 
-            using (SqlConnection sql_conn = new SqlConnection(DbConnect.Conn))
-            using (SqlCommand command = new SqlCommand(sql_Insert, sql_conn))
-            {
-                command.Parameters.AddWithValue("@ArtikelId", artikel_id);
-                command.Parameters.AddWithValue("@ProjektId", projekt_id);
-                command.Parameters.AddWithValue("@EinkaufId", einkauf_id);
-                command.Parameters.AddWithValue("@PreisId", artikelpreis_id);
-                command.Parameters.AddWithValue("@Menge", menge);
-                try
-                {
-                    sql_conn.Open();
-                    ID = (Int32)command.ExecuteScalar();
-                    sql_conn.Close();
-                    return ID;
-                }
-                catch
-                {
-                    MessageBox.Show("Es ist ein Fehler, beim Eintragen in der Tabelle \"Einkaufspositionen\" aufgetreten", "Achtung", MessageBoxButtons.OK);
-                    return 0;
-                }
-            }
-
-        }
-
-
+        //    using (SqlConnection sql_conn = new SqlConnection(DbConnect.Conn))
+        //    using (SqlCommand command = new SqlCommand(sql_Insert, sql_conn))
+        //    {
+        //        command.Parameters.AddWithValue("@ArtikelId", artikel_id);
+        //        command.Parameters.AddWithValue("@ProjektId", projekt_id);
+        //        command.Parameters.AddWithValue("@EinkaufId", einkauf_id);
+        //        command.Parameters.AddWithValue("@PreisId", artikelpreis_id);
+        //        command.Parameters.AddWithValue("@Menge", menge);
+        //        try
+        //        {
+        //            sql_conn.Open();
+        //            ID = (Int32)command.ExecuteScalar();
+        //            sql_conn.Close();
+        //            return ID;
+        //        }
+        //        catch
+        //        {
+        //            MessageBox.Show("Es ist ein Fehler, beim Eintragen in der Tabelle \"Einkaufspositionen\" aufgetreten", "Achtung", MessageBoxButtons.OK);
+        //            return 0;
+        //        }
+        //    }
+        //}
     }
 }
