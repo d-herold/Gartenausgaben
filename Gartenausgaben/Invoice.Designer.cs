@@ -326,7 +326,7 @@
             this.numericUpDown_Menge.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.numericUpDown_Menge.Location = new System.Drawing.Point(41, 326);
             this.numericUpDown_Menge.Maximum = new decimal(new int[] {
-            1000,
+            50000,
             0,
             0,
             0});
