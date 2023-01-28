@@ -341,7 +341,7 @@
             this.numericUpDown_Einzelpreis.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.numericUpDown_Einzelpreis.Location = new System.Drawing.Point(173, 326);
             this.numericUpDown_Einzelpreis.Maximum = new decimal(new int[] {
-            1000,
+            10000,
             0,
             0,
             0});
