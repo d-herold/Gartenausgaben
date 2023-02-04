@@ -45,6 +45,16 @@ namespace Gartenausgaben
         private void GetSumme()
         {
             LblBetrag.Enabled = true;
+            //string summe = "";
+
+            //switch(name)
+            //{
+            //    case 1:
+            //        summe = AddAusgabenProjket(Cb_Projekt.Text);
+            //        break;
+
+            //}
+
             var summe = AddAusgabenProjket(Cb_Projekt.Text);
             LblBetrag.Text = summe;
         }
