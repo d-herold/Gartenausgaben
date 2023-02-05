@@ -36,14 +36,13 @@
             this.LblBetrag = new System.Windows.Forms.Label();
             this.Cb_Jahr = new System.Windows.Forms.ComboBox();
             this.Lbl_Jahr = new System.Windows.Forms.Label();
-            this.monthCalendar_StartDate = new System.Windows.Forms.MonthCalendar();
             this.Rb_GanzesJahr = new System.Windows.Forms.RadioButton();
             this.Rb_Zeitraum = new System.Windows.Forms.RadioButton();
             this.Lbl_Datum_von = new System.Windows.Forms.Label();
             this.Lbl_Datum_bis = new System.Windows.Forms.Label();
             this.Tb_Auswertung_von = new System.Windows.Forms.TextBox();
             this.Tb_Auswertung_bis = new System.Windows.Forms.TextBox();
-            this.monthCalendar_EndDate = new System.Windows.Forms.MonthCalendar();
+            this.monthCalendar1 = new System.Windows.Forms.MonthCalendar();
             this.SuspendLayout();
             // 
             // cmd_Close
@@ -128,14 +127,6 @@
             this.Lbl_Jahr.TabIndex = 26;
             this.Lbl_Jahr.Text = "Jahr";
             // 
-            // monthCalendar_StartDate
-            // 
-            this.monthCalendar_StartDate.Location = new System.Drawing.Point(58, 219);
-            this.monthCalendar_StartDate.Margin = new System.Windows.Forms.Padding(7);
-            this.monthCalendar_StartDate.Name = "monthCalendar_StartDate";
-            this.monthCalendar_StartDate.TabIndex = 27;
-            this.monthCalendar_StartDate.DateSelected += new System.Windows.Forms.DateRangeEventHandler(this.MonthCalendar_StartDate_DateSelected);
-            // 
             // Rb_GanzesJahr
             // 
             this.Rb_GanzesJahr.AutoSize = true;
@@ -201,27 +192,25 @@
             this.Tb_Auswertung_bis.TabIndex = 33;
             this.Tb_Auswertung_bis.Click += new System.EventHandler(this.Tb_Auswertung_bis_Click);
             // 
-            // monthCalendar_EndDate
+            // monthCalendar1
             // 
-            this.monthCalendar_EndDate.Location = new System.Drawing.Point(328, 219);
-            this.monthCalendar_EndDate.Margin = new System.Windows.Forms.Padding(7);
-            this.monthCalendar_EndDate.Name = "monthCalendar_EndDate";
-            this.monthCalendar_EndDate.TabIndex = 34;
-            this.monthCalendar_EndDate.DateSelected += new System.Windows.Forms.DateRangeEventHandler(this.MonthCalendar_EndDate_DateSelected);
+            this.monthCalendar1.Location = new System.Drawing.Point(327, 219);
+            this.monthCalendar1.Name = "monthCalendar1";
+            this.monthCalendar1.TabIndex = 35;
+            this.monthCalendar1.DateSelected += new System.Windows.Forms.DateRangeEventHandler(this.monthCalendar1_DateSelected);
             // 
             // Evaluation
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(600, 488);
-            this.Controls.Add(this.monthCalendar_EndDate);
+            this.Controls.Add(this.monthCalendar1);
             this.Controls.Add(this.Tb_Auswertung_bis);
             this.Controls.Add(this.Tb_Auswertung_von);
             this.Controls.Add(this.Lbl_Datum_bis);
             this.Controls.Add(this.Lbl_Datum_von);
             this.Controls.Add(this.Rb_Zeitraum);
             this.Controls.Add(this.Rb_GanzesJahr);
-            this.Controls.Add(this.monthCalendar_StartDate);
             this.Controls.Add(this.Lbl_Jahr);
             this.Controls.Add(this.Cb_Jahr);
             this.Controls.Add(this.LblBetrag);
@@ -248,13 +237,12 @@
         private System.Windows.Forms.Label LblBetrag;
         private System.Windows.Forms.ComboBox Cb_Jahr;
         private System.Windows.Forms.Label Lbl_Jahr;
-        private System.Windows.Forms.MonthCalendar monthCalendar_StartDate;
         private System.Windows.Forms.RadioButton Rb_GanzesJahr;
         private System.Windows.Forms.RadioButton Rb_Zeitraum;
         private System.Windows.Forms.Label Lbl_Datum_von;
         private System.Windows.Forms.Label Lbl_Datum_bis;
         private System.Windows.Forms.TextBox Tb_Auswertung_von;
         private System.Windows.Forms.TextBox Tb_Auswertung_bis;
-        private System.Windows.Forms.MonthCalendar monthCalendar_EndDate;
+        private System.Windows.Forms.MonthCalendar monthCalendar1;
     }
 }

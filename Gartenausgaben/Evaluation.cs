@@ -14,6 +14,7 @@ namespace Gartenausgaben
     public partial class Evaluation : Form
     {
         readonly string conn = Properties.Settings.Default.GartenDB;
+        int startEnd;
 
         public Evaluation()
         {
@@ -24,8 +25,7 @@ namespace Gartenausgaben
             //CheckYear();
             Rb_GanzesJahr.Visible = false;
             Rb_Zeitraum.Visible = false;
-            monthCalendar_StartDate.Visible = false;
-            monthCalendar_EndDate.Visible = false;
+            monthCalendar1.Visible = false;
             Tb_Auswertung_von.Visible = false;
             Tb_Auswertung_bis.Visible = false;
             Lbl_Datum_von.Visible = false;
@@ -144,75 +144,74 @@ namespace Gartenausgaben
             }
             if (Cb_Jahr.SelectedItem.ToString() == "Alle Jahre")
             {
+                Rb_GanzesJahr.Checked = true;
                 Rb_Zeitraum.Visible = false;
                 Rb_GanzesJahr.Visible = false;
-            }
 
+            }
         }
 
         private void Rb_Zeitraum_CheckedChanged(object sender, EventArgs e)
         {
             if (Rb_Zeitraum.Checked)
             {
-                
                 Tb_Auswertung_von.Visible = true;
                 Tb_Auswertung_bis.Visible = true;
                 Lbl_Datum_von.Visible = true;
                 Lbl_Datum_bis.Visible = true;
-                monthCalendar_StartDate.Visible = true;
+                monthCalendar1.Visible = true;
                 Tb_Auswertung_von.Focus();
+                startEnd = 1;
             }
-        }
-
-        private void MonthCalendar_StartDate_DateSelected(object sender, DateRangeEventArgs e)
-        {
-            Tb_Auswertung_von.Text = e.Start.ToShortDateString();
-            monthCalendar_StartDate.Visible = false;
-
-            if(Tb_Auswertung_bis.Text != "")
-                if (Convert.ToDateTime(Tb_Auswertung_von.Text) >= Convert.ToDateTime(e.End.ToShortDateString()))
-                    Tb_Auswertung_bis.Text = e.Start.ToShortDateString();
-
-            Tb_Auswertung_bis.Focus();
-            monthCalendar_EndDate.Visible = true;
-        }
-
-        private void MonthCalendar_EndDate_DateSelected(object sender, DateRangeEventArgs e)
-        {
-            if (Convert.ToDateTime(Tb_Auswertung_von.Text) <= Convert.ToDateTime(e.End.ToShortDateString()))
-                Tb_Auswertung_bis.Text = e.End.ToShortDateString();
-            else
-            {
-                Tb_Auswertung_bis.Text = e.End.ToShortDateString();
-                Tb_Auswertung_von.Text = e.End.ToShortDateString();
-            }
-                
-
-
         }
 
         private void Tb_Auswertung_von_Click(object sender, EventArgs e)
         {
-             monthCalendar_EndDate.Visible = false;
-             monthCalendar_StartDate.Visible = true;
+            startEnd = 1;
+            monthCalendar1.Visible = true;
         }
 
         private void Tb_Auswertung_bis_Click(object sender, EventArgs e)
         {
-            monthCalendar_StartDate.Visible = false;
-            monthCalendar_EndDate.Visible = true;
+            startEnd = 2;
+            monthCalendar1.Visible = true;
         }
 
         private void Rb_GanzesJahr_CheckedChanged(object sender, EventArgs e)
         {
-            monthCalendar_StartDate.Visible = false;
-            monthCalendar_EndDate.Visible = false;
+            monthCalendar1.Visible = false;
             Tb_Auswertung_von.Visible = false;
             Tb_Auswertung_von.Clear();
             Tb_Auswertung_bis.Visible = false;
             Tb_Auswertung_bis.Clear();
             Lbl_Datum_von.Visible = false;
             Lbl_Datum_bis.Visible = false;
+        }
+
+        private void monthCalendar1_DateSelected(object sender, DateRangeEventArgs e)
+        {
+            switch(startEnd)
+            {
+                case 1:
+                    Tb_Auswertung_von.Focus();
+                    Tb_Auswertung_von.Text = e.Start.ToShortDateString();
+                    if(Tb_Auswertung_bis.Text != "")
+                        if (Convert.ToDateTime(Tb_Auswertung_von.Text) > Convert.ToDateTime(Tb_Auswertung_bis.Text))
+                            Tb_Auswertung_bis.Text = Tb_Auswertung_von.Text;
+                    if (Tb_Auswertung_bis.Text == "")
+                        Tb_Auswertung_bis.Focus();
+                    else
+                        monthCalendar1.Visible = false;
+                    startEnd = 2;
+                    break;
+                case 2:
+                    Tb_Auswertung_bis.Text = e.End.ToShortDateString();
+
+                    if (Convert.ToDateTime(Tb_Auswertung_bis.Text) < Convert.ToDateTime(Tb_Auswertung_von.Text))
+                        Tb_Auswertung_von.Text = Tb_Auswertung_bis.Text;
+                    monthCalendar1.Visible = false;
+                    break;
+            }
         }
     }
 }
