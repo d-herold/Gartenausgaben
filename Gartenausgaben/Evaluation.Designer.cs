@@ -111,8 +111,8 @@
             // 
             this.Cb_Jahr.FormattingEnabled = true;
             this.Cb_Jahr.Items.AddRange(new object[] {
-            "Alle",
-            "2014"});
+            "Alle Jahre",
+            "Zeitraum"});
             this.Cb_Jahr.Location = new System.Drawing.Point(328, 56);
             this.Cb_Jahr.Name = "Cb_Jahr";
             this.Cb_Jahr.Size = new System.Drawing.Size(202, 21);

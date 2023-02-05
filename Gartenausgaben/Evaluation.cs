@@ -21,7 +21,7 @@ namespace Gartenausgaben
             LadeProjekte();
             LblBetrag.Enabled = false;
             Cb_Jahr.SelectedIndex = 0;
-            CheckYear();
+            //CheckYear();
             Rb_GanzesJahr.Visible = false;
             Rb_Zeitraum.Visible = false;
             monthCalendar_StartDate.Visible = false;
@@ -123,25 +123,31 @@ namespace Gartenausgaben
             LblBetrag.Text = "";
             LblBetrag.Enabled = false;
         }
-        private void CheckYear()
-        {
-            var s = Convert.ToInt32(DateTime.Now.Year);
-            var count = s - 2014;
+        //private void CheckYear()
+        //{
+        //    var s = Convert.ToInt32(DateTime.Now.Year);
+        //    var count = s - 2014;
 
-            for (int i = 1; i <= count; i++)
-            {
-                Cb_Jahr.Items.Add(2014 + i);
-            }
+        //    for (int i = 1; i <= count; i++)
+        //    {
+        //        Cb_Jahr.Items.Add(2014 + i);
+        //    }
                 
-        }
+        //}
 
         private void Cb_Jahr_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (Cb_Jahr.SelectedItem.ToString() != "Alle")
+            if (Cb_Jahr.SelectedItem.ToString() != "Alle Jahre")
             {
                 Rb_Zeitraum.Visible = true;
                 Rb_GanzesJahr.Visible = true;
             }
+            if (Cb_Jahr.SelectedItem.ToString() == "Alle Jahre")
+            {
+                Rb_Zeitraum.Visible = false;
+                Rb_GanzesJahr.Visible = false;
+            }
+
         }
 
         private void Rb_Zeitraum_CheckedChanged(object sender, EventArgs e)
