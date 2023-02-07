@@ -185,7 +185,7 @@
             // 
             // Tb_Auswertung_bis
             // 
-            this.Tb_Auswertung_bis.Location = new System.Drawing.Point(447, 132);
+            this.Tb_Auswertung_bis.Location = new System.Drawing.Point(447, 134);
             this.Tb_Auswertung_bis.Margin = new System.Windows.Forms.Padding(2);
             this.Tb_Auswertung_bis.Name = "Tb_Auswertung_bis";
             this.Tb_Auswertung_bis.Size = new System.Drawing.Size(76, 20);

@@ -15,6 +15,7 @@ namespace Gartenausgaben
     {
         readonly string conn = Properties.Settings.Default.GartenDB;
         int startEnd;
+        ComboBox jahr;
 
         public Evaluation()
         {
@@ -30,6 +31,10 @@ namespace Gartenausgaben
             Tb_Auswertung_bis.Visible = false;
             Lbl_Datum_von.Visible = false;
             Lbl_Datum_bis.Visible = false;
+            jahr = new ComboBox();
+            jahr.Location = new Point(327, 134);
+            jahr.Size = new Size(76, 20);
+            jahr.Visible = false;
         }
 
         private void Cmd_Close_Click(object sender, EventArgs e)
@@ -44,19 +49,71 @@ namespace Gartenausgaben
 
         private void GetSumme()
         {
+            var projekt = Cb_Projekt.Text;
             LblBetrag.Enabled = true;
-            //string summe = "";
 
-            //switch(name)
-            //{
-            //    case 1:
-            //        summe = AddAusgabenProjket(Cb_Projekt.Text);
-            //        break;
+            int projektAuswahl;
+            if (projekt == "Alle")
+                projektAuswahl = 1;
+            else
+                projektAuswahl = 2;
 
-            //}
+            int auswahl = 0;
+            if (projektAuswahl == 1 && Cb_Jahr.Text == "Alle Jahre")
+            {
+                auswahl = 1;
+            }
+            else if (projektAuswahl == 1 && Cb_Jahr.Text != "Alle Jahre")
+            {
+                if (Rb_GanzesJahr.Checked)
+                {
+                    auswahl = 2;
+                }
+                else
+                {
+                    auswahl = 3;
+                }
+            }
+            else if (projektAuswahl == 2 && Cb_Jahr.Text == "Alle Jahre")
+            {
+                auswahl = 4;
+            }
+            else if (projektAuswahl == 2 && Cb_Jahr.Text != "Alle Jahre")
+            {
+                if (Rb_GanzesJahr.Checked)
+                {
+                    auswahl = 5;
+                }
+                else
+                {
+                    auswahl = 6;
+                }
+            }
 
-            var summe = AddAusgabenProjket(Cb_Projekt.Text);
-            LblBetrag.Text = summe;
+            switch (auswahl)
+            {
+               case 1:
+                    LblBetrag.Text = "";
+                    break;
+                case 2:
+                    LblBetrag.Text = "";
+                    break;
+                case 3:
+                    LblBetrag.Text = "";
+                    break;
+                case 4:
+                    LblBetrag.Text = AddAusgabenProjket(Cb_Projekt.Text);
+                    break;
+                case 5:
+                    LblBetrag.Text = "";
+                    break;
+                case 6:
+                    LblBetrag.Text = "";
+                    break;
+                default:
+                    LblBetrag.Text = "0.00 €";
+                    break;
+            }
         }
         private string AddAusgabenProjket(string name)
         {
@@ -132,7 +189,7 @@ namespace Gartenausgaben
         //    {
         //        Cb_Jahr.Items.Add(2014 + i);
         //    }
-                
+
         //}
 
         private void Cb_Jahr_SelectedIndexChanged(object sender, EventArgs e)
@@ -144,10 +201,9 @@ namespace Gartenausgaben
             }
             if (Cb_Jahr.SelectedItem.ToString() == "Alle Jahre")
             {
-                Rb_GanzesJahr.Checked = true;
+                Rb_GanzesJahr.Checked = false;
                 Rb_Zeitraum.Visible = false;
                 Rb_GanzesJahr.Visible = false;
-
             }
         }
 
@@ -158,10 +214,12 @@ namespace Gartenausgaben
                 Tb_Auswertung_von.Visible = true;
                 Tb_Auswertung_bis.Visible = true;
                 Lbl_Datum_von.Visible = true;
+                Lbl_Datum_von.Text = "Auswertung von:";
                 Lbl_Datum_bis.Visible = true;
                 monthCalendar1.Visible = true;
                 Tb_Auswertung_von.Focus();
                 startEnd = 1;
+                jahr.Visible = false;
             }
         }
 
@@ -186,6 +244,21 @@ namespace Gartenausgaben
             Tb_Auswertung_bis.Clear();
             Lbl_Datum_von.Visible = false;
             Lbl_Datum_bis.Visible = false;
+            Lbl_Datum_von.Text = "Jahr";
+
+            jahr = new ComboBox();
+            jahr.Visible = true;
+            jahr.Enabled = true;
+            var s = Convert.ToInt32(DateTime.Now.Year);
+            var count = s - 2014;
+
+            for (int i = 1; i <= count; i++)
+            {
+                jahr.Items.Add(2014 + i);
+            }
+            jahr.Location = new Point(327, 134);
+            jahr.Size = new Size(76, 20);
+            this.Controls.AddRange(new Control[] { this.jahr });
         }
 
         private void monthCalendar1_DateSelected(object sender, DateRangeEventArgs e)
