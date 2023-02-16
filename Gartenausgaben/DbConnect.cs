@@ -32,7 +32,7 @@ namespace Gartenausgaben
                 sql_conn.Close();
                 return nResult;
             }
-            
+
         }
         internal static bool EqualsArtikel(string artikel)
         {
@@ -117,6 +117,63 @@ namespace Gartenausgaben
                 }
             }
             return newProjectID;
+        }
+
+        internal static string Sum(int _where, string projectName, string year, string dateBegin, string dateEnd)
+        {
+            string where;
+            switch(_where)
+            {
+                case 1:
+                    where = "";
+                    break;
+                case 2:
+                    where = "WHERE Year(e.Datum) = @Year";
+                    break;
+                case 3:
+                    where = "WHERE Datum Between @DateBegin AND @DateEnd";
+                    break;
+                case 4:
+                    where = "WHERE Projektname = @ProjectName";
+                    break;
+                case 5:
+                    where = "WHERE Projektname = @ProjectName AND Year(e.Datum) = @Year";
+                    break;
+                case 6:
+                    where = "WHERE Projektname = @ProjectName AND Datum Between @DateBegin AND @DateEnd";
+                    break;
+                default:
+                    where = "";
+                    break;
+            }
+
+            string sql_Select = "SELECT CAST (SUM (Menge * Artikelpreis) as DECIMAL (9,2)) AS Summe FROM Einkauf AS e " +
+            "INNER JOIN Einkaufpositionen AS ep ON e.Einkauf_ID = ep.Einkauf_ID " +
+            "INNER JOIN Artikel AS a ON a.Artikel_ID = ep.Artikel_ID " +
+            "INNER JOIN Projekt AS p ON p.Projekt_ID = ep.Projekt_ID " +
+            "INNER JOIN Artikel_Preis AS ap ON ap.Preis_ID = ep.Preis_ID " +
+            where;
+
+            using (SqlConnection sql_conn = new SqlConnection(Conn))
+            using (SqlCommand command = new SqlCommand(sql_Select, sql_conn))
+            {
+                command.Parameters.AddWithValue("@ProjectName", projectName);
+                command.Parameters.AddWithValue("@Year", year);
+                command.Parameters.AddWithValue("@DateBegin", dateBegin);
+                command.Parameters.AddWithValue("@DateEnd", dateEnd);
+
+                try
+                {
+                    sql_conn.Open();
+                    decimal summe = (decimal)command.ExecuteScalar();
+                    sql_conn.Close();
+                    return summe.ToString("0.00") + " €";
+                }
+                catch
+                {
+                    return null;
+                }
+            }
         }
     }
 }

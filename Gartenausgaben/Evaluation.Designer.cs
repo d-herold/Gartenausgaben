@@ -34,20 +34,21 @@
             this.Btn_Auswerten = new System.Windows.Forms.Button();
             this.LblGesamt_Text = new System.Windows.Forms.Label();
             this.LblBetrag = new System.Windows.Forms.Label();
-            this.Cb_Jahr = new System.Windows.Forms.ComboBox();
-            this.Lbl_Jahr = new System.Windows.Forms.Label();
-            this.Rb_GanzesJahr = new System.Windows.Forms.RadioButton();
-            this.Rb_Zeitraum = new System.Windows.Forms.RadioButton();
             this.Lbl_Datum_von = new System.Windows.Forms.Label();
             this.Lbl_Datum_bis = new System.Windows.Forms.Label();
             this.Tb_Auswertung_von = new System.Windows.Forms.TextBox();
             this.Tb_Auswertung_bis = new System.Windows.Forms.TextBox();
             this.monthCalendar1 = new System.Windows.Forms.MonthCalendar();
+            this.Lbl_Hinweis = new System.Windows.Forms.Label();
+            this.Rb_EvaluationToYear = new System.Windows.Forms.RadioButton();
+            this.Rb_EvaluationByPeriod = new System.Windows.Forms.RadioButton();
+            this.ComboBox_EvaluationYear = new System.Windows.Forms.ComboBox();
+            this.CheckBox_Evaluation_All = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // cmd_Close
             // 
-            this.cmd_Close.Location = new System.Drawing.Point(328, 407);
+            this.cmd_Close.Location = new System.Drawing.Point(377, 407);
             this.cmd_Close.Margin = new System.Windows.Forms.Padding(2);
             this.cmd_Close.Name = "cmd_Close";
             this.cmd_Close.Size = new System.Drawing.Size(143, 41);
@@ -89,7 +90,7 @@
             // 
             this.LblGesamt_Text.AutoSize = true;
             this.LblGesamt_Text.Font = new System.Drawing.Font("Garamond", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LblGesamt_Text.Location = new System.Drawing.Point(12, 121);
+            this.LblGesamt_Text.Location = new System.Drawing.Point(8, 339);
             this.LblGesamt_Text.Name = "LblGesamt_Text";
             this.LblGesamt_Text.Size = new System.Drawing.Size(160, 22);
             this.LblGesamt_Text.TabIndex = 23;
@@ -100,63 +101,16 @@
             this.LblBetrag.AutoSize = true;
             this.LblBetrag.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.LblBetrag.Font = new System.Drawing.Font("Garamond", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LblBetrag.Location = new System.Drawing.Point(199, 117);
+            this.LblBetrag.Location = new System.Drawing.Point(185, 337);
             this.LblBetrag.Name = "LblBetrag";
             this.LblBetrag.Size = new System.Drawing.Size(2, 29);
             this.LblBetrag.TabIndex = 24;
             this.LblBetrag.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // Cb_Jahr
-            // 
-            this.Cb_Jahr.FormattingEnabled = true;
-            this.Cb_Jahr.Items.AddRange(new object[] {
-            "Alle Jahre",
-            "Zeitraum"});
-            this.Cb_Jahr.Location = new System.Drawing.Point(328, 56);
-            this.Cb_Jahr.Name = "Cb_Jahr";
-            this.Cb_Jahr.Size = new System.Drawing.Size(202, 21);
-            this.Cb_Jahr.TabIndex = 25;
-            this.Cb_Jahr.SelectedIndexChanged += new System.EventHandler(this.Cb_Jahr_SelectedIndexChanged);
-            // 
-            // Lbl_Jahr
-            // 
-            this.Lbl_Jahr.AutoSize = true;
-            this.Lbl_Jahr.Location = new System.Drawing.Point(326, 37);
-            this.Lbl_Jahr.Name = "Lbl_Jahr";
-            this.Lbl_Jahr.Size = new System.Drawing.Size(27, 13);
-            this.Lbl_Jahr.TabIndex = 26;
-            this.Lbl_Jahr.Text = "Jahr";
-            // 
-            // Rb_GanzesJahr
-            // 
-            this.Rb_GanzesJahr.AutoSize = true;
-            this.Rb_GanzesJahr.Location = new System.Drawing.Point(328, 82);
-            this.Rb_GanzesJahr.Margin = new System.Windows.Forms.Padding(2);
-            this.Rb_GanzesJahr.Name = "Rb_GanzesJahr";
-            this.Rb_GanzesJahr.Size = new System.Drawing.Size(84, 17);
-            this.Rb_GanzesJahr.TabIndex = 28;
-            this.Rb_GanzesJahr.TabStop = true;
-            this.Rb_GanzesJahr.Text = "Ganzes Jahr";
-            this.Rb_GanzesJahr.UseVisualStyleBackColor = true;
-            this.Rb_GanzesJahr.CheckedChanged += new System.EventHandler(this.Rb_GanzesJahr_CheckedChanged);
-            // 
-            // Rb_Zeitraum
-            // 
-            this.Rb_Zeitraum.AutoSize = true;
-            this.Rb_Zeitraum.Location = new System.Drawing.Point(447, 82);
-            this.Rb_Zeitraum.Margin = new System.Windows.Forms.Padding(2);
-            this.Rb_Zeitraum.Name = "Rb_Zeitraum";
-            this.Rb_Zeitraum.Size = new System.Drawing.Size(66, 17);
-            this.Rb_Zeitraum.TabIndex = 29;
-            this.Rb_Zeitraum.TabStop = true;
-            this.Rb_Zeitraum.Text = "Zeitraum";
-            this.Rb_Zeitraum.UseVisualStyleBackColor = true;
-            this.Rb_Zeitraum.CheckedChanged += new System.EventHandler(this.Rb_Zeitraum_CheckedChanged);
-            // 
             // Lbl_Datum_von
             // 
             this.Lbl_Datum_von.AutoSize = true;
-            this.Lbl_Datum_von.Location = new System.Drawing.Point(326, 115);
+            this.Lbl_Datum_von.Location = new System.Drawing.Point(354, 158);
             this.Lbl_Datum_von.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.Lbl_Datum_von.Name = "Lbl_Datum_von";
             this.Lbl_Datum_von.Size = new System.Drawing.Size(87, 13);
@@ -166,7 +120,7 @@
             // Lbl_Datum_bis
             // 
             this.Lbl_Datum_bis.AutoSize = true;
-            this.Lbl_Datum_bis.Location = new System.Drawing.Point(445, 115);
+            this.Lbl_Datum_bis.Location = new System.Drawing.Point(453, 158);
             this.Lbl_Datum_bis.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.Lbl_Datum_bis.Name = "Lbl_Datum_bis";
             this.Lbl_Datum_bis.Size = new System.Drawing.Size(82, 13);
@@ -175,7 +129,7 @@
             // 
             // Tb_Auswertung_von
             // 
-            this.Tb_Auswertung_von.Location = new System.Drawing.Point(327, 134);
+            this.Tb_Auswertung_von.Location = new System.Drawing.Point(354, 175);
             this.Tb_Auswertung_von.Margin = new System.Windows.Forms.Padding(2);
             this.Tb_Auswertung_von.Name = "Tb_Auswertung_von";
             this.Tb_Auswertung_von.Size = new System.Drawing.Size(76, 20);
@@ -185,7 +139,7 @@
             // 
             // Tb_Auswertung_bis
             // 
-            this.Tb_Auswertung_bis.Location = new System.Drawing.Point(447, 134);
+            this.Tb_Auswertung_bis.Location = new System.Drawing.Point(455, 175);
             this.Tb_Auswertung_bis.Margin = new System.Windows.Forms.Padding(2);
             this.Tb_Auswertung_bis.Name = "Tb_Auswertung_bis";
             this.Tb_Auswertung_bis.Size = new System.Drawing.Size(76, 20);
@@ -194,25 +148,79 @@
             // 
             // monthCalendar1
             // 
-            this.monthCalendar1.Location = new System.Drawing.Point(327, 219);
+            this.monthCalendar1.Location = new System.Drawing.Point(354, 220);
             this.monthCalendar1.Name = "monthCalendar1";
             this.monthCalendar1.TabIndex = 35;
             this.monthCalendar1.DateSelected += new System.Windows.Forms.DateRangeEventHandler(this.monthCalendar1_DateSelected);
+            // 
+            // Lbl_Hinweis
+            // 
+            this.Lbl_Hinweis.AutoSize = true;
+            this.Lbl_Hinweis.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Lbl_Hinweis.Location = new System.Drawing.Point(12, 315);
+            this.Lbl_Hinweis.Name = "Lbl_Hinweis";
+            this.Lbl_Hinweis.Size = new System.Drawing.Size(0, 15);
+            this.Lbl_Hinweis.TabIndex = 36;
+            // 
+            // Rb_EvaluationToYear
+            // 
+            this.Rb_EvaluationToYear.AutoSize = true;
+            this.Rb_EvaluationToYear.Location = new System.Drawing.Point(328, 37);
+            this.Rb_EvaluationToYear.Name = "Rb_EvaluationToYear";
+            this.Rb_EvaluationToYear.Size = new System.Drawing.Size(84, 30);
+            this.Rb_EvaluationToYear.TabIndex = 37;
+            this.Rb_EvaluationToYear.TabStop = true;
+            this.Rb_EvaluationToYear.Text = "Auswertung\r\nnach Jahren";
+            this.Rb_EvaluationToYear.UseVisualStyleBackColor = true;
+            this.Rb_EvaluationToYear.CheckedChanged += new System.EventHandler(this.Rb_EvaluationToYear_CheckedChanged);
+            // 
+            // Rb_EvaluationByPeriod
+            // 
+            this.Rb_EvaluationByPeriod.AutoSize = true;
+            this.Rb_EvaluationByPeriod.Location = new System.Drawing.Point(468, 37);
+            this.Rb_EvaluationByPeriod.Name = "Rb_EvaluationByPeriod";
+            this.Rb_EvaluationByPeriod.Size = new System.Drawing.Size(93, 30);
+            this.Rb_EvaluationByPeriod.TabIndex = 38;
+            this.Rb_EvaluationByPeriod.TabStop = true;
+            this.Rb_EvaluationByPeriod.Text = "Auswertung\r\nnach Zeitraum";
+            this.Rb_EvaluationByPeriod.UseVisualStyleBackColor = true;
+            this.Rb_EvaluationByPeriod.CheckedChanged += new System.EventHandler(this.Rb_EvaluationByPeriod_CheckedChanged);
+            // 
+            // ComboBox_EvaluationYear
+            // 
+            this.ComboBox_EvaluationYear.FormattingEnabled = true;
+            this.ComboBox_EvaluationYear.Location = new System.Drawing.Point(328, 86);
+            this.ComboBox_EvaluationYear.Name = "ComboBox_EvaluationYear";
+            this.ComboBox_EvaluationYear.Size = new System.Drawing.Size(121, 21);
+            this.ComboBox_EvaluationYear.TabIndex = 39;
+            this.ComboBox_EvaluationYear.SelectedIndexChanged += new System.EventHandler(this.ComboBox_EvaluationYear_SelectedIndexChanged);
+            // 
+            // CheckBox_Evaluation_All
+            // 
+            this.CheckBox_Evaluation_All.AutoSize = true;
+            this.CheckBox_Evaluation_All.Location = new System.Drawing.Point(15, 132);
+            this.CheckBox_Evaluation_All.Name = "CheckBox_Evaluation_All";
+            this.CheckBox_Evaluation_All.Size = new System.Drawing.Size(85, 17);
+            this.CheckBox_Evaluation_All.TabIndex = 40;
+            this.CheckBox_Evaluation_All.Text = "Alle Projekte";
+            this.CheckBox_Evaluation_All.UseVisualStyleBackColor = true;
+            this.CheckBox_Evaluation_All.CheckedChanged += new System.EventHandler(this.CheckBox_Evaluation_All_CheckedChanged);
             // 
             // Evaluation
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(600, 488);
+            this.Controls.Add(this.CheckBox_Evaluation_All);
+            this.Controls.Add(this.ComboBox_EvaluationYear);
+            this.Controls.Add(this.Rb_EvaluationByPeriod);
+            this.Controls.Add(this.Rb_EvaluationToYear);
+            this.Controls.Add(this.Lbl_Hinweis);
             this.Controls.Add(this.monthCalendar1);
             this.Controls.Add(this.Tb_Auswertung_bis);
             this.Controls.Add(this.Tb_Auswertung_von);
             this.Controls.Add(this.Lbl_Datum_bis);
             this.Controls.Add(this.Lbl_Datum_von);
-            this.Controls.Add(this.Rb_Zeitraum);
-            this.Controls.Add(this.Rb_GanzesJahr);
-            this.Controls.Add(this.Lbl_Jahr);
-            this.Controls.Add(this.Cb_Jahr);
             this.Controls.Add(this.LblBetrag);
             this.Controls.Add(this.LblGesamt_Text);
             this.Controls.Add(this.Btn_Auswerten);
@@ -235,14 +243,15 @@
         private System.Windows.Forms.Button Btn_Auswerten;
         private System.Windows.Forms.Label LblGesamt_Text;
         private System.Windows.Forms.Label LblBetrag;
-        private System.Windows.Forms.ComboBox Cb_Jahr;
-        private System.Windows.Forms.Label Lbl_Jahr;
-        private System.Windows.Forms.RadioButton Rb_GanzesJahr;
-        private System.Windows.Forms.RadioButton Rb_Zeitraum;
         private System.Windows.Forms.Label Lbl_Datum_von;
         private System.Windows.Forms.Label Lbl_Datum_bis;
         private System.Windows.Forms.TextBox Tb_Auswertung_von;
         private System.Windows.Forms.TextBox Tb_Auswertung_bis;
         private System.Windows.Forms.MonthCalendar monthCalendar1;
+        private System.Windows.Forms.Label Lbl_Hinweis;
+        private System.Windows.Forms.RadioButton Rb_EvaluationToYear;
+        private System.Windows.Forms.RadioButton Rb_EvaluationByPeriod;
+        private System.Windows.Forms.ComboBox ComboBox_EvaluationYear;
+        private System.Windows.Forms.CheckBox CheckBox_Evaluation_All;
     }
 }
